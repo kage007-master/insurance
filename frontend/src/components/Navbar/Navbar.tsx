@@ -23,72 +23,45 @@ const Navbar: React.FC = () => {
         </div>
         {user.role === "customer" ? (
           <>
-            <NavLink
-              to="/customer/active-claims"
-              className="py-2 px-4 flex justify-center md:justify-start items-center gap-2 rounded-md"
-            >
+            <NavLink to="/customer/active-claims" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
               <p className="hidden md:block">Active Claims</p>
             </NavLink>
-            <NavLink
-              to="/customer/past-claims"
-              className="py-2 px-4 flex justify-center md:justify-start items-center gap-2 rounded-md"
-            >
+            <NavLink to="/customer/past-claims" className="navbar-item">
               <AiOutlineHistory className="w-6 h-6 m-1" />
               <p className="hidden md:block">Past Claims</p>
             </NavLink>
-            <NavLink
-              to="/customer/coverages"
-              className="py-2 px-4 flex justify-center md:justify-start items-center gap-2 rounded-md"
-            >
+            <NavLink to="/customer/coverages" className="navbar-item">
               <TiWeatherCloudy className="w-6 h-6 m-1" />
               <p className="hidden md:block">Coverages</p>
             </NavLink>
           </>
         ) : user.role === "employee" ? (
           <>
-            <NavLink
-              to="/employee/claims"
-              className="py-2 px-4 flex justify-center md:justify-start items-center gap-2 rounded-md"
-            >
+            <NavLink to="/employee/claims" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
               <p className="hidden md:block">Claims</p>
             </NavLink>
-            <NavLink
-              to="/employee/clients"
-              className="py-2 px-4 flex justify-center md:justify-start items-center gap-2"
-            >
+            <NavLink to="/employee/clients" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
               <p className="hidden md:block">Clients</p>
             </NavLink>
-            <NavLink
-              to="/employee/coverages"
-              className="py-2 px-4 flex justify-center md:justify-start items-center gap-2"
-            >
+            <NavLink to="/employee/coverages" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
               <p className="hidden md:block">Coverages</p>
             </NavLink>
-            <NavLink
-              to="/employee/validators"
-              className="py-2 px-4 flex justify-center md:justify-start items-center gap-2"
-            >
+            <NavLink to="/employee/validators" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
               <p className="hidden md:block">Validators</p>
             </NavLink>
           </>
         ) : (
           <>
-            <NavLink
-              to="/validator/assigned-claims"
-              className="py-2 px-4 flex justify-center md:justify-start items-center gap-2"
-            >
+            <NavLink to="/validator/assigned-claims" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
               <p className="hidden md:block">Assigned Claims</p>
             </NavLink>
-            <NavLink
-              to="/validator/assessed-claims"
-              className="py-2 px-4 flex justify-center md:justify-start items-center gap-2"
-            >
+            <NavLink to="/validator/assessed-claims" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
               <p className="hidden md:block">Assessed Claims</p>
             </NavLink>
@@ -96,13 +69,13 @@ const Navbar: React.FC = () => {
         )}
 
         {user.role !== "validator" && (
-          <button className="py-2 px-4 flex justify-center md:justify-start items-center gap-2">
+          <button className="navbar-item">
             <BiLogoInternetExplorer className="w-6 h-6 m-1" />
             <p className="hidden md:block">Explorer</p>
           </button>
         )}
         <button
-          className="mt-auto py-2 px-4 flex justify-center md:justify-start items-center gap-2"
+          className="mt-auto navbar-item"
           onClick={() => {
             dispatch(logOut());
           }}

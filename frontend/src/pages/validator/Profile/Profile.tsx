@@ -9,6 +9,8 @@ import {
 } from "@ant-design/icons";
 
 import ReactEcharts from "echarts-for-react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 const option = {
   tooltip: {
@@ -58,6 +60,7 @@ const option1 = {
 };
 
 const Profile: React.FC = () => {
+  const { user } = useSelector((state: RootState) => state.auth);
   return (
     <Layout>
       <>
@@ -67,13 +70,15 @@ const Profile: React.FC = () => {
               <>
                 <UserOutlined
                   style={{ fontSize: "48px" }}
-                  className="absolute -top-6 right-6"
+                  className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
                 />
                 <p className="text-[24px]">Profile</p>
-                <p className="p-2">Username: JohnDoe07</p>
-                <p className="p-2">Fullname: John Doe</p>
-                <p className="p-2">Email Address: johndoe@email.com</p>
-                <button className="absolute h-[40px] right-5 -bottom-[20px] border px-4 bg-[#18DDB1]">
+                <div className="mt-5">
+                  <p className="p-2">Username: {user.username}</p>
+                  <p className="p-2">Fullname: {user.fullname}</p>
+                  <p className="p-2">Email Address: {user.email}</p>
+                </div>
+                <button className="absolute right-5 -bottom-[18px] btn bg-[#18DDB1]">
                   Edit
                 </button>
               </>
@@ -84,14 +89,14 @@ const Profile: React.FC = () => {
               <>
                 <EnvironmentOutlined
                   style={{ fontSize: "48px" }}
-                  className="absolute -top-6 right-6"
+                  className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
                 />
                 <p className="text-[24px]">Localisation</p>
                 <p className="p-2">Address Line 1:</p>
                 <p className="p-2">Address Line 2:</p>
                 <p className="p-2">City:</p>
                 <p className="p-2">Lat, Long:</p>
-                <button className="absolute h-[40px] right-5 -bottom-[20px] border px-4 bg-[#18DDB1]">
+                <button className="absolute right-5 -bottom-[18px] btn bg-[#18DDB1]">
                   Edit
                 </button>
               </>
@@ -102,12 +107,14 @@ const Profile: React.FC = () => {
               <>
                 <PieChartOutlined
                   style={{ fontSize: "48px" }}
-                  className="absolute -top-6 right-6"
+                  className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
                 />
                 <p className="text-[24px]">Statistics</p>
-                <p className="p-2">Total number of claims : 120</p>
-                <p className="p-2">Approved claims : 70</p>
-                <p className="p-2 mb-24">Denied claims : 50</p>
+                <div className="mt-5 mb-20">
+                  <p className="p-2">Total number of claims : 120</p>
+                  <p className="p-2">Approved claims : 70</p>
+                  <p className="p-2">Denied claims : 50</p>
+                </div>
                 <ReactEcharts
                   option={option}
                   className="!w-[240px] !h-[240px] !absolute right-0 bottom-0"
@@ -120,9 +127,10 @@ const Profile: React.FC = () => {
               <>
                 <BarChartOutlined
                   style={{ fontSize: "48px" }}
-                  className="absolute -top-6 right-6"
+                  className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
                 />
-                <ReactEcharts option={option1} />
+                <p className="text-[24px]">Last 3 months</p>
+                <ReactEcharts option={option1} className="mt-4 !h-[250px]" />
               </>
             </Card>
           </Col>

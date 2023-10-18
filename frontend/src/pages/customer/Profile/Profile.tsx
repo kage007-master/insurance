@@ -29,7 +29,7 @@ const Profile: React.FC = () => {
                 <p className="p-2">Fullname: {user.fullname}</p>
                 <p className="p-2">Email Address: {user.email}</p>
               </div>
-              <button className="absolute h-[36px] right-5 -bottom-[18px] border px-4 bg-[#18DDB1] rounded-md">
+              <button className="absolute right-5 -bottom-[18px] btn bg-[#18DDB1]">
                 Edit
               </button>
             </>
@@ -47,7 +47,7 @@ const Profile: React.FC = () => {
               <p className="p-2">Address Line 2:</p>
               <p className="p-2">City:</p>
               <p className="p-2">Lat, Long:</p>
-              <button className="absolute h-[36px] right-5 -bottom-[18px] border px-4 bg-[#18DDB1] rounded-md">
+              <button className="absolute right-5 -bottom-[18px] btn bg-[#18DDB1]">
                 Edit
               </button>
             </>
@@ -70,7 +70,7 @@ const Profile: React.FC = () => {
                 <p className="p-2">End of Coverage Date: 2024-08-18</p>
                 <p className="p-2">Premium Paid: 400$</p>
               </div>
-              <button className="absolute h-[36px] right-5 -bottom-[18px] border px-4 bg-[#18DDB1] rounded-md">
+              <button className="absolute right-5 -bottom-[18px] btn bg-[#18DDB1]">
                 Add Coverages
               </button>
             </>

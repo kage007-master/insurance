@@ -5,16 +5,23 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import setAuthToken from "../../../utils/setAuthToken";
+import { loadUser } from "../../../store/auth";
+import { AppDispatch } from "../../../store";
 
 const Signup: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const onFinish = async (values: any) => {
-    const res = await axios.post(
-      "http://localhost:8000/api/auth/signup",
-      values
-    );
-    setAuthToken(res.data.token);
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/auth/signup",
+        values
+      );
+      setAuthToken(res.data.token);
+      dispatch(loadUser());
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
