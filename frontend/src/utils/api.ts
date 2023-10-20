@@ -4,7 +4,7 @@ import { logOut } from "../store/auth";
 
 // Create an instance of axios
 const api = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: "http://78.46.18.237:8000/api",
   headers: {
     "Content-Type": "application/json",
   },

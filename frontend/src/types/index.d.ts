@@ -8,3 +8,12 @@ interface AuthState {
     email: string;
   };
 }
+
+interface CoverageState {
+  coverages: any[];
+}
+
+interface ClientState {
+  clients: any[];
+  client: any;
+}

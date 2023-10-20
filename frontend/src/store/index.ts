@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./auth";
+import coverageReducer from "./coverage";
+import clientReducer from "./client";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
+    client: clientReducer,
+    coverage: coverageReducer,
   },
 });
 

@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
         {user.role === "customer" ? (
           <>
             <NavLink to="/customer/active-claims" className="navbar-item">
-              <VscVmActive className="w-6 h-6 m-1" />
+              <VscVmActive className="w-6 h-6 m-1 text-red" />
               <p className="hidden md:block">Active Claims</p>
             </NavLink>
             <NavLink to="/customer/past-claims" className="navbar-item">

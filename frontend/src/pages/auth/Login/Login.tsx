@@ -3,20 +3,17 @@ import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input } from "antd";
 import { useDispatch } from "react-redux";
 import { loadUser } from "../../../store/auth";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import setAuthToken from "../../../utils/setAuthToken";
 import { AppDispatch } from "../../../store";
+import api from "../../../utils/api";
 
 const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const onFinish = async (values: any) => {
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/auth/login",
-        values
-      );
+      const res = await api.post("/auth/login", values);
       setAuthToken(res.data.token);
       dispatch(loadUser());
     } catch (err) {
@@ -52,7 +49,6 @@ const Login: React.FC = () => {
             placeholder="Password"
           />
         </Form.Item>
-
         <Form.Item>
           <button
             type="submit"

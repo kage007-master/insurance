@@ -4,6 +4,17 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export default {
+  getClients: async (req: any, res: Response): Promise<void> => {
+    try {
+      let clients = await User.find({ role: "customer" });
+      res.json(clients);
+    } catch (err) {
+      res.status(500).send("Server Error");
+    }
+  },
+
+  getClient: async (req: any, res: Response): Promise<void> => {},
+
   load: async (req: any, res: Response): Promise<void> => {
     try {
       const user = await User.findById(req.user.id).select("-password");

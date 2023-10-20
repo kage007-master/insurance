@@ -7,16 +7,14 @@ import { Link } from "react-router-dom";
 import setAuthToken from "../../../utils/setAuthToken";
 import { loadUser } from "../../../store/auth";
 import { AppDispatch } from "../../../store";
+import api from "../../../utils/api";
 
 const Signup: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const onFinish = async (values: any) => {
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/auth/signup",
-        values
-      );
+      const res = await api.post("/auth/signup", values);
       setAuthToken(res.data.token);
       dispatch(loadUser());
     } catch (err) {
