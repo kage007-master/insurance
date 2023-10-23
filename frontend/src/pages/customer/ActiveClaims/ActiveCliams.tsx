@@ -4,11 +4,15 @@ import Layout from "../../../components/Layout";
 import { Row, Col } from "antd";
 import { FcCheckmark, FcCancel } from "react-icons/fc";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../store";
+import { activeClaims, feedbackClaims } from "../../../store/claim";
 
 interface DataType {
+  _id: string;
   key: string;
   weather: string;
   date: string;
@@ -16,69 +20,84 @@ interface DataType {
   time: string;
 }
 
-const columns: ColumnsType<DataType> = [
-  {
-    title: "Active Claims in your Area",
-    dataIndex: "weather",
-    key: "weather",
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: "Date Registered",
-    dataIndex: "date",
-    key: "date",
-  },
-  {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-  },
-  {
-    title: "Remaining time",
-    key: "time",
-    dataIndex: "time",
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (_, record) => (
-      <Space size="middle">
-        <button>
-          <FcCheckmark />
-        </button>
-        <button>
-          <FcCancel />
-        </button>
-      </Space>
-    ),
-  },
-];
-
-const data: DataType[] = [
-  {
-    key: "1",
-    weather: "Snow",
-    date: "19 Oct 2023",
-    status: "Pending",
-    time: "23h 32min",
-  },
-  {
-    key: "2",
-    weather: "Snow",
-    date: "19 Oct 2023",
-    status: "Pending",
-    time: "06h 04min",
-  },
-  {
-    key: "3",
-    weather: "Snow",
-    date: "19 Oct 2023",
-    status: "Pending",
-    time: "06h 04min",
-  },
-];
-
 const ActiveCliams: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
+  const { active } = useSelector((state: RootState) => state.claim);
+
+  const onConfirm = (id: string) => {
+    dispatch(feedbackClaims({ id, feedback: true }));
+  };
+
+  const onDecline = (id: string) => {
+    dispatch(feedbackClaims({ id, feedback: false }));
+  };
+
+  const columns: ColumnsType<DataType> = [
+    {
+      title: "Active Claims in your Area",
+      dataIndex: "weather",
+      key: "weather",
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Date Registered",
+      dataIndex: "date",
+      key: "date",
+      render: (_date: Date) => {
+        const date = new Date(_date);
+        return (
+          date.getFullYear() +
+          "-" +
+          (date.getMonth() + 1) +
+          "-" +
+          date.getDate()
+        );
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "Remaining time",
+      key: "time",
+      dataIndex: "date",
+      render: (_date: Date) => {
+        const currentTimestamp = Math.floor(Date.now() / 60000); // Convert to seconds
+        const elapsedMinutes =
+          1440 -
+          currentTimestamp +
+          Math.floor(new Date(_date).getTime() / 60000);
+
+        var hours: any = Math.floor(elapsedMinutes / 60);
+        var minutes: any = elapsedMinutes % 60;
+        if (hours < 10) hours = "0" + hours;
+        if (minutes < 10) minutes = "0" + minutes;
+        return hours + "h " + minutes + "m";
+      },
+    },
+    {
+      title: "Feedback",
+      key: "feedback",
+      render: (_, record) => (
+        <Space size="middle">
+          <button onClick={() => onConfirm(record._id)}>
+            <FcCheckmark />
+          </button>
+          <button onClick={() => onDecline(record._id)}>
+            <FcCancel />
+          </button>
+        </Space>
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    dispatch(activeClaims());
+  }, []);
+
   return (
     <Layout>
       <>
@@ -89,7 +108,7 @@ const ActiveCliams: React.FC = () => {
                 <MdAccountBalance className="w-12 h-12" />
                 <p className="p-2">Balance</p>
                 <div className="border w-full"></div>
-                <p className="p-2">+2000$</p>
+                <p className="p-2">+ {user.balance}$</p>
               </div>
             </div>
           </Col>
@@ -109,7 +128,7 @@ const ActiveCliams: React.FC = () => {
                 <MdAccountBalance className="w-12 h-12" />
                 <p className="p-2">Coverages</p>
                 <div className="border w-full"></div>
-                <p className="p-2">2</p>
+                <p className="p-2">{user.coverages.length}</p>
               </div>
             </div>
           </Col>
@@ -118,7 +137,7 @@ const ActiveCliams: React.FC = () => {
           className="mt-10 p-10"
           bordered
           columns={columns}
-          dataSource={data}
+          dataSource={active}
         />
       </>
     </Layout>

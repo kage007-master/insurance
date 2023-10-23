@@ -1,15 +1,21 @@
 import Card from "../../../components/Card";
 import Layout from "../../../components/Layout";
-import { loadCoverages } from "../../../store/coverage";
+import { loadCoverages, subscribeCoverage } from "../../../store/coverage";
 import { AppDispatch, RootState } from "../../../store";
 import { Row, Col } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { loadUser } from "../../../store/auth";
 
 const Coverages: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { coverages } = useSelector((state: RootState) => state.coverage);
   const { user } = useSelector((state: RootState) => state.auth);
+
+  const onSubscribe = async (id: string) => {
+    await dispatch(subscribeCoverage(id));
+    dispatch(loadUser());
+  };
 
   useEffect(() => {
     dispatch(loadCoverages());
@@ -32,7 +38,16 @@ const Coverages: React.FC = () => {
                 <div className="border w-full my-2"></div>
                 <p className="p-2">Yearly Premium : {coverage.premium}$</p>
                 <p className="p-2">Reimbursement : {coverage.reimbursement}$</p>
-                <button className="absolute h-[36px] right-5 -bottom-[18px] border px-4 bg-[#18DDB1] rounded-md">
+                <button
+                  className={`absolute h-[36px] right-5 -bottom-[18px] border px-4 ${
+                    user.coverages.find(
+                      (_coverage: any) => _coverage.coverageID === coverage._id
+                    )
+                      ? "bg-[#cccccc]"
+                      : "bg-[#18DDB1]"
+                  }  rounded-md`}
+                  onClick={() => onSubscribe(coverage._id)}
+                >
                   Subscribe
                 </button>
               </>

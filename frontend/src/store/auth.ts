@@ -11,6 +11,11 @@ const initialState: AuthState = {
     fullname: "",
     email: "",
     role: "",
+    balance: 0,
+    address: null,
+    transactions: [],
+    coverages: [],
+    claims: [],
   },
 };
 
@@ -32,7 +37,11 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(loadUser.pending, (state, action) => {});
     builder.addCase(loadUser.fulfilled, (state, action: PayloadAction<any>) => {
-      state.user = action.payload;
+      state.user = action.payload.user;
+      if (state.user.role === "customer") {
+        state.user.coverages = action.payload.active_coverages;
+        state.user.transactions = action.payload.transaction_histories;
+      }
     });
     builder.addCase(loadUser.rejected, (state, action) => {});
   },

@@ -98,6 +98,53 @@ const Signup: React.FC = () => {
             placeholder="Confirm Password"
           />
         </Form.Item>
+        <Form.Item
+          name="line1"
+          rules={[{ required: true, message: "Please input your Address!" }]}
+        >
+          <Input
+            prefix={<UserOutlined className="site-form-item-icon" />}
+            placeholder="Address Line 1"
+          />
+        </Form.Item>
+        <Form.Item name="line2" rules={[{ required: false }]}>
+          <Input
+            prefix={<UserOutlined className="site-form-item-icon" />}
+            placeholder="Address Line 2(optional)"
+          />
+        </Form.Item>
+        <Form.Item
+          name="city"
+          rules={[{ required: true, message: "Please input your City!" }]}
+        >
+          <Input
+            prefix={<UserOutlined className="site-form-item-icon" />}
+            placeholder="City"
+          />
+        </Form.Item>
+        <div className="flex gap-2">
+          <Form.Item
+            name="latitude"
+            rules={[{ required: true, message: "Please input your Latitude!" }]}
+          >
+            <Input
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="Latitude"
+            />
+          </Form.Item>
+          <Form.Item
+            name="longitude"
+            rules={[
+              { required: true, message: "Please input your Longitude!" },
+            ]}
+          >
+            <Input
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="Longitude"
+            />
+          </Form.Item>
+        </div>
+
         <Form.Item>
           <button
             type="submit"

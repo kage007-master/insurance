@@ -30,8 +30,9 @@ const columns: ColumnsType<DataType> = [
   },
   {
     title: "Client Address",
-    dataIndex: "username",
-    key: "username",
+    dataIndex: "address",
+    key: "address",
+    render: (address) => address?.line1,
   },
   {
     title: "Balance",
@@ -46,7 +47,7 @@ const columns: ColumnsType<DataType> = [
     render: (coverages) => coverages.length,
   },
   {
-    title: "Client Address",
+    title: "Raised Claims",
     dataIndex: "claims",
     key: "claims",
     render: (claims) => claims.length,

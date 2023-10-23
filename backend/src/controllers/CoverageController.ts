@@ -1,5 +1,8 @@
 import Coverage from "../models/Coverage";
+import CoverageHistory from "../models/CoverageHistory";
 import { Response, Request } from "express";
+import User from "../models/User";
+import TransactionHistory from "../models/TransactionHistory";
 
 export default {
   get: async (req: any, res: Response): Promise<void> => {
@@ -32,5 +35,50 @@ export default {
       res.status(500).send("Server error");
     }
   },
-  subscribe: async (req: Request, res: Response): Promise<void> => {},
+  subscribe: async (req: any, res: Response): Promise<void> => {
+    try {
+      let user = await User.findOne({ _id: req.user.id });
+      if (!user) {
+        res.status(400).json({ errors: { msg: "User not found!" } });
+        return;
+      }
+
+      const active_coverages = await CoverageHistory.find({
+        clientID: req.user.id,
+        subscription_date: { $lt: new Date() },
+        expire_date: { $gt: new Date() },
+      });
+      if (
+        active_coverages.find(
+          (_coverage: any) => _coverage.coverageID === req.params.id
+        )
+      ) {
+        res.status(400).json({ errors: { msg: "Already subscribed!" } });
+        return;
+      }
+      
+      let coverage = await Coverage.findOne({ _id: req.params.id });
+      user.balance -= coverage?.premium;
+      user.save();
+
+      let coverage_history = new CoverageHistory({
+        coverageID: req.params.id,
+        clientID: req.user.id,
+        subscription_date: new Date(),
+        expire_date: new Date(
+          new Date().setFullYear(new Date().getFullYear() + 1)
+        ),
+        paid_amount: coverage?.premium,
+      });
+      coverage_history.save();
+
+      let transaction_history = new TransactionHistory({
+        clientID: req.user.id,
+        amount: coverage?.premium,
+      });
+      transaction_history.save();
+    } catch (error) {
+      res.status(500).send("Server error");
+    }
+  },
 };

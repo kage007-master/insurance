@@ -21,8 +21,8 @@ export const addCoverage = createAsyncThunk(
 
 export const subscribeCoverage = createAsyncThunk(
   "subscribeCoverage",
-  async () => {
-    const res = await api.post<any>("/coverage/subscribe");
+  async (id: string) => {
+    const res = await api.post<any>(`/coverage/subscribe/${id}`);
     return res.data;
   }
 );
@@ -48,6 +48,14 @@ export const coverageSlice = createSlice({
       }
     );
     builder.addCase(addCoverage.rejected, (state, action) => {});
+    builder.addCase(subscribeCoverage.pending, (state, action) => {});
+    builder.addCase(
+      subscribeCoverage.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        
+      }
+    );
+    builder.addCase(subscribeCoverage.rejected, (state, action) => {});
   },
 });
 

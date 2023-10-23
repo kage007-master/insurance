@@ -2,9 +2,12 @@ import { MdAccountBalance } from "react-icons/md";
 import { BiNotepad } from "react-icons/bi";
 import Layout from "../../../components/Layout";
 import { Row, Col } from "antd";
-import React from "react";
-import { Space, Table } from "antd";
+import React, { useEffect } from "react";
+import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../store";
+import { pastClaims } from "../../../store/claim";
 
 interface DataType {
   key: string;
@@ -25,6 +28,12 @@ const columns: ColumnsType<DataType> = [
     title: "Date Registered",
     dataIndex: "date",
     key: "date",
+    render: (_date: Date) => {
+      const date = new Date(_date);
+      return (
+        date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+      );
+    },
   },
   {
     title: "Status",
@@ -33,30 +42,15 @@ const columns: ColumnsType<DataType> = [
   },
 ];
 
-const data: DataType[] = [
-  {
-    key: "1",
-    weather: "Snow",
-    date: "19 Oct 2023",
-    status: "Pending",
-    time: "23h 32min",
-  },
-  {
-    key: "2",
-    weather: "Snow",
-    date: "19 Oct 2023",
-    status: "Pending",
-    time: "06h 04min",
-  },
-  {
-    key: "3",
-    weather: "Snow",
-    date: "19 Oct 2023",
-    status: "Pending",
-    time: "06h 04min",
-  },
-];
 const PastClaims: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
+  const { past } = useSelector((state: RootState) => state.claim);
+
+  useEffect(() => {
+    dispatch(pastClaims());
+  }, []);
+
   return (
     <Layout>
       <>
@@ -67,7 +61,7 @@ const PastClaims: React.FC = () => {
                 <MdAccountBalance className="w-12 h-12" />
                 <p className="p-2">Balance</p>
                 <div className="border w-full"></div>
-                <p className="p-2">+2000$</p>
+                <p className="p-2">+ {user.balance}$</p>
               </div>
             </div>
           </Col>
@@ -87,7 +81,7 @@ const PastClaims: React.FC = () => {
                 <MdAccountBalance className="w-12 h-12" />
                 <p className="p-2">Coverages</p>
                 <div className="border w-full"></div>
-                <p className="p-2">2</p>
+                <p className="p-2">{user.coverages.length}</p>
               </div>
             </div>
           </Col>
@@ -96,7 +90,7 @@ const PastClaims: React.FC = () => {
           className="mt-10 p-10"
           bordered
           columns={columns}
-          dataSource={data}
+          dataSource={past}
         />
       </>
     </Layout>

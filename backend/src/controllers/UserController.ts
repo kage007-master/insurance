@@ -2,6 +2,8 @@ import User from "../models/User";
 import { Response, Request } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import CoverageHistory from "../models/CoverageHistory";
+import TransactionHistory from "../models/TransactionHistory";
 
 export default {
   getClients: async (req: any, res: Response): Promise<void> => {
@@ -17,8 +19,22 @@ export default {
 
   load: async (req: any, res: Response): Promise<void> => {
     try {
-      const user = await User.findById(req.user.id).select("-password");
-      res.json(user);
+      let user = await User.findById(req.user.id).select("-password");
+      if (user?.role === "customer") {
+        const active_coverages = await CoverageHistory.find({
+          clientID: req.user.id,
+          subscription_date: { $lt: new Date() },
+          expire_date: { $gt: new Date() },
+        });
+        const transaction_histories = await TransactionHistory.find({
+          clientID: req.user.id,
+        })
+          .sort({ date: -1 })
+          .limit(2);
+        res.json({ user, active_coverages, transaction_histories });
+        return;
+      }
+      res.json({ user });
     } catch (err) {
       res.status(500).send("Server Error");
     }
@@ -61,7 +77,17 @@ export default {
     }
   },
   signup: async (req: Request, res: Response): Promise<void> => {
-    const { fullname, username, email, password } = req.body;
+    const {
+      fullname,
+      username,
+      email,
+      password,
+      line1,
+      line2,
+      city,
+      latitude,
+      longitude,
+    } = req.body;
 
     try {
       let user = await User.findOne({ email });
@@ -76,7 +102,7 @@ export default {
         username,
         email,
         password,
-        address: "111",
+        address: { line1, line2, city, latitude, longitude },
       });
 
       const salt = await bcrypt.genSalt(10);
