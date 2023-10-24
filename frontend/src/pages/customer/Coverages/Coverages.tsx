@@ -23,7 +23,7 @@ const Coverages: React.FC = () => {
 
   return (
     <Layout>
-      <Row gutter={[0, 24]} className="mt-5 text-left p-10">
+      <Row gutter={[0, 24]} className="text-left p-10">
         {coverages.map((coverage: any) => (
           <Col span={24} lg={12} className="p-4" key={coverage.weather}>
             <Card>

@@ -115,7 +115,7 @@ const weather_columns: ColumnsType<DataType> = [
         record.raised_claims &&
         (record.confirmed_damage * 100) / record.raised_claims < 1
       )
-        return 'Required';
+        return "Required";
       else return "N/A";
     },
   },
@@ -132,7 +132,7 @@ const Claims: React.FC = () => {
 
   return (
     <Layout>
-      <div className="p-10">
+      <>
         <div className="relative">
           <p className="absolute flex gap-2 items-center top-0 right-0 float-right border px-4 py-1.5 bg-[#53c4e0] rounded-md">
             <TiWeatherPartlySunny className="w-6 h-6" /> Active Weather Events :{" "}
@@ -153,7 +153,7 @@ const Claims: React.FC = () => {
             pagination={{ pageSize: 5 }}
           />
         </div>
-        <div className="relative">
+        <div className="relative mt-5">
           <p className="absolute flex gap-2 items-center top-0 right-0 float-right border px-4 py-1.5 bg-[#831616] rounded-md">
             <PiWarningOctagonBold className="w-6 h-6" /> Pending claims :{" "}
             {claims.filter((claim: any) => claim.status === "Pending").length}
@@ -170,7 +170,7 @@ const Claims: React.FC = () => {
             pagination={{ pageSize: 5 }}
           />
         </div>
-      </div>
+      </>
     </Layout>
   );
 };

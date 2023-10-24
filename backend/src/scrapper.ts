@@ -106,7 +106,7 @@ const urls = [
   "https://meteo.gc.ca/warnings/report_f.html?qc1",
 ];
 
-const weathers = ["snow", "rain", "freeze"];
+const weathers = ["snow", "wind", "freeze"];
 const cities = ["Laval", "Montreal", "Longueuil"];
 
 export const warningScrap = async () => {
@@ -121,7 +121,7 @@ export const warningScrap = async () => {
   const rand1 = Math.floor(Math.random() * 1000) % 3;
   const weather = weathers[rand];
   const city = cities[rand1];
-  const customers = await User.find({ "address.city": city });
+  const customers = await User.find({ "address.city": city, role: "customer" });
   const coverage = await Coverage.findOne({ weather });
   let raised_claims = 0;
   const weatherEvent = new Weather({
@@ -148,5 +148,7 @@ export const warningScrap = async () => {
       raised_claims++;
     }
   }
-  Weather.updateOne({ _id: weatherEvent._id }, { raised_claims });
+  const _weatherEvent: any = await Weather.findById(weatherEvent._id);
+  _weatherEvent.raised_claims = raised_claims;
+  _weatherEvent.save();
 };

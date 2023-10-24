@@ -31,7 +31,7 @@ const Coverages: React.FC = () => {
   return (
     <Layout>
       <>
-        <Row gutter={[0, 24]} className="mt-5 text-left p-10 relative mx-10">
+        <Row gutter={[0, 24]} className="text-left p-10 relative">
           <button
             onClick={showModal}
             className="absolute top-0 right-0 float-right h-[36px] border px-4 bg-[#18DDB1] rounded-md"

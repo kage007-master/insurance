@@ -86,7 +86,7 @@ const Validators: React.FC = () => {
 
   return (
     <Layout>
-      <div className="relative m-10">
+      <div className="relative">
         <div className="flex items-center text-black gap-2">
           <FcViewDetails className="w-8 h-8" />
           Validators Details

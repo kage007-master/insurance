@@ -13,7 +13,7 @@ const Layout: React.FC<Props> = ({ children }) => {
       <div className="w-navbar text-white">
         <Toolbar />
         <div className="h-full overflow-auto">
-          <div className="mt-30">{children}</div>
+          <div className="mt-20 p-10">{children}</div>
         </div>
       </div>
     </>

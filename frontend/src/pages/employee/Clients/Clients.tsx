@@ -61,7 +61,7 @@ const Clients: React.FC = () => {
 
   return (
     <Layout>
-      <div className="p-10">
+      <>
         <div className="flex items-center text-black gap-2">
           <FcViewDetails className="w-8 h-8" />
           Client Details
@@ -72,7 +72,7 @@ const Clients: React.FC = () => {
           columns={columns}
           dataSource={clients}
         />
-      </div>
+      </>
     </Layout>
   );
 };

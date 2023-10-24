@@ -29,7 +29,7 @@ const Profile: React.FC = () => {
 
   return (
     <Layout>
-      <Row gutter={[0, 64]} className="mt-5 text-left p-10">
+      <Row gutter={[0, 64]} className="text-left p-10">
         <Col span={24} md={12} className="p-4">
           <Card>
             <>

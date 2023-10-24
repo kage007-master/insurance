@@ -32,14 +32,32 @@ export default {
       validatorID: req.user.id,
       status: { $in: ["Awaiting Validator"] },
     });
-    res.json(claims);
+    const result: any[] = [];
+    for (var i = 0; i < claims.length; i++) {
+      const customer: any = await User.findById(claims[i].clientID);
+      result.push({
+        ...claims[i]._doc,
+        client_name: customer.fullname,
+        client_address: customer.address.line1,
+      });
+    }
+    res.json(result);
   },
   getAssessed: async (req: any, res: Response): Promise<void> => {
     let claims = await Claim.find({
       validatorID: req.user.id,
       status: { $in: ["Approved", "Declined"] },
     });
-    res.json(claims);
+    const result: any[] = [];
+    for (var i = 0; i < claims.length; i++) {
+      const customer: any = await User.findById(claims[i].clientID);
+      result.push({
+        ...claims[i]._doc,
+        client_name: customer.fullname,
+        client_address: customer.address.line1,
+      });
+    }
+    res.json(result);
   },
   add: async (req: any, res: Response): Promise<void> => {
     const { weather, date, clientID, status } = req.body;
@@ -65,11 +83,9 @@ export default {
         });
         claim.status = "Awaiting Validator";
         claim.validatorID = validator?._id;
-        claim.save();
       }
     } else claim.status = "Declined";
     claim.save();
-
     res.json({ result: "success" });
   },
   validate: async (req: any, res: Response): Promise<void> => {

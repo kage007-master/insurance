@@ -7,7 +7,6 @@ const ClaimSchema: Schema = new Schema({
   date: { type: Date, required: true, default: new Date() },
   status: { type: String, required: true, default: "Pending" },
   validatorID: { type: String },
-  appointment: { type: Date },
   detail: { type: String },
   file: { type: String, default: "" },
 });
