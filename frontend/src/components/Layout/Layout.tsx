@@ -10,9 +10,11 @@ const Layout: React.FC<Props> = ({ children }) => {
   return (
     <>
       <Navbar />
-      <div className="w-full m-2 text-white">
+      <div className="w-navbar text-white">
         <Toolbar />
-        {children}
+        <div className="h-full overflow-auto">
+          <div className="mt-20">{children}</div>
+        </div>
       </div>
     </>
   );

@@ -3,6 +3,13 @@ import Layout from "../../../components/Layout";
 import Card from "../../../components/Card";
 import { BarChartOutlined, PieChartOutlined } from "@ant-design/icons";
 import ReactEcharts from "echarts-for-react";
+import { Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { FcViewDetails } from "react-icons/fc";
+import { assignedClaims } from "../../../store/claim";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../store";
+import { useEffect } from "react";
 
 const option = {
   tooltip: {
@@ -51,7 +58,54 @@ const option1 = {
   series: [{ type: "bar" }, { type: "bar" }],
 };
 
+interface DataType {
+  key: string;
+  weather: string;
+  date: string;
+  status: string;
+  time: string;
+}
+
+const columns: ColumnsType<DataType> = [
+  {
+    title: "Claim ID",
+    dataIndex: "_id",
+    key: "_id",
+  },
+  {
+    title: "Claim Type",
+    dataIndex: "weather",
+    key: "weather",
+  },
+  {
+    title: "Client Name",
+    dataIndex: "client_name",
+    key: "client_name",
+  },
+  {
+    title: "Client Address",
+    dataIndex: "client_address",
+    key: "client_address",
+  },
+  {
+    title: "Date of Change",
+    dataIndex: "date",
+    key: "date",
+  },
+  {
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
+  },
+];
+
 const AssessedClaims: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { assessed } = useSelector((state: RootState) => state.claim);
+  useEffect(() => {
+    dispatch(assignedClaims());
+  }, []);
+
   return (
     <Layout>
       <>
@@ -89,6 +143,18 @@ const AssessedClaims: React.FC = () => {
             </Card>
           </Col>
         </Row>
+        <div className="p-10">
+          <div className="flex items-center text-black gap-2">
+            <FcViewDetails className="w-8 h-8" />
+            Claim Details
+          </div>
+          <Table
+            className="mt-4"
+            bordered
+            columns={columns}
+            dataSource={assessed}
+          />
+        </div>
       </>
     </Layout>
   );

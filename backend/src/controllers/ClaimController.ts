@@ -3,6 +3,15 @@ import { Response, Request } from "express";
 import User from "../models/User";
 
 export default {
+  getAll: async (req: any, res: Response): Promise<void> => {
+    let claims = await Claim.find({});
+    const result: any[] = [];
+    for (var i = 0; i < claims.length; i++) {
+      const customer: any = await User.findById(claims[i].clientID);
+      result.push({ ...claims[i]._doc, customer_name: customer.fullname });
+    }
+    res.json(result);
+  },
   getActive: async (req: any, res: Response): Promise<void> => {
     let claims = await Claim.find({
       clientID: req.user.id,

@@ -1,10 +1,10 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "../utils/api";
-import { features } from "process";
 
 const initialState: ClaimState = {
   active: [],
+  claims: [],
   past: [],
   assessed: [],
   assigned: [],
@@ -12,6 +12,11 @@ const initialState: ClaimState = {
 
 export const activeClaims = createAsyncThunk("activeClaims", async () => {
   const res = await api.get<any>("/claim/active");
+  return res.data;
+});
+
+export const allClaims = createAsyncThunk("allClaims", async () => {
+  const res = await api.get<any>("/claim");
   return res.data;
 });
 
@@ -43,12 +48,20 @@ export const claimSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(allClaims.pending, (state, action) => {});
+    builder.addCase(
+      allClaims.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.claims = action.payload;
+      }
+    );
+    builder.addCase(allClaims.rejected, (state, action) => {});
+
     builder.addCase(activeClaims.pending, (state, action) => {});
     builder.addCase(
       activeClaims.fulfilled,
       (state, action: PayloadAction<any>) => {
         state.active = action.payload;
-        console.log(state.active);
       }
     );
     builder.addCase(activeClaims.rejected, (state, action) => {});

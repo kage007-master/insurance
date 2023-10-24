@@ -1,12 +1,11 @@
 import Layout from "../../../components/Layout";
 import { FcViewDetails } from "react-icons/fc";
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { loadClients } from "../../../store/client";
 
-import React from "react";
-import { Space, Table } from "antd";
+import React, { useEffect } from "react";
+import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
 interface DataType {
@@ -25,8 +24,8 @@ const columns: ColumnsType<DataType> = [
   },
   {
     title: "Client Name",
-    dataIndex: "username",
-    key: "username",
+    dataIndex: "fullname",
+    key: "fullname",
   },
   {
     title: "Client Address",
@@ -44,13 +43,11 @@ const columns: ColumnsType<DataType> = [
     title: "Coverages",
     dataIndex: "coverages",
     key: "coverages",
-    render: (coverages) => coverages.length,
   },
   {
     title: "Raised Claims",
-    dataIndex: "claims",
-    key: "claims",
-    render: (claims) => claims.length,
+    dataIndex: "raised_claims",
+    key: "raised_claims",
   },
 ];
 

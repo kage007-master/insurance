@@ -14,7 +14,8 @@ const UserSchema: Schema = new Schema({
     longitude: { type: Number },
   },
   balance: { type: Number, default: 1000 },
-  claims: { type: [String], default: [] },
+  city: { type: String },
+  active: { type: Boolean, default: true },
 });
 
 export default mongoose.model("user", UserSchema);

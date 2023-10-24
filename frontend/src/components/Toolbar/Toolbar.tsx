@@ -31,26 +31,28 @@ const Toolbar: React.FC = () => {
   const { user } = useSelector((state: RootState) => state.auth);
 
   return (
-    <div className="m-4 border flex justify-between p-4 rounded-2xl items-center text-black">
-      <Breadcrumbs aria-label="breadcrumb">
-        <HiHome />
-        <p>{titles[path]}</p>
-      </Breadcrumbs>
-      <div className="flex gap-2 items-center">
-        {searchFor !== "profile" && (
-          <Input
-            prefix={<SearchOutlined className="site-form-item-icon" />}
-            className="rounded-full"
-            placeholder={`Search for ${searchFor}`}
-          />
-        )}
-        {user.role !== "employee" && (
-          <Link to={`/${user.role}/profile`}>
-            <HiUser className="w-6 h-6" />
-          </Link>
-        )}
-        <IoSettingsSharp className="w-6 h-6" />
-        <IoIosNotifications className="w-6 h-6" />
+    <div className="absolute w-navbar p-4 text-black bg-white z-10">
+      <div className="border flex justify-between p-4 rounded-2xl items-center">
+        <Breadcrumbs aria-label="breadcrumb">
+          <HiHome />
+          <p>{titles[path]}</p>
+        </Breadcrumbs>
+        <div className="flex gap-2 items-center">
+          {searchFor !== "profile" && (
+            <Input
+              prefix={<SearchOutlined className="site-form-item-icon" />}
+              className="rounded-full"
+              placeholder={`Search for ${searchFor}`}
+            />
+          )}
+          {user.role !== "employee" && (
+            <Link to={`/${user.role}/profile`}>
+              <HiUser className="w-6 h-6" />
+            </Link>
+          )}
+          <IoSettingsSharp className="w-6 h-6" />
+          <IoIosNotifications className="w-6 h-6" />
+        </div>
       </div>
     </div>
   );

@@ -92,10 +92,12 @@ const Profile: React.FC = () => {
                   className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
                 />
                 <p className="text-[24px]">Localisation</p>
-                <p className="p-2">Address Line 1:</p>
-                <p className="p-2">Address Line 2:</p>
-                <p className="p-2">City:</p>
-                <p className="p-2">Lat, Long:</p>
+                <p className="p-2">Address Line 1: {user.address?.line1}</p>
+                <p className="p-2">Address Line 2: {user.address?.line2}</p>
+                <p className="p-2">City: {user.address?.city}</p>
+                <p className="p-2">
+                  Lat, Long: {user.address?.latitude}, {user.address?.longitude}
+                </p>
                 <button className="absolute right-5 -bottom-[18px] btn bg-[#18DDB1]">
                   Edit
                 </button>

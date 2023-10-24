@@ -24,12 +24,18 @@ interface CoverageState {
   coverages: any[];
 }
 
+interface WeatherState {
+  weathers: any[];
+}
+
 interface ClientState {
   clients: any[];
   client: any;
+  validators: any[];
 }
 
 interface ClaimState {
+  claims: any[];
   active: any[];
   past: any[];
   assessed: any[];

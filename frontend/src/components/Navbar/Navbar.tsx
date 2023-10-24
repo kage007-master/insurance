@@ -1,69 +1,90 @@
 import logo from "../../logo.svg";
 import { VscVmActive } from "react-icons/vsc";
 import { LuLogOut } from "react-icons/lu";
-import { AiOutlineHistory } from "react-icons/ai";
+import { AiOutlineHistory, AiOutlineCloseSquare } from "react-icons/ai";
+import { CiSquareChevRight } from "react-icons/ci";
 import { NavLink, useNavigate } from "react-router-dom";
 import { BiLogoInternetExplorer } from "react-icons/bi";
 import { TiWeatherCloudy } from "react-icons/ti";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { logOut } from "../../store/auth";
+import { useState } from "react";
 
 const Navbar: React.FC = () => {
+  const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
 
   return (
     <>
-      <div className="w-[100px] md:w-[300px] p-4 flex flex-col gap-4 border bg-[#031C30] text-white">
-        <div className="flex justify-center md:justify-start items-center gap-2 mt-4 mb-8">
+      <div className="flex items-center md:hidden">
+        <button
+          className="absolute left-0 bg-[#031C30] text-white py-5 px-1"
+          onClick={() => setOpen(true)}
+        >
+          <CiSquareChevRight className="w-6 h-6" />
+        </button>
+      </div>
+      <div
+        className={`${
+          open ? "flex absolute h-full" : "hidden"
+        } z-20 md:flex min-w-[250px] max-w-[250px] p-4  flex-col gap-4 border bg-[#031C30] text-white`}
+      >
+        <div className="flex justify-start items-center gap-2 mt-4 mb-8 relative">
           <img src="/images/logo.png" alt="logo" className="w-12 h-12" />
-          <p className="hidden md:block">Insurance</p>
+          Insurance
+          <button
+            className="md:hidden absolute top-0 right-0 bg-[#031C30] text-white"
+            onClick={() => setOpen(false)}
+          >
+            <AiOutlineCloseSquare className="w-6 h-6" />
+          </button>
         </div>
         {user.role === "customer" ? (
           <>
             <NavLink to="/customer/active-claims" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1 text-red" />
-              <p className="hidden md:block">Active Claims</p>
+              Active Claims
             </NavLink>
             <NavLink to="/customer/past-claims" className="navbar-item">
               <AiOutlineHistory className="w-6 h-6 m-1" />
-              <p className="hidden md:block">Past Claims</p>
+              Past Claims
             </NavLink>
             <NavLink to="/customer/coverages" className="navbar-item">
               <TiWeatherCloudy className="w-6 h-6 m-1" />
-              <p className="hidden md:block">Coverages</p>
+              Coverages
             </NavLink>
           </>
         ) : user.role === "employee" ? (
           <>
             <NavLink to="/employee/claims" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
-              <p className="hidden md:block">Claims</p>
+              Claims
             </NavLink>
             <NavLink to="/employee/clients" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
-              <p className="hidden md:block">Clients</p>
+              Clients
             </NavLink>
             <NavLink to="/employee/coverages" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
-              <p className="hidden md:block">Coverages</p>
+              Coverages
             </NavLink>
             <NavLink to="/employee/validators" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
-              <p className="hidden md:block">Validators</p>
+              Validators
             </NavLink>
           </>
         ) : (
           <>
             <NavLink to="/validator/assigned-claims" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
-              <p className="hidden md:block">Assigned Claims</p>
+              Assigned Claims
             </NavLink>
             <NavLink to="/validator/assessed-claims" className="navbar-item">
               <VscVmActive className="w-6 h-6 m-1" />
-              <p className="hidden md:block">Assessed Claims</p>
+              Assessed Claims
             </NavLink>
           </>
         )}
@@ -71,7 +92,7 @@ const Navbar: React.FC = () => {
         {user.role !== "validator" && (
           <button className="navbar-item">
             <BiLogoInternetExplorer className="w-6 h-6 m-1" />
-            <p className="hidden md:block">Explorer</p>
+            Explorer
           </button>
         )}
         <button
@@ -81,7 +102,7 @@ const Navbar: React.FC = () => {
           }}
         >
           <LuLogOut className="w-6 h-6 m-1" />
-          <p className="hidden md:block">Logout</p>
+          Logout
         </button>
       </div>
     </>
