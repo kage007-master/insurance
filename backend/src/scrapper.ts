@@ -106,6 +106,9 @@ const urls = [
   "https://meteo.gc.ca/warnings/report_f.html?qc1",
 ];
 
+const weathers = ["snow", "rain", "freeze"];
+const cities = ["Laval", "Montreal", "Longueuil"];
+
 export const warningScrap = async () => {
   // const results = await Promise.all(urls.map((url) => scrapeData(url)));
   // const validResults = results.filter((result) => result !== null); // Remove any null results
@@ -114,10 +117,20 @@ export const warningScrap = async () => {
   // const currentDatetime = new Date();
 
   // console.log(jsonData);
-  const weather = "snow";
-  const customers = await User.find({ "address.city": "Laval" });
+  const rand = Math.floor(Math.random() * 1000) % 3;
+  const rand1 = Math.floor(Math.random() * 1000) % 3;
+  const weather = weathers[rand];
+  const city = cities[rand1];
+  const customers = await User.find({ "address.city": city });
   const coverage = await Coverage.findOne({ weather });
   let raised_claims = 0;
+  const weatherEvent = new Weather({
+    weather,
+    city,
+    url: "https://meteo.gc.ca/warnings/report_f.html?qcrm1=",
+    raised_claims,
+  });
+  weatherEvent.save();
   for (let i = 0; i < customers.length; i++) {
     const cnt = await CoverageHistory.count({
       clientID: customers[i]._id,
@@ -128,17 +141,12 @@ export const warningScrap = async () => {
     if (cnt) {
       let claim = new Claim({
         weather,
+        weatherEventID: weatherEvent._id,
         clientID: customers[i]._id,
       });
       claim.save();
-      raised_claims ++;
+      raised_claims++;
     }
   }
-  const weatherEvent = new Weather({
-    weather: "snow",
-    city: "Laval",
-    url: "https://meteo.gc.ca/warnings/report_f.html?qcrm1=",
-    raised_claims,
-  });
-  weatherEvent.save();
+  Weather.updateOne({ _id: weatherEvent._id }, { raised_claims });
 };

@@ -43,6 +43,14 @@ export const feedbackClaims = createAsyncThunk(
   }
 );
 
+export const validateClaims = createAsyncThunk(
+  "validateClaims",
+  async (data: any) => {
+    const res = await api.post<any>("/claim/validate", data);
+    return data;
+  }
+);
+
 export const claimSlice = createSlice({
   name: "claim",
   initialState,
@@ -99,6 +107,13 @@ export const claimSlice = createSlice({
       (state, action: PayloadAction<any>) => {}
     );
     builder.addCase(feedbackClaims.rejected, (state, action) => {});
+
+    builder.addCase(validateClaims.pending, (state, action) => {});
+    builder.addCase(
+      validateClaims.fulfilled,
+      (state, action: PayloadAction<any>) => {}
+    );
+    builder.addCase(validateClaims.rejected, (state, action) => {});
   },
 });
 
