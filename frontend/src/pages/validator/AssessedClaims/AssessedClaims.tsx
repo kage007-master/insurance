@@ -1,15 +1,14 @@
-import { Col, Row } from "antd";
+import { useEffect } from "react";
+import { Col, Row, Table } from "antd";
 import Layout from "../../../components/Layout";
 import Card from "../../../components/Card";
 import { BarChartOutlined, PieChartOutlined } from "@ant-design/icons";
 import ReactEcharts from "echarts-for-react";
-import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { FcViewDetails } from "react-icons/fc";
 import { assignedClaims } from "../../../store/claim";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
-import { useEffect } from "react";
 
 const option = {
   tooltip: {
@@ -102,6 +101,7 @@ const columns: ColumnsType<DataType> = [
 const AssessedClaims: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { assessed } = useSelector((state: RootState) => state.claim);
+
   useEffect(() => {
     dispatch(assignedClaims());
   }, []);

@@ -2,17 +2,17 @@ import { Calendar, Col, Row } from "antd";
 import Layout from "../../../components/Layout";
 import Card from "../../../components/Card";
 import { EnvironmentOutlined, CalendarOutlined } from "@ant-design/icons";
-import type { CalendarProps } from "antd";
-import type { Dayjs } from "dayjs";
 import GoogleMapReact from "google-map-react";
-import { Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
 import { FcViewDetails } from "react-icons/fc";
-import { assignedClaims } from "../../../store/claim";
+import { assignedClaims, validateClaims } from "../../../store/claim";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FiEdit } from "react-icons/fi";
+import { Form, Modal, Radio, Table } from "antd";
+import type { CalendarProps } from "antd";
+import type { Dayjs } from "dayjs";
+import type { ColumnsType } from "antd/es/table";
 
 const distanceToMouse = (pt: any, mp: any) => {
   if (pt && mp) {
@@ -65,8 +65,23 @@ const columns: ColumnsType<DataType> = [
 ];
 
 const AssignedClaims: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const [id, setID] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const { assigned } = useSelector((state: RootState) => state.claim);
+
+  const showModal = () => {
+    setOpen(true);
+  };
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  const onFinish = async (values: any) => {
+    dispatch(validateClaims({ id, ...values }));
+    handleCancel();
+  };
+
   useEffect(() => {
     dispatch(assignedClaims());
   }, []);
@@ -133,7 +148,54 @@ const AssignedClaims: React.FC = () => {
             <FcViewDetails className="w-8 h-8" />
             Claim Details
           </div>
-          <Table className="mt-4" bordered columns={columns} dataSource={assigned} />
+          <Table
+            className="mt-4"
+            bordered
+            columns={columns}
+            dataSource={assigned}
+          />
+          <Modal
+            open={open}
+            title="Damage Assessement"
+            onOk={onFinish}
+            onCancel={handleCancel}
+            footer={(_) => <></>}
+          >
+            <Form
+              name="damage_assessement"
+              layout="vertical"
+              className="login-form"
+              initialValues={{ remember: true }}
+              onFinish={onFinish}
+            >
+              <Form.Item
+                name="confirm"
+                label="1. Do you confirm that the client received Damage?"
+              >
+                <Radio.Group>
+                  <Radio value={true}> Yes </Radio>
+                  <Radio value={false}> No </Radio>
+                </Radio.Group>
+              </Form.Item>
+              <Form.Item>
+                <div className="flex justify-between text-white">
+                  <button
+                    type="submit"
+                    className="h-[36px] border px-4 bg-[#18DDB1] rounded-md"
+                  >
+                    Submit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    className="h-[36px] border px-4 bg-[#dd1f18] rounded-md"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </Form.Item>
+            </Form>
+          </Modal>
         </div>
       </>
     </Layout>

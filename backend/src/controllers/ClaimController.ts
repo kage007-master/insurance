@@ -72,7 +72,9 @@ export default {
     const { id, feedback } = req.body;
     let claim: any = await Claim.findById(id);
     if (feedback) {
-      const weatherEvent = await Weather.findById(claim.weatherEventID);
+      const weatherEvent: any = await Weather.findById(claim.weatherEventID);
+      weatherEvent.confirmed_damage++;
+      weatherEvent.save();
       const rand = Math.floor(Math.random() * 1000) % 2;
       if (rand) claim.status = "Approved";
       else {
