@@ -1,7 +1,11 @@
-import { Calendar, Col, Row } from "antd";
+import { Button, Calendar, Col, Row, Upload } from "antd";
 import Layout from "../../../components/Layout";
 import Card from "../../../components/Card";
-import { EnvironmentOutlined, CalendarOutlined } from "@ant-design/icons";
+import {
+  EnvironmentOutlined,
+  CalendarOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import GoogleMapReact from "google-map-react";
 import { FcViewDetails } from "react-icons/fc";
 import { assignedClaims, validateClaims } from "../../../store/claim";
@@ -13,6 +17,7 @@ import { Form, Modal, Radio, Table } from "antd";
 import type { CalendarProps } from "antd";
 import type { Dayjs } from "dayjs";
 import type { ColumnsType } from "antd/es/table";
+import TextArea from "antd/es/input/TextArea";
 
 const distanceToMouse = (pt: any, mp: any) => {
   if (pt && mp) {
@@ -32,38 +37,6 @@ interface DataType {
   time: string;
 }
 
-const columns: ColumnsType<DataType> = [
-  {
-    title: "Claim ID",
-    dataIndex: "_id",
-    key: "_id",
-  },
-  {
-    title: "Claim Type",
-    dataIndex: "weather",
-    key: "weather",
-  },
-  {
-    title: "Client Name",
-    dataIndex: "client_name",
-    key: "client_name",
-  },
-  {
-    title: "Client Address",
-    dataIndex: "client_address",
-    key: "client_address",
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (_, record) => (
-      <button onClick={() => {}}>
-        <FiEdit className="w-6 h-6" />
-      </button>
-    ),
-  },
-];
-
 const AssignedClaims: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [id, setID] = useState("");
@@ -78,9 +51,55 @@ const AssignedClaims: React.FC = () => {
   };
 
   const onFinish = async (values: any) => {
+    console.log({ id, ...values });
     dispatch(validateClaims({ id, ...values }));
     handleCancel();
   };
+
+  const normFile = (e: any) => {
+    console.log("Upload event:", e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
+
+  const columns: ColumnsType<DataType> = [
+    {
+      title: "Claim ID",
+      dataIndex: "_id",
+      key: "_id",
+    },
+    {
+      title: "Claim Type",
+      dataIndex: "weather",
+      key: "weather",
+    },
+    {
+      title: "Client Name",
+      dataIndex: "client_name",
+      key: "client_name",
+    },
+    {
+      title: "Client Address",
+      dataIndex: "client_address",
+      key: "client_address",
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record: any) => (
+        <button
+          onClick={() => {
+            setID(record._id);
+            showModal();
+          }}
+        >
+          <FiEdit className="w-6 h-6" />
+        </button>
+      ),
+    },
+  ];
 
   useEffect(() => {
     dispatch(assignedClaims());
@@ -165,7 +184,7 @@ const AssignedClaims: React.FC = () => {
               name="damage_assessement"
               layout="vertical"
               className="login-form"
-              initialValues={{ remember: true }}
+              initialValues={{ confirm: true }}
               onFinish={onFinish}
             >
               <Form.Item
@@ -177,6 +196,22 @@ const AssignedClaims: React.FC = () => {
                   <Radio value={false}> No </Radio>
                 </Radio.Group>
               </Form.Item>
+              <Form.Item
+                name="detail"
+                label="2. Please fill out any relevant details below."
+              >
+                <TextArea rows={4} />
+              </Form.Item>
+              {/* <Form.Item
+                name="file"
+                label="3. Please attach below any relevant document"
+                valuePropName="fileList"
+                getValueFromEvent={normFile}
+              >
+                <Upload name="logo" action="/upload.do" listType="picture">
+                  <Button icon={<UploadOutlined />}>Click to upload</Button>
+                </Upload>
+              </Form.Item> */}
               <Form.Item>
                 <div className="flex justify-between text-white">
                   <button

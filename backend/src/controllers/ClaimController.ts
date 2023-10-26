@@ -72,7 +72,7 @@ export default {
     const { id, feedback } = req.body;
     let claim: any = await Claim.findById(id);
     if (feedback) {
-      const weatherEvent: any = await Weather.findById(claim.weatherEventID);
+      let weatherEvent: any = await Weather.findById(claim.weatherEventID);
       weatherEvent.confirmed_damage++;
       weatherEvent.save();
       const rand = Math.floor(Math.random() * 1000) % 2;
@@ -91,6 +91,14 @@ export default {
     res.json({ result: "success" });
   },
   validate: async (req: any, res: Response): Promise<void> => {
+    const { id, confirm, detail, file } = req.body;
+    let claim = await Claim.findById(id);
+    if (claim) {
+      claim.status = confirm ? "Approved" : "Declined";
+      claim.detail = detail;
+      claim.file = file;
+      claim.save();
+    }
     res.json({ result: "success" });
   },
 };

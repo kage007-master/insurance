@@ -6,7 +6,7 @@ import { BarChartOutlined, PieChartOutlined } from "@ant-design/icons";
 import ReactEcharts from "echarts-for-react";
 import type { ColumnsType } from "antd/es/table";
 import { FcViewDetails } from "react-icons/fc";
-import { assignedClaims } from "../../../store/claim";
+import { assessedClaims, assignedClaims } from "../../../store/claim";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 
@@ -103,7 +103,7 @@ const AssessedClaims: React.FC = () => {
   const { assessed } = useSelector((state: RootState) => state.claim);
 
   useEffect(() => {
-    dispatch(assignedClaims());
+    dispatch(assessedClaims());
   }, []);
 
   return (
@@ -119,9 +119,25 @@ const AssessedClaims: React.FC = () => {
                 />
                 <p className="text-[24px]">Statistics</p>
                 <div className="mt-5 mb-20">
-                  <p className="p-2">Total number of claims : 120</p>
-                  <p className="p-2">Approved claims : 70</p>
-                  <p className="p-2">Denied claims : 50</p>
+                  <p className="p-2">
+                    Total number of claims : {assessed.length}
+                  </p>
+                  <p className="p-2">
+                    Approved claims :{" "}
+                    {
+                      assessed.filter(
+                        (claim: any) => claim.status === "Approved"
+                      ).length
+                    }
+                  </p>
+                  <p className="p-2">
+                    Denied claims :{" "}
+                    {
+                      assessed.filter(
+                        (claim: any) => claim.status === "Declined"
+                      ).length
+                    }
+                  </p>
                 </div>
                 <ReactEcharts
                   option={option}
