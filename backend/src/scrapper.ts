@@ -130,7 +130,7 @@ export const warningScrap = async () => {
     url: "https://meteo.gc.ca/warnings/report_f.html?qcrm1=",
     raised_claims,
   });
-  weatherEvent.save();
+  await weatherEvent.save();
   for (let i = 0; i < customers.length; i++) {
     const cnt = await CoverageHistory.count({
       clientID: customers[i]._id,
@@ -144,11 +144,11 @@ export const warningScrap = async () => {
         weatherEventID: weatherEvent._id,
         clientID: customers[i]._id,
       });
-      claim.save();
+      await claim.save();
       raised_claims++;
     }
   }
   const _weatherEvent: any = await Weather.findById(weatherEvent._id);
   _weatherEvent.raised_claims = raised_claims;
-  _weatherEvent.save();
+  await _weatherEvent.save();
 };

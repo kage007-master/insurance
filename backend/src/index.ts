@@ -3,6 +3,7 @@ import middleware from "./middlewares";
 import routes from "./routes";
 import dbConnect from "./config/db";
 import { warningScrap } from "./scrapper";
+import Interactor from "./services/interactor";
 // import { config } from "dotenv";
 
 // config();
@@ -14,6 +15,7 @@ routes(app);
 dbConnect();
 
 warningScrap();
+Interactor.CreateAccount();
 
 const port = 8000;
 
