@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
       >
         <div className="flex justify-start items-center gap-2 mt-4 mb-8 relative">
           <img src="/images/logo.png" alt="logo" className="w-12 h-12" />
-          Insurance
+          Weather Chain
           <button
             className="md:hidden absolute top-0 right-0 bg-[#031C30] text-white"
             onClick={() => setOpen(false)}
