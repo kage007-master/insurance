@@ -75,6 +75,7 @@ export default {
       let transaction_history = new TransactionHistory({
         clientID: req.user.id,
         amount: coverage?.premium,
+        date: new Date(),
       });
       transaction_history.save();
     } catch (error) {

@@ -1,4 +1,3 @@
-import logo from "../../logo.svg";
 import { VscVmActive } from "react-icons/vsc";
 import { LuLogOut } from "react-icons/lu";
 import { AiOutlineHistory, AiOutlineCloseSquare } from "react-icons/ai";
@@ -16,7 +15,6 @@ const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
-
   return (
     <>
       <div className="flex items-center md:hidden">

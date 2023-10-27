@@ -17,6 +17,7 @@ interface AuthState {
       latitude: number;
       longitude: number;
     };
+    notifications: number;
   };
 }
 

@@ -3,10 +3,8 @@ import middleware from "./middlewares";
 import routes from "./routes";
 import dbConnect from "./config/db";
 import { warningScrap } from "./services/scrapper";
-import Interactor from "./services/interactor";
-// import { config } from "dotenv";
-
-// config();
+import http from "http";
+import socket from "./services/socket";
 
 const app = express();
 
@@ -14,10 +12,13 @@ middleware(app);
 routes(app);
 dbConnect();
 
-warningScrap();
+const httpServer = new http.Server(app);
+
+socket.init(httpServer);
+
+warningScrap(socket);
 
 const port = 8001;
-
-app.listen(port, () => {
+httpServer.listen(port, () => {
   console.log(`listening on port ${port}!`);
 });

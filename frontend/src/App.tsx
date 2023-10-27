@@ -24,6 +24,7 @@ import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
 import setAuthToken from "./utils/setAuthToken";
 import { loadUser } from "./store/auth";
+import { SocketContext, socket } from "./utils/socket";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,58 +39,63 @@ function App() {
 
   return (
     <div className="App flex h-screen">
-      <Router>
-        <Routes>
-          {user.role === "customer" ? (
-            <>
-              <Route
-                path="/customer/active-claims"
-                element={<ActiveClaims />}
-              />
-              <Route path="/customer/coverages" element={<Coverages />} />
-              <Route path="/customer/past-claims" element={<PastClaims />} />
-              <Route path="/customer/profile" element={<CustomerProfile />} />
-              <Route
-                path="*"
-                element={<Navigate to="/customer/active-claims" />}
-              />
-            </>
-          ) : user.role === "employee" ? (
-            <>
-              <Route
-                path="/employee/coverages"
-                element={<EmployeeCoverages />}
-              />
-              <Route path="/employee/claims" element={<Claims />} />
-              <Route path="/employee/clients" element={<Clients />} />
-              <Route path="/employee/validators" element={<Validators />} />
-              <Route path="*" element={<Navigate to="/employee/claims" />} />
-            </>
-          ) : user.role === "validator" ? (
-            <>
-              <Route
-                path="/validator/assigned-claims"
-                element={<AssignedClaims />}
-              />
-              <Route
-                path="/validator/assessed-claims"
-                element={<AssessedClaims />}
-              />
-              <Route path="/validator/profile" element={<ValidatorProfile />} />
-              <Route
-                path="*"
-                element={<Navigate to="/validator/assigned-claims" />}
-              />
-            </>
-          ) : (
-            <>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="*" element={<Navigate to="/login" />} />
-            </>
-          )}
-        </Routes>
-      </Router>
+      <SocketContext.Provider value={{ socket }}>
+        <Router>
+          <Routes>
+            {user.role === "customer" ? (
+              <>
+                <Route
+                  path="/customer/active-claims"
+                  element={<ActiveClaims />}
+                />
+                <Route path="/customer/coverages" element={<Coverages />} />
+                <Route path="/customer/past-claims" element={<PastClaims />} />
+                <Route path="/customer/profile" element={<CustomerProfile />} />
+                <Route
+                  path="*"
+                  element={<Navigate to="/customer/active-claims" />}
+                />
+              </>
+            ) : user.role === "employee" ? (
+              <>
+                <Route
+                  path="/employee/coverages"
+                  element={<EmployeeCoverages />}
+                />
+                <Route path="/employee/claims" element={<Claims />} />
+                <Route path="/employee/clients" element={<Clients />} />
+                <Route path="/employee/validators" element={<Validators />} />
+                <Route path="*" element={<Navigate to="/employee/claims" />} />
+              </>
+            ) : user.role === "validator" ? (
+              <>
+                <Route
+                  path="/validator/assigned-claims"
+                  element={<AssignedClaims />}
+                />
+                <Route
+                  path="/validator/assessed-claims"
+                  element={<AssessedClaims />}
+                />
+                <Route
+                  path="/validator/profile"
+                  element={<ValidatorProfile />}
+                />
+                <Route
+                  path="*"
+                  element={<Navigate to="/validator/assigned-claims" />}
+                />
+              </>
+            ) : (
+              <>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="*" element={<Navigate to="/login" />} />
+              </>
+            )}
+          </Routes>
+        </Router>
+      </SocketContext.Provider>
     </div>
   );
 }

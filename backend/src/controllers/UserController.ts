@@ -6,6 +6,7 @@ import CoverageHistory from "../models/CoverageHistory";
 import TransactionHistory from "../models/TransactionHistory";
 import Claim from "../models/Claim";
 import interactor from "../services/interactor";
+import Notification from "../models/Notification";
 
 export default {
   getClients: async (req: any, res: Response): Promise<void> => {
@@ -61,6 +62,10 @@ export default {
   load: async (req: any, res: Response): Promise<void> => {
     try {
       let user = await User.findById(req.user.id).select("-password");
+      const notifications = await Notification.count({
+        clientID: req.user.id,
+        read: false,
+      });
       if (user?.role === "customer") {
         const active_coverages = await CoverageHistory.find({
           clientID: req.user.id,
@@ -83,10 +88,11 @@ export default {
           transaction_histories,
           claims,
           balance: account.balance,
+          notifications,
         });
         return;
       }
-      res.json({ user });
+      res.json({ user, notifications });
     } catch (err) {
       res.status(500).send("Server Error");
     }
@@ -229,5 +235,16 @@ export default {
     } catch (error) {
       res.status(500).send("Server error");
     }
+  },
+  loadNotification: async (req: any, res: Response) => {
+    const notifications = await Notification.find({
+      clientID: req.user.id,
+      read: false,
+    });
+    await Notification.updateMany(
+      { clientID: req.user.id, read: false },
+      { read: true }
+    );
+    res.json(notifications);
   },
 };

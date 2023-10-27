@@ -4,7 +4,7 @@ const ClaimSchema: Schema = new Schema({
   weather: { type: String, required: true },
   weatherEventID: { type: String, required: true },
   clientID: { type: String, required: true },
-  date: { type: Date, required: true, default: new Date() },
+  date: { type: Date, required: true },
   status: { type: String, required: true, default: "Pending" },
   validatorID: { type: String },
   detail: { type: String },

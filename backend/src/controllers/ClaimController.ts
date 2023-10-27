@@ -3,6 +3,8 @@ import { Response, Request } from "express";
 import User from "../models/User";
 import Weather from "../models/Weather";
 import interactor from "../services/interactor";
+import Notification from "../models/Notification";
+import socket from "../services/socket";
 
 export default {
   getAll: async (req: any, res: Response): Promise<void> => {
@@ -61,32 +63,11 @@ export default {
     }
     res.json(result);
   },
-  add: async (req: any, res: Response): Promise<void> => {
-    const { weather, date, clientID, status } = req.body;
-    let claim = new Claim({
-      weather,
-      clientID,
-    });
-    claim.save();
-    res.json({ result: "success" });
-  },
+  add: async (req: any, res: Response): Promise<void> => {},
   feedback: async (req: any, res: Response): Promise<void> => {
     const { id, feedback } = req.body;
     let claim: any = await Claim.findById(id);
-    if (feedback) {
-      await interactor.ConfirmDamage(claim.weatherEventID);
-      const rand = Math.floor(Math.random() * 1000) % 2;
-      if (rand) claim.status = "Approved";
-      else {
-        const user = await User.findById(req.user.id);
-        const validator: any = await User.findOne({
-          role: "validator",
-          city: user?.address.city,
-        });
-        claim.status = "Awaiting Validator";
-        claim.validatorID = validator?._id;
-      }
-    } else claim.status = "Declined";
+    if (!feedback) claim.status = "Declined";
     claim.confirmed = true;
     claim.save();
     res.json({ result: claim.status, id });
@@ -99,6 +80,16 @@ export default {
       claim.detail = detail;
       claim.file = file;
       claim.save();
+      const notification = new Notification({
+        clientID: claim._id,
+        title: `Claim ${claim.status}`,
+        content: `Claim is ${String(claim.status).toLowerCase()}. ClaimID: ${
+          claim._id
+        }`,
+        date: new Date(),
+      });
+      notification.save();
+      socket.broadcast();
     }
     res.json({ result: "success" });
   },

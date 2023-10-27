@@ -85,7 +85,11 @@ const weather_columns: ColumnsType<DataType> = [
     title: "Url",
     dataIndex: "url",
     key: "url",
-    render: () => "link",
+    render: (url) => (
+      <a href={url} className="text-[#00f] underline">
+        link
+      </a>
+    ),
   },
   {
     title: "Status",

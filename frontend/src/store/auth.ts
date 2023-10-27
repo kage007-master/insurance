@@ -16,6 +16,7 @@ const initialState: AuthState = {
     transactions: [],
     coverages: [],
     claims: 0,
+    notifications: 0,
   },
 };
 
@@ -23,6 +24,14 @@ export const loadUser = createAsyncThunk("loadUser", async () => {
   const res = await api.get<any>("/auth");
   return res.data;
 });
+
+export const loadNotifications = createAsyncThunk(
+  "loadNotifications",
+  async (noti_api: any) => {
+    const res = await api.get<any>("/auth/notifications");
+    return { data: res.data, api: noti_api };
+  }
+);
 
 export const authSlice = createSlice({
   name: "auth",
@@ -44,8 +53,26 @@ export const authSlice = createSlice({
         state.user.balance = action.payload.balance;
         state.user.transactions = action.payload.transaction_histories;
       }
+      state.user.notifications = action.payload.notifications;
     });
     builder.addCase(loadUser.rejected, (state, action) => {});
+    builder.addCase(loadNotifications.pending, (state, action) => {});
+    builder.addCase(
+      loadNotifications.fulfilled,
+      (state, action: PayloadAction<any>) => {
+        state.user.notifications = 0;
+        action.payload.data.map((msg: any) => {
+          console.log(msg);
+
+          action.payload.api.open({
+            message: msg.title,
+            description: msg.content,
+            duration: 0,
+          });
+        });
+      }
+    );
+    builder.addCase(loadNotifications.rejected, (state, action) => {});
   },
 });
 
