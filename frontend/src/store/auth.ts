@@ -15,7 +15,7 @@ const initialState: AuthState = {
     address: null,
     transactions: [],
     coverages: [],
-    claims: [],
+    claims: 0,
   },
 };
 
@@ -40,6 +40,8 @@ export const authSlice = createSlice({
       state.user = action.payload.user;
       if (state.user.role === "customer") {
         state.user.coverages = action.payload.active_coverages;
+        state.user.claims = action.payload.claims;
+        state.user.balance = action.payload.balance;
         state.user.transactions = action.payload.transaction_histories;
       }
     });

@@ -137,7 +137,7 @@ const AssignedClaims: React.FC = () => {
                   <GoogleMapReact
                     bootstrapURLKeys={{
                       // remove the key if you want to fork
-                      key: "AIzaSyDQDvScLyL7y5kqxR5mxEAPRo5PR5Ej2ZY",
+                      key: "AIzaSyDmL53LtJa6GSkqihNb_kJs7tthyIGEUYE",
                       language: "en",
                       region: "US",
                     }}

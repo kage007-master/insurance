@@ -1,7 +1,7 @@
 import { MdAccountBalance } from "react-icons/md";
 import { BiNotepad } from "react-icons/bi";
 import Layout from "../../../components/Layout";
-import { Row, Col } from "antd";
+import { Row, Col, Popconfirm } from "antd";
 import { FcCheckmark, FcCancel } from "react-icons/fc";
 
 import React, { useEffect } from "react";
@@ -83,12 +83,28 @@ const ActiveCliams: React.FC = () => {
       key: "feedback",
       render: (_, record) => (
         <Space size="middle">
-          <button onClick={() => onConfirm(record._id)}>
-            <FcCheckmark />
-          </button>
-          <button onClick={() => onDecline(record._id)}>
-            <FcCancel />
-          </button>
+          <Popconfirm
+            title="Confirm Damage"
+            description="Are you sure to confirm this damage?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => onConfirm(record._id)}
+          >
+            <button>
+              <FcCheckmark />
+            </button>
+          </Popconfirm>
+          <Popconfirm
+            title="Decline Damage"
+            description="Are you sure to decline this damage?"
+            okText="Yes"
+            cancelText="No"
+            onConfirm={() => onDecline(record._id)}
+          >
+            <button>
+              <FcCancel />
+            </button>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -118,7 +134,7 @@ const ActiveCliams: React.FC = () => {
                 <BiNotepad className="w-12 h-12" />
                 <p className="p-2">Total claims</p>
                 <div className="border w-full"></div>
-                <p className="p-2">3</p>
+                <p className="p-2">{user.claims}</p>
               </div>
             </div>
           </Col>

@@ -2,6 +2,7 @@ import Claim from "../models/Claim";
 import { Response, Request } from "express";
 import User from "../models/User";
 import Weather from "../models/Weather";
+import interactor from "../services/interactor";
 
 export default {
   getAll: async (req: any, res: Response): Promise<void> => {
@@ -17,6 +18,7 @@ export default {
     let claims = await Claim.find({
       clientID: req.user.id,
       status: "Pending",
+      confirmed: false,
     });
     res.json(claims);
   },
@@ -72,9 +74,7 @@ export default {
     const { id, feedback } = req.body;
     let claim: any = await Claim.findById(id);
     if (feedback) {
-      let weatherEvent: any = await Weather.findById(claim.weatherEventID);
-      weatherEvent.confirmed_damage++;
-      weatherEvent.save();
+      await interactor.ConfirmDamage(claim.weatherEventID);
       const rand = Math.floor(Math.random() * 1000) % 2;
       if (rand) claim.status = "Approved";
       else {
@@ -87,8 +87,9 @@ export default {
         claim.validatorID = validator?._id;
       }
     } else claim.status = "Declined";
+    claim.confirmed = true;
     claim.save();
-    res.json({ result: "success" });
+    res.json({ result: claim.status, id });
   },
   validate: async (req: any, res: Response): Promise<void> => {
     const { id, confirm, detail, file } = req.body;

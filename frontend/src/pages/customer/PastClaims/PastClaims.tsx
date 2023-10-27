@@ -71,7 +71,7 @@ const PastClaims: React.FC = () => {
                 <BiNotepad className="w-12 h-12" />
                 <p className="p-2">Total claims</p>
                 <div className="border w-full"></div>
-                <p className="p-2">3</p>
+                <p className="p-2">{user.claims}</p>
               </div>
             </div>
           </Col>

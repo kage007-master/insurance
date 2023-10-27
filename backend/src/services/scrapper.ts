@@ -1,8 +1,9 @@
-import Weather from "./models/Weather";
-import User from "./models/User";
-import Claim from "./models/Claim";
-import Coverage from "./models/Coverage";
-import CoverageHistory from "./models/CoverageHistory";
+import Weather from "../models/Weather";
+import User from "../models/User";
+import Claim from "../models/Claim";
+import Coverage from "../models/Coverage";
+import CoverageHistory from "../models/CoverageHistory";
+import interactor from "./interactor";
 
 const puppeteer = require("puppeteer");
 const fs = require("fs").promises;
@@ -110,6 +111,46 @@ const weathers = ["snow", "wind", "freeze"];
 const cities = ["Laval", "Montreal", "Longueuil"];
 
 export const warningScrap = async () => {
+  setInterval(async () => {
+    const rand = Math.floor(Math.random() * 1000) % 3;
+    const rand1 = Math.floor(Math.random() * 1000) % 3;
+    const weather = weathers[rand];
+    const city = cities[rand1];
+    const customers = await User.find({
+      "address.city": city,
+      role: "customer",
+    });
+    await Weather.updateMany({ status: "Active" }, { status: "Ended" });
+    await Claim.updateMany({ status: "Pending" }, { status: "Declinded" });
+
+    const coverage = await Coverage.findOne({ weather });
+    let raised_claims = 0;
+    const weatherEvent = new Weather({
+      weather,
+      city,
+      url: "https://meteo.gc.ca/warnings/report_f.html?qcrm1=",
+      raised_claims,
+    });
+    await weatherEvent.save();
+    for (let i = 0; i < customers.length; i++) {
+      const cnt = await CoverageHistory.count({
+        clientID: customers[i]._id,
+        coverageID: coverage?._id,
+        subscription_date: { $lt: new Date() },
+        expire_date: { $gt: new Date() },
+      });
+      if (cnt) {
+        let claim = new Claim({
+          weather,
+          weatherEventID: weatherEvent._id,
+          clientID: customers[i]._id,
+        });
+        await claim.save();
+        raised_claims++;
+      }
+    }
+    interactor.CreateEvent(weatherEvent._id as string, raised_claims);
+  }, 10 * 60 * 1000);
   // const results = await Promise.all(urls.map((url) => scrapeData(url)));
   // const validResults = results.filter((result) => result !== null); // Remove any null results
   // // Convert the results array into a JSON string and write to the file
@@ -117,38 +158,4 @@ export const warningScrap = async () => {
   // const currentDatetime = new Date();
 
   // console.log(jsonData);
-  const rand = Math.floor(Math.random() * 1000) % 3;
-  const rand1 = Math.floor(Math.random() * 1000) % 3;
-  const weather = weathers[rand];
-  const city = cities[rand1];
-  const customers = await User.find({ "address.city": city, role: "customer" });
-  const coverage = await Coverage.findOne({ weather });
-  let raised_claims = 0;
-  const weatherEvent = new Weather({
-    weather,
-    city,
-    url: "https://meteo.gc.ca/warnings/report_f.html?qcrm1=",
-    raised_claims,
-  });
-  await weatherEvent.save();
-  for (let i = 0; i < customers.length; i++) {
-    const cnt = await CoverageHistory.count({
-      clientID: customers[i]._id,
-      coverageID: coverage?._id,
-      subscription_date: { $lt: new Date() },
-      expire_date: { $gt: new Date() },
-    });
-    if (cnt) {
-      let claim = new Claim({
-        weather,
-        weatherEventID: weatherEvent._id,
-        clientID: customers[i]._id,
-      });
-      await claim.save();
-      raised_claims++;
-    }
-  }
-  const _weatherEvent: any = await Weather.findById(weatherEvent._id);
-  _weatherEvent.raised_claims = raised_claims;
-  await _weatherEvent.save();
 };

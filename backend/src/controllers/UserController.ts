@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import CoverageHistory from "../models/CoverageHistory";
 import TransactionHistory from "../models/TransactionHistory";
 import Claim from "../models/Claim";
+import interactor from "../services/interactor";
 
 export default {
   getClients: async (req: any, res: Response): Promise<void> => {
@@ -22,7 +23,13 @@ export default {
         const raised_claims = await Claim.count({
           clientID: clients[i]._id,
         });
-        result.push({ ...clients[i]._doc, coverages, raised_claims });
+        const account = await interactor.ReadAsset(clients[i]._id as string);
+        result.push({
+          ...clients[i]._doc,
+          coverages,
+          raised_claims,
+          balance: account.balance,
+        });
       }
       res.json(result);
     } catch (err) {
@@ -60,12 +67,23 @@ export default {
           subscription_date: { $lt: new Date() },
           expire_date: { $gt: new Date() },
         });
+        const claims = await Claim.count({
+          clientID: req.user.id,
+        });
         const transaction_histories = await TransactionHistory.find({
           clientID: req.user.id,
         })
           .sort({ date: -1 })
           .limit(2);
-        res.json({ user, active_coverages, transaction_histories });
+        const account = await interactor.ReadAsset(req.user.id);
+
+        res.json({
+          user,
+          active_coverages,
+          transaction_histories,
+          claims,
+          balance: account.balance,
+        });
         return;
       }
       res.json({ user });
@@ -144,6 +162,7 @@ export default {
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
+      interactor.CreateAccount(user._id as string);
 
       const payload = {
         user: {

@@ -2,7 +2,7 @@ import Card from "../../../components/Card";
 import Layout from "../../../components/Layout";
 import { loadCoverages, subscribeCoverage } from "../../../store/coverage";
 import { AppDispatch, RootState } from "../../../store";
-import { Row, Col } from "antd";
+import { Row, Col, Popconfirm } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loadUser } from "../../../store/auth";
@@ -12,9 +12,9 @@ const Coverages: React.FC = () => {
   const { coverages } = useSelector((state: RootState) => state.coverage);
   const { user } = useSelector((state: RootState) => state.auth);
 
-  const onSubscribe = async (id: string) => {
-    await dispatch(subscribeCoverage(id));
-    dispatch(loadUser());
+  const onSubscribe = (id: string) => {
+    dispatch(subscribeCoverage(id));
+    setTimeout(() => dispatch(loadUser()), 1000);
   };
 
   useEffect(() => {
@@ -38,18 +38,29 @@ const Coverages: React.FC = () => {
                 <div className="border w-full my-2"></div>
                 <p className="p-2">Yearly Premium : {coverage.premium}$</p>
                 <p className="p-2">Reimbursement : {coverage.reimbursement}$</p>
-                <button
-                  className={`absolute h-[36px] right-5 -bottom-[18px] border px-4 ${
-                    user.coverages.find(
-                      (_coverage: any) => _coverage.coverageID === coverage._id
-                    )
-                      ? "bg-[#cccccc]"
-                      : "bg-[#18DDB1]"
-                  }  rounded-md`}
-                  onClick={() => onSubscribe(coverage._id)}
+                <Popconfirm
+                  title="Confirm Damage"
+                  description="Are you sure to confirm this damage?"
+                  okText="Yes"
+                  cancelText="No"
+                  onConfirm={() => onSubscribe(coverage._id)}
                 >
-                  Subscribe
-                </button>
+                  <button
+                    className={`absolute h-[36px] right-5 -bottom-[18px] border px-4 ${
+                      user.coverages.find(
+                        (_coverage: any) =>
+                          _coverage.coverageID === coverage._id
+                      )
+                        ? "bg-[#cccccc]"
+                        : "bg-[#18DDB1]"
+                    }  rounded-md`}
+                    disabled={user.coverages.find(
+                      (_coverage: any) => _coverage.coverageID === coverage._id
+                    )}
+                  >
+                    Subscribe
+                  </button>
+                </Popconfirm>
               </>
             </Card>
           </Col>

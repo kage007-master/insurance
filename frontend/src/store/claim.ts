@@ -104,7 +104,11 @@ export const claimSlice = createSlice({
     builder.addCase(feedbackClaims.pending, (state, action) => {});
     builder.addCase(
       feedbackClaims.fulfilled,
-      (state, action: PayloadAction<any>) => {}
+      (state, action: PayloadAction<any>) => {
+        state.active = state.active.filter(
+          (claim: any) => claim._id !== action.payload.id
+        );
+      }
     );
     builder.addCase(feedbackClaims.rejected, (state, action) => {});
 

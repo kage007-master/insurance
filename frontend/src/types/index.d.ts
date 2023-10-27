@@ -9,7 +9,7 @@ interface AuthState {
     balance: number;
     transactions: any[];
     coverages: any[];
-    claims: string[];
+    claims: ?number;
     address: ?{
       line1: string;
       line2: ?string;

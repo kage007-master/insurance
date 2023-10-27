@@ -13,7 +13,6 @@ const UserSchema: Schema = new Schema({
     latitude: { type: Number },
     longitude: { type: Number },
   },
-  balance: { type: Number, default: 1000 },
   city: { type: String },
   active: { type: Boolean, default: true },
 });

@@ -32,9 +32,8 @@ const Navbar: React.FC = () => {
           open ? "flex absolute h-full" : "hidden"
         } z-20 md:flex min-w-[250px] max-w-[250px] p-4  flex-col gap-4 border bg-[#031C30] text-white`}
       >
-        <div className="flex justify-start items-center gap-2 mt-4 mb-8 relative">
-          <img src="/images/logo.png" alt="logo" className="w-12 h-12" />
-          Weather Chain
+        <div className="flex justify-center items-center gap-2 mt-4 mb-8 relative">
+          <img src="/images/logo.png" alt="logo" className="w-32 h-32" />
           <button
             className="md:hidden absolute top-0 right-0 bg-[#031C30] text-white"
             onClick={() => setOpen(false)}

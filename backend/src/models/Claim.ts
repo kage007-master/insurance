@@ -9,6 +9,7 @@ const ClaimSchema: Schema = new Schema({
   validatorID: { type: String },
   detail: { type: String },
   file: { type: String, default: "" },
+  confirmed: { type: Boolean, required: true, default: false },
 });
 
 export default mongoose.model("claim", ClaimSchema);

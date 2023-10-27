@@ -3,6 +3,7 @@ import CoverageHistory from "../models/CoverageHistory";
 import { Response, Request } from "express";
 import User from "../models/User";
 import TransactionHistory from "../models/TransactionHistory";
+import interactor from "../services/interactor";
 
 export default {
   get: async (req: any, res: Response): Promise<void> => {
@@ -56,10 +57,9 @@ export default {
         res.status(400).json({ errors: { msg: "Already subscribed!" } });
         return;
       }
-      
+
       let coverage = await Coverage.findOne({ _id: req.params.id });
-      user.balance -= coverage?.premium;
-      user.save();
+      interactor.TransferAsset(user._id as string, coverage?.premium);
 
       let coverage_history = new CoverageHistory({
         coverageID: req.params.id,
