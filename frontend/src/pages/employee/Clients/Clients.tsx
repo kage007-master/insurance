@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { loadClients } from "../../../store/client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 
@@ -54,6 +54,11 @@ const columns: ColumnsType<DataType> = [
 const Clients: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { clients } = useSelector((state: RootState) => state.client);
+  const tableRef = useRef(null);
+
+  const getWidth = (ref: any) => {
+    return ref?.current?.offsetWidth;
+  };
 
   useEffect(() => {
     dispatch(loadClients());
@@ -66,12 +71,15 @@ const Clients: React.FC = () => {
           <FcViewDetails className="w-8 h-8" />
           Client Details
         </div>
-        <Table
-          className="mt-4"
-          bordered
-          columns={columns}
-          dataSource={clients}
-        />
+        <div ref={tableRef}>
+          <Table
+            className="mt-4"
+            bordered
+            columns={columns}
+            dataSource={clients}
+            scroll={{ x: getWidth(tableRef) }}
+          />
+        </div>
       </>
     </Layout>
   );

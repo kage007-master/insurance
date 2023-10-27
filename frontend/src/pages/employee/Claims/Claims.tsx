@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Layout from "../../../components/Layout";
 import { AppDispatch, RootState } from "../../../store";
 import { allClaims } from "../../../store/claim";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { FcViewDetails } from "react-icons/fc";
@@ -125,6 +125,12 @@ const Claims: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { claims } = useSelector((state: RootState) => state.claim);
   const { weathers } = useSelector((state: RootState) => state.weather);
+  const tableRef = useRef(null);
+
+  const getWidth = (ref: any) => {
+    return ref?.current?.offsetWidth;
+  };
+
   useEffect(() => {
     dispatch(allClaims());
     dispatch(getWeatherEvents());
@@ -145,13 +151,16 @@ const Claims: React.FC = () => {
             <FcViewDetails className="w-8 h-8" />
             Weather Events
           </div>
-          <Table
-            className="mt-4"
-            bordered
-            columns={weather_columns}
-            dataSource={weathers}
-            pagination={{ pageSize: 5 }}
-          />
+          <div ref={tableRef}>
+            <Table
+              className="mt-4"
+              bordered
+              columns={weather_columns}
+              dataSource={weathers}
+              pagination={{ pageSize: 5 }}
+              scroll={{ x: getWidth(tableRef) }}
+            />
+          </div>
         </div>
         <div className="relative mt-5">
           <p className="absolute flex gap-2 items-center top-0 right-0 float-right border px-4 py-1.5 bg-[#831616] rounded-md">
@@ -168,6 +177,7 @@ const Claims: React.FC = () => {
             columns={columns}
             dataSource={claims}
             pagination={{ pageSize: 5 }}
+            scroll={{ x: getWidth(tableRef) }}
           />
         </div>
       </>

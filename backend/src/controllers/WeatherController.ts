@@ -4,7 +4,7 @@ import interactor from "../services/interactor";
 
 export default {
   getAll: async (req: any, res: Response): Promise<void> => {
-    let weathers = await Weather.find({});
+    let weathers = await Weather.find({}).sort({ date: -1 });
     const result: any[] = [];
     for (var i = 0; i < weathers.length; i++) {
       const event = await interactor.ReadAsset(weathers[i]._id as string);
@@ -15,6 +15,5 @@ export default {
       });
     }
     res.json(result);
-    res.json(weathers);
   },
 };

@@ -21,7 +21,7 @@ const Navbar: React.FC = () => {
     <>
       <div className="flex items-center md:hidden">
         <button
-          className="absolute left-0 bg-[#031C30] text-white py-5 px-1"
+          className="absolute left-0 bg-[#031C30] text-white py-5 px-1 z-50"
           onClick={() => setOpen(true)}
         >
           <CiSquareChevRight className="w-6 h-6" />

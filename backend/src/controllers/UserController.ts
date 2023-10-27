@@ -162,7 +162,7 @@ export default {
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
-      interactor.CreateAccount(user._id as string);
+      await interactor.CreateAccount(user._id as string);
 
       const payload = {
         user: {

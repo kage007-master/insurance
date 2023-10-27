@@ -2,12 +2,13 @@ import { MdAccountBalance } from "react-icons/md";
 import { BiNotepad } from "react-icons/bi";
 import Layout from "../../../components/Layout";
 import { Row, Col } from "antd";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { pastClaims } from "../../../store/claim";
+import { loadUser } from "../../../store/auth";
 
 interface DataType {
   key: string;
@@ -46,16 +47,22 @@ const PastClaims: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const { past } = useSelector((state: RootState) => state.claim);
+  const tableRef = useRef(null);
+
+  const getWidth = (ref: any) => {
+    return ref?.current?.offsetWidth;
+  };
 
   useEffect(() => {
     dispatch(pastClaims());
+    dispatch(loadUser());
   }, []);
 
   return (
     <Layout>
       <>
         <Row justify="space-around" gutter={[16, 16]}>
-          <Col span={24} md={8}>
+          <Col span={12} md={8}>
             <div className="flex justify-center">
               <div className="flex flex-col rounded-xl items-center border p-4 w-[180px] bg-[#031C30]">
                 <MdAccountBalance className="w-12 h-12" />
@@ -65,7 +72,7 @@ const PastClaims: React.FC = () => {
               </div>
             </div>
           </Col>
-          <Col span={24} md={8}>
+          <Col span={12} md={8}>
             <div className="flex justify-center">
               <div className="flex flex-col rounded-xl items-center border p-4 w-[180px] bg-[#031C30]">
                 <BiNotepad className="w-12 h-12" />
@@ -75,7 +82,7 @@ const PastClaims: React.FC = () => {
               </div>
             </div>
           </Col>
-          <Col span={24} md={8}>
+          <Col span={12} md={8}>
             <div className="flex justify-center">
               <div className="flex flex-col rounded-xl items-center  border p-4 w-[180px] bg-[#031C30]">
                 <MdAccountBalance className="w-12 h-12" />
@@ -86,12 +93,15 @@ const PastClaims: React.FC = () => {
             </div>
           </Col>
         </Row>
-        <Table
-          className="mt-10 p-10"
-          bordered
-          columns={columns}
-          dataSource={past}
-        />
+        <div ref={tableRef}>
+          <Table
+            className="mt-20 px-2 lg:px-10"
+            bordered
+            columns={columns}
+            dataSource={past}
+            scroll={{ x: getWidth(tableRef) }}
+          />
+        </div>
       </>
     </Layout>
   );

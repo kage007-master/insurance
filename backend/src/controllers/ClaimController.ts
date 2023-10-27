@@ -6,7 +6,7 @@ import interactor from "../services/interactor";
 
 export default {
   getAll: async (req: any, res: Response): Promise<void> => {
-    let claims = await Claim.find({});
+    let claims = await Claim.find({}).sort({ date: -1 });
     const result: any[] = [];
     for (var i = 0; i < claims.length; i++) {
       const customer: any = await User.findById(claims[i].clientID);
@@ -19,21 +19,21 @@ export default {
       clientID: req.user.id,
       status: "Pending",
       confirmed: false,
-    });
+    }).sort({ date: -1 });
     res.json(claims);
   },
   getPast: async (req: any, res: Response): Promise<void> => {
     let claims = await Claim.find({
       clientID: req.user.id,
       status: { $in: ["Approved", "Declined"] },
-    });
+    }).sort({ date: -1 });
     res.json(claims);
   },
   getAssigned: async (req: any, res: Response): Promise<void> => {
     let claims = await Claim.find({
       validatorID: req.user.id,
       status: { $in: ["Awaiting Validator"] },
-    });
+    }).sort({ date: -1 });
     const result: any[] = [];
     for (var i = 0; i < claims.length; i++) {
       const customer: any = await User.findById(claims[i].clientID);
@@ -49,7 +49,7 @@ export default {
     let claims = await Claim.find({
       validatorID: req.user.id,
       status: { $in: ["Approved", "Declined"] },
-    });
+    }).sort({ date: -1 });
     const result: any[] = [];
     for (var i = 0; i < claims.length; i++) {
       const customer: any = await User.findById(claims[i].clientID);

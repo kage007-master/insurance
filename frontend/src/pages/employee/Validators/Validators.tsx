@@ -1,5 +1,5 @@
 import Layout from "../../../components/Layout";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Form, Input, Modal, Select, Switch, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useDispatch, useSelector } from "react-redux";
@@ -63,6 +63,11 @@ const Validators: React.FC = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const { validators } = useSelector((state: RootState) => state.client);
+  const tableRef = useRef(null);
+
+  const getWidth = (ref: any) => {
+    return ref?.current?.offsetWidth;
+  };
 
   const showModal = () => {
     setOpen(true);
@@ -97,12 +102,15 @@ const Validators: React.FC = () => {
         >
           Add Validator
         </button>
-        <Table
-          className="mt-4"
-          bordered
-          columns={columns}
-          dataSource={validators}
-        />
+        <div ref={tableRef}>
+          <Table
+            className="mt-4"
+            bordered
+            columns={columns}
+            dataSource={validators}
+            scroll={{ x: getWidth(tableRef) }}
+          />
+        </div>
         <Modal
           open={open}
           title="Add Validator"

@@ -15,8 +15,10 @@ const Signup: React.FC = () => {
   const onFinish = async (values: any) => {
     try {
       const res = await api.post("/auth/signup", values);
-      setAuthToken(res.data.token);
-      dispatch(loadUser());
+      setTimeout(() => {
+        setAuthToken(res.data.token);
+        dispatch(loadUser());
+      }, 2000);
     } catch (err) {
       console.log(err);
     }

@@ -11,7 +11,7 @@ import { FcViewDetails } from "react-icons/fc";
 import { assignedClaims, validateClaims } from "../../../store/claim";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { Form, Modal, Radio, Table } from "antd";
 import type { CalendarProps } from "antd";
@@ -42,6 +42,11 @@ const AssignedClaims: React.FC = () => {
   const [id, setID] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const { assigned } = useSelector((state: RootState) => state.claim);
+  const tableRef = useRef(null);
+
+  const getWidth = (ref: any) => {
+    return ref?.current?.offsetWidth;
+  };
 
   const showModal = () => {
     setOpen(true);
@@ -113,7 +118,7 @@ const AssignedClaims: React.FC = () => {
     <Layout>
       <>
         <Row gutter={[0, 64]} className="mt-5 text-left">
-          <Col span={24} md={12} className="p-4">
+          <Col span={24} lg={12} className="p-4">
             <Card>
               <>
                 <CalendarOutlined
@@ -125,7 +130,7 @@ const AssignedClaims: React.FC = () => {
               </>
             </Card>
           </Col>
-          <Col span={24} md={12} className="p-4">
+          <Col span={24} lg={12} className="p-4">
             <Card>
               <>
                 <EnvironmentOutlined
@@ -134,7 +139,7 @@ const AssignedClaims: React.FC = () => {
                 />
                 <p className="text-[24px]">Clients Location</p>
                 <div className="h-[90%]">
-                  <GoogleMapReact
+                  {/* <GoogleMapReact
                     bootstrapURLKeys={{
                       // remove the key if you want to fork
                       key: "AIzaSyDmL53LtJa6GSkqihNb_kJs7tthyIGEUYE",
@@ -144,8 +149,8 @@ const AssignedClaims: React.FC = () => {
                     defaultCenter={{ lat: 51.506, lng: -0.169 }}
                     defaultZoom={15}
                     distanceToMouse={distanceToMouse}
-                  >
-                    {/* {points.map(({ lat, lng, id, title }) => {
+                  > */}
+                  {/* {points.map(({ lat, lng, id, title }) => {
                     return (
                       <MyMarker
                         key={id}
@@ -156,23 +161,27 @@ const AssignedClaims: React.FC = () => {
                       />
                     );
                   })} */}
-                  </GoogleMapReact>
+                  {/* </GoogleMapReact> */}
                 </div>
               </>
             </Card>
           </Col>
         </Row>
-        <div className="p-10">
+        <div className="mt-5">
           <div className="flex items-center text-black gap-2">
             <FcViewDetails className="w-8 h-8" />
             Claim Details
           </div>
-          <Table
-            className="mt-4"
-            bordered
-            columns={columns}
-            dataSource={assigned}
-          />
+
+          <div ref={tableRef}>
+            <Table
+              className="mt-4"
+              bordered
+              columns={columns}
+              dataSource={assigned}
+              scroll={{ x: getWidth(tableRef) }}
+            />
+          </div>
           <Modal
             open={open}
             title="Damage Assessement"

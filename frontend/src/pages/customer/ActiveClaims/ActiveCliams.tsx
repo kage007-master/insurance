@@ -4,12 +4,13 @@ import Layout from "../../../components/Layout";
 import { Row, Col, Popconfirm } from "antd";
 import { FcCheckmark, FcCancel } from "react-icons/fc";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { activeClaims, feedbackClaims } from "../../../store/claim";
+import { loadUser } from "../../../store/auth";
 
 interface DataType {
   _id: string;
@@ -24,6 +25,11 @@ const ActiveCliams: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const { active } = useSelector((state: RootState) => state.claim);
+  const tableRef = useRef(null);
+
+  const getWidth = (ref: any) => {
+    return ref?.current?.offsetWidth;
+  };
 
   const onConfirm = (id: string) => {
     dispatch(feedbackClaims({ id, feedback: true }));
@@ -112,6 +118,7 @@ const ActiveCliams: React.FC = () => {
 
   useEffect(() => {
     dispatch(activeClaims());
+    dispatch(loadUser());
   }, []);
 
   return (
@@ -149,12 +156,15 @@ const ActiveCliams: React.FC = () => {
             </div>
           </Col>
         </Row>
-        <Table
-          className="mt-10 p-10"
-          bordered
-          columns={columns}
-          dataSource={active}
-        />
+        <div ref={tableRef}>
+          <Table
+            className="mt-20 px-2s lg:px-10"
+            bordered
+            columns={columns}
+            dataSource={active}
+            scroll={{ x: getWidth(tableRef) }}
+          />
+        </div>
       </>
     </Layout>
   );

@@ -29,8 +29,8 @@ const Profile: React.FC = () => {
 
   return (
     <Layout>
-      <Row gutter={[0, 64]} className="text-left p-10">
-        <Col span={24} md={12} className="p-4">
+      <Row gutter={[0, 64]} className="text-left p-2">
+        <Col span={24} lg={12} className="p-4">
           <Card>
             <>
               <UserOutlined
@@ -49,7 +49,7 @@ const Profile: React.FC = () => {
             </>
           </Card>
         </Col>
-        <Col span={24} md={12} className="p-4">
+        <Col span={24} lg={12} className="p-4">
           <Card>
             <>
               <EnvironmentOutlined
@@ -69,7 +69,7 @@ const Profile: React.FC = () => {
             </>
           </Card>
         </Col>
-        <Col span={24} md={12} className="p-4">
+        <Col span={24} lg={12} className="p-4">
           <Card>
             <>
               <PieChartOutlined
@@ -123,9 +123,9 @@ const Profile: React.FC = () => {
             </>
           </Card>
         </Col>
-        <Col span={24} md={12} className="p-4">
+        <Col span={24} lg={12} className="p-4">
           <Card>
-            <>
+            <div className="min-h-[250px]">
               <BarChartOutlined
                 style={{ fontSize: "48px" }}
                 className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
@@ -153,7 +153,7 @@ const Profile: React.FC = () => {
                   </>
                 ))}
               </div>
-            </>
+            </div>
           </Card>
         </Col>
       </Row>

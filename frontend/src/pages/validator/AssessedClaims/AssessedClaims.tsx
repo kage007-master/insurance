@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Col, Row, Table } from "antd";
 import Layout from "../../../components/Layout";
 import Card from "../../../components/Card";
@@ -101,6 +101,11 @@ const columns: ColumnsType<DataType> = [
 const AssessedClaims: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { assessed } = useSelector((state: RootState) => state.claim);
+  const tableRef = useRef(null);
+
+  const getWidth = (ref: any) => {
+    return ref?.current?.offsetWidth;
+  };
 
   useEffect(() => {
     dispatch(assessedClaims());
@@ -110,7 +115,7 @@ const AssessedClaims: React.FC = () => {
     <Layout>
       <>
         <Row gutter={[0, 64]} className="mt-5 text-left">
-          <Col span={24} md={12} className="p-4">
+          <Col span={24} xl={12} className="p-4">
             <Card>
               <>
                 <PieChartOutlined
@@ -146,7 +151,7 @@ const AssessedClaims: React.FC = () => {
               </>
             </Card>
           </Col>
-          <Col span={24} md={12} className="p-4">
+          <Col span={24} xl={12} className="p-4">
             <Card>
               <>
                 <BarChartOutlined
@@ -154,22 +159,31 @@ const AssessedClaims: React.FC = () => {
                   className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
                 />
                 <p className="text-[24px]">Last 3 months</p>
-                <ReactEcharts option={option1} className="mt-4 !h-[250px]" />
+                <div className="w-full flex justify-center">
+                  <ReactEcharts
+                    option={option1}
+                    className="text-center mt-4 max-w-[420px] !h-[250px]"
+                  />
+                </div>
               </>
             </Card>
           </Col>
         </Row>
-        <div className="p-10">
+        <div className="mt-5">
           <div className="flex items-center text-black gap-2">
             <FcViewDetails className="w-8 h-8" />
             Claim Details
           </div>
-          <Table
-            className="mt-4"
-            bordered
-            columns={columns}
-            dataSource={assessed}
-          />
+
+          <div ref={tableRef}>
+            <Table
+              className="mt-4"
+              bordered
+              columns={columns}
+              dataSource={assessed}
+              scroll={{ x: getWidth(tableRef) }}
+            />
+          </div>
         </div>
       </>
     </Layout>
