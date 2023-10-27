@@ -5,6 +5,7 @@ import setAuthToken from "../utils/setAuthToken";
 
 const initialState: AuthState = {
   token: "",
+  notifications: [],
   user: {
     id: 0,
     username: "",
@@ -27,9 +28,9 @@ export const loadUser = createAsyncThunk("loadUser", async () => {
 
 export const loadNotifications = createAsyncThunk(
   "loadNotifications",
-  async (noti_api: any) => {
+  async () => {
     const res = await api.get<any>("/auth/notifications");
-    return { data: res.data, api: noti_api };
+    return res.data;
   }
 );
 
@@ -41,6 +42,9 @@ export const authSlice = createSlice({
       setAuthToken("");
       state.token = initialState.token;
       state.user = initialState.user;
+    },
+    clearNotification: (state) => {
+      state.notifications = [];
     },
   },
   extraReducers: (builder) => {
@@ -61,21 +65,13 @@ export const authSlice = createSlice({
       loadNotifications.fulfilled,
       (state, action: PayloadAction<any>) => {
         state.user.notifications = 0;
-        action.payload.data.map((msg: any) => {
-          console.log(msg);
-
-          action.payload.api.open({
-            message: msg.title,
-            description: msg.content,
-            duration: 0,
-          });
-        });
+        state.notifications = action.payload;
       }
     );
     builder.addCase(loadNotifications.rejected, (state, action) => {});
   },
 });
 
-export const { logOut } = authSlice.actions;
+export const { logOut, clearNotification } = authSlice.actions;
 
 export default authSlice.reducer;

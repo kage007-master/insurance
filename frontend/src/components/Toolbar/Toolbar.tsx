@@ -10,7 +10,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Badge, Input, notification } from "antd";
 import { useContext, useEffect } from "react";
 import { SocketContext } from "../../utils/socket";
-import { loadNotifications } from "../../store/auth";
+import { clearNotification, loadNotifications } from "../../store/auth";
 
 type Title = "active-claims" | "past-claims" | "profile" | "coverages" | "404";
 
@@ -33,18 +33,25 @@ const Toolbar: React.FC = () => {
   const path = (location.pathname.split("/").reverse().at(0) ?? "404") as Title;
   const searchFor = path.split("-").reverse().at(0);
   const { user } = useSelector((state: RootState) => state.auth);
+  const { notifications } = useSelector((state: RootState) => state.auth);
 
   const { socket } = useContext(SocketContext);
   const [api, contextHolder] = notification.useNotification();
 
   useEffect(() => {
     socket.on("notification", () => {
-      dispatch(loadNotifications(api));
+      dispatch(loadNotifications());
     });
     return () => {
       socket.off("notification");
     };
-  });
+  }, []);
+  useEffect(() => {
+    notifications?.map((msg: any) => {
+      api.open({ message: msg.title, description: msg.content, duration: 0 });
+    });
+    if (notifications?.length) dispatch(clearNotification());
+  }, [notifications]);
 
   return (
     <div className="absolute w-navbar p-4 text-black bg-white z-10">
@@ -71,7 +78,7 @@ const Toolbar: React.FC = () => {
           <Badge count={user.notifications}>
             <IoIosNotifications
               className="w-6 h-6"
-              onClick={() => dispatch(loadNotifications(api))}
+              onClick={() => dispatch(loadNotifications())}
             />
           </Badge>
         </div>

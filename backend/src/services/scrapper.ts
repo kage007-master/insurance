@@ -122,6 +122,19 @@ export const warningScrap = async (socket: any) => {
       "address.city": city,
       role: "customer",
     });
+    const unconfirmed_claims = await Claim.find({
+      status: "Pending",
+      confirmed: false,
+    });
+    for (let i = 0; i < unconfirmed_claims.length; i++) {
+      const notification = new Notification({
+        clientID: unconfirmed_claims[i].clientID,
+        title: "Awaiting Validator",
+        content: `Claim is awaiting validator. ClaimID: ${unconfirmed_claims[i]._id}`,
+        date: new Date(),
+      });
+      await notification.save();
+    }
     await Claim.updateMany(
       { status: "Pending", confirmed: false },
       { status: "Declined" }
@@ -141,7 +154,7 @@ export const warningScrap = async (socket: any) => {
       if ((event.confirmed * 100) / event.raised > coverage?.threshold) {
         for (let j = 0; j < confirmed_claims.length; j++) {
           await interactor.TransferAsset(
-            confirmed_claims[j]._id as string,
+            confirmed_claims[j].clientID as string,
             -coverage?.reimbursement
           );
           const notification = new Notification({

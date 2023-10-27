@@ -111,6 +111,15 @@ const AssessedClaims: React.FC = () => {
     dispatch(assessedClaims());
   }, []);
 
+  useEffect(() => {
+    option.series[0].data[0].value = assessed.filter(
+      (claim: any) => claim.status === "Approved"
+    ).length;
+    option.series[0].data[1].value = assessed.filter(
+      (claim: any) => claim.status === "Declined"
+    ).length;
+  }, [assessed]);
+
   return (
     <Layout>
       <>
@@ -162,7 +171,7 @@ const AssessedClaims: React.FC = () => {
                 <div className="w-full flex justify-center">
                   <ReactEcharts
                     option={option1}
-                    className="text-center mt-4 max-w-[420px] !h-[250px]"
+                    className="mt-4 w-[420px] !h-[250px]"
                   />
                 </div>
               </>

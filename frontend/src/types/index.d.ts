@@ -1,5 +1,6 @@
 interface AuthState {
   token: string;
+  notifications: any[];
   user: {
     id: number;
     role: string;

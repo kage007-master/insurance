@@ -9,8 +9,11 @@ import {
 } from "@ant-design/icons";
 
 import ReactEcharts from "echarts-for-react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../store";
+import { useEffect, useState } from "react";
+import { assessedClaims } from "../../../store/claim";
+import { stat } from "fs";
 
 const option = {
   tooltip: {
@@ -60,12 +63,31 @@ const option1 = {
 };
 
 const Profile: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { assessed } = useSelector((state: RootState) => state.claim);
   const { user } = useSelector((state: RootState) => state.auth);
+  const [state, setState] = useState(false);
+
+  useEffect(() => {
+    dispatch(assessedClaims());
+  }, []);
+
+  useEffect(() => {
+    option.series[0].data[0].value = assessed.filter(
+      (claim: any) => claim.status === "Approved"
+    ).length;
+    option.series[0].data[1].value = assessed.filter(
+      (claim: any) => claim.status === "Declined"
+    ).length;
+    setState(!state);
+    console.log(assessed);
+  }, [assessed]);
+
   return (
     <Layout>
       <>
         <Row gutter={[0, 64]} className="mt-5 text-left">
-          <Col span={24} md={12} className="p-4">
+          <Col span={24} xl={12} className="p-4">
             <Card>
               <>
                 <UserOutlined
@@ -84,7 +106,7 @@ const Profile: React.FC = () => {
               </>
             </Card>
           </Col>
-          <Col span={24} md={12} className="p-4">
+          <Col span={24} xl={12} className="p-4">
             <Card>
               <>
                 <EnvironmentOutlined
@@ -104,7 +126,7 @@ const Profile: React.FC = () => {
               </>
             </Card>
           </Col>
-          <Col span={24} md={12} className="p-4">
+          <Col span={24} lg={12} className="p-4">
             <Card>
               <>
                 <PieChartOutlined
@@ -113,9 +135,26 @@ const Profile: React.FC = () => {
                 />
                 <p className="text-[24px]">Statistics</p>
                 <div className="mt-5 mb-20">
-                  <p className="p-2">Total number of claims : 120</p>
-                  <p className="p-2">Approved claims : 70</p>
-                  <p className="p-2">Denied claims : 50</p>
+                  {" "}
+                  <p className="p-2">
+                    Total number of claims : {assessed.length}
+                  </p>
+                  <p className="p-2">
+                    Approved claims :{" "}
+                    {
+                      assessed.filter(
+                        (claim: any) => claim.status === "Approved"
+                      ).length
+                    }
+                  </p>
+                  <p className="p-2">
+                    Denied claims :{" "}
+                    {
+                      assessed.filter(
+                        (claim: any) => claim.status === "Declined"
+                      ).length
+                    }
+                  </p>
                 </div>
                 <ReactEcharts
                   option={option}
@@ -124,7 +163,7 @@ const Profile: React.FC = () => {
               </>
             </Card>
           </Col>
-          <Col span={24} md={12} className="p-4">
+          <Col span={24} lg={12} className="p-4">
             <Card>
               <>
                 <BarChartOutlined
@@ -132,7 +171,12 @@ const Profile: React.FC = () => {
                   className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
                 />
                 <p className="text-[24px]">Last 3 months</p>
-                <ReactEcharts option={option1} className="mt-4 !h-[250px]" />
+                <div className="w-full flex justify-center">
+                  <ReactEcharts
+                    option={option1}
+                    className="mt-4 w-[420px] !h-[250px]"
+                  />
+                </div>
               </>
             </Card>
           </Col>

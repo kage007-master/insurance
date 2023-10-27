@@ -5,6 +5,7 @@ import Weather from "../models/Weather";
 import interactor from "../services/interactor";
 import Notification from "../models/Notification";
 import socket from "../services/socket";
+import Coverage from "../models/Coverage";
 
 export default {
   getAll: async (req: any, res: Response): Promise<void> => {
@@ -68,6 +69,7 @@ export default {
     const { id, feedback } = req.body;
     let claim: any = await Claim.findById(id);
     if (!feedback) claim.status = "Declined";
+    else await interactor.ConfirmDamage(claim.weatherEventID);
     claim.confirmed = true;
     claim.save();
     res.json({ result: claim.status, id });
@@ -79,7 +81,13 @@ export default {
       claim.status = confirm ? "Approved" : "Declined";
       claim.detail = detail;
       claim.file = file;
-      claim.save();
+      await claim.save();
+      const coverage = await Coverage.findOne({ weather: claim.weather });
+      if (confirm)
+        await interactor.TransferAsset(
+          claim.clientID,
+          -coverage?.reimbursement
+        );
       const notification = new Notification({
         clientID: claim._id,
         title: `Claim ${claim.status}`,
@@ -89,7 +97,7 @@ export default {
         date: new Date(),
       });
       notification.save();
-      socket.broadcast();
+      // socket.broadcast();
     }
     res.json({ result: "success" });
   },
