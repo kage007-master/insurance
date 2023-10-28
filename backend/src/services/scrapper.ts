@@ -5,6 +5,7 @@ import Coverage from "../models/Coverage";
 import CoverageHistory from "../models/CoverageHistory";
 import interactor from "./interactor";
 import Notification from "../models/Notification";
+import TransactionHistory from "../models/TransactionHistory";
 
 const puppeteer = require("puppeteer");
 const fs = require("fs").promises;
@@ -98,10 +99,10 @@ const urls = [
   "https://meteo.gc.ca/warnings/report_f.html?qcrm1=",
   //secteur de l'île de Montréal
   "https://meteo.gc.ca/warnings/report_f.html?qcrm2=",
-  //secteur de Châteauguay - La Prairie
-  "https://meteo.gc.ca/warnings/report_f.html?qcrm3=",
   //secteur de Longueuil - Varennes
   "https://meteo.gc.ca/warnings/report_f.html?qcrm4=",
+  //secteur de Châteauguay - La Prairie
+  "https://meteo.gc.ca/warnings/report_f.html?qcrm3=",
 
   //Active test Amos / baie James et rivière La Grande
   "https://meteo.gc.ca/warnings/report_f.html?qcrm39=",
@@ -129,8 +130,8 @@ export const warningScrap = async (socket: any) => {
     for (let i = 0; i < unconfirmed_claims.length; i++) {
       const notification = new Notification({
         clientID: unconfirmed_claims[i].clientID,
-        title: "Awaiting Validator",
-        content: `Claim is awaiting validator. ClaimID: ${unconfirmed_claims[i]._id}`,
+        title: "Claim Declined",
+        content: `Claim is declined. ClaimID: ${unconfirmed_claims[i]._id}`,
         date: new Date(),
       });
       await notification.save();
@@ -151,7 +152,7 @@ export const warningScrap = async (socket: any) => {
         status: "Pending",
         weatherEventID: active_weathers[i]._id,
       });
-      if ((event.confirmed * 100) / event.raised > coverage?.threshold) {
+      if ((event.confirmed * 100) / event.raised >= coverage?.threshold) {
         for (let j = 0; j < confirmed_claims.length; j++) {
           await interactor.TransferAsset(
             confirmed_claims[j].clientID as string,
@@ -164,6 +165,13 @@ export const warningScrap = async (socket: any) => {
             date: new Date(),
           });
           await notification.save();
+          let transaction_history = new TransactionHistory({
+            clientID: confirmed_claims[j].clientID,
+            amount: coverage?.reimbursement,
+            type: "Reimbursement Issued",
+            date: new Date(),
+          });
+          transaction_history.save();
         }
         await Claim.updateMany(
           { status: "Pending", weatherEventID: active_weathers[i]._id },

@@ -23,7 +23,9 @@ export const claimSlice = createSlice({
     builder.addCase(
       getWeatherEvents.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.weathers = action.payload;
+        state.weathers = action.payload.map((weather: any) => {
+          return { ...weather, key: weather._id };
+        });
       }
     );
     builder.addCase(getWeatherEvents.rejected, (state, action) => {});

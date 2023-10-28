@@ -1,11 +1,13 @@
 import Card from "../../../components/Card";
 import Layout from "../../../components/Layout";
-import { Row, Col } from "antd";
+import { Row, Col, Form, Modal, Input } from "antd";
 import {
   UserOutlined,
   PieChartOutlined,
   BarChartOutlined,
   EnvironmentOutlined,
+  MailOutlined,
+  LockOutlined,
 } from "@ant-design/icons";
 
 import ReactEcharts from "echarts-for-react";
@@ -13,7 +15,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { useEffect, useState } from "react";
 import { assessedClaims } from "../../../store/claim";
-import { stat } from "fs";
+import moment from "moment";
+import api from "../../../utils/api";
+import { loadUser } from "../../../store/auth";
 
 const option = {
   tooltip: {
@@ -57,8 +61,6 @@ const option1 = {
   },
   xAxis: { type: "category" },
   yAxis: {},
-  // Declare several bar series, each will be mapped
-  // to a column of dataset.source by default.
   series: [{ type: "bar" }, { type: "bar" }],
 };
 
@@ -66,11 +68,41 @@ const Profile: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { assessed } = useSelector((state: RootState) => state.claim);
   const { user } = useSelector((state: RootState) => state.auth);
+  const [init, setInit] = useState<any>({});
+  const [open, setOpen] = useState(false);
   const [state, setState] = useState(false);
+  const [data1, setData1] = useState({});
 
   useEffect(() => {
     dispatch(assessedClaims());
   }, []);
+  const showModal = () => {
+    setInit({
+      fullname: user.fullname,
+      username: user.username,
+      email: user.email,
+      line1: user.address?.line1,
+      line2: user.address?.line2,
+      city: user.address?.city,
+      latitude: user.address?.latitude,
+      longitude: user.address?.longitude,
+    });
+    setOpen(true);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  const onFinish = async (values: any) => {
+    try {
+      await api.put("/auth/profile", values);
+      dispatch(loadUser());
+      handleCancel();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     option.series[0].data[0].value = assessed.filter(
@@ -80,7 +112,31 @@ const Profile: React.FC = () => {
       (claim: any) => claim.status === "Declined"
     ).length;
     setState(!state);
-    console.log(assessed);
+    const start = moment().startOf("month").subtract(2, "months");
+    const data: any[][] = [["product", "Approved", "Declined"], [], [], []];
+    for (let i = 0; i < 3; i++) {
+      data[i + 1].push(start.format("MMM"));
+      const end = moment(start);
+      data[i + 1].push(
+        assessed.filter(
+          (claim: any) =>
+            claim.status === "Approved" &&
+            moment(claim.date).isSameOrAfter(start) &&
+            moment(claim.date).isSameOrBefore(end.endOf("month"))
+        ).length
+      );
+      data[i + 1].push(
+        assessed.filter(
+          (claim: any) =>
+            claim.status === "Declined" &&
+            moment(claim.date).isSameOrAfter(start) &&
+            moment(claim.date).isSameOrBefore(end.endOf("month"))
+        ).length
+      );
+      start.add(1, "months");
+    }
+    option1.dataset.source = data;
+    setData1({ ...option1 });
   }, [assessed]);
 
   return (
@@ -100,7 +156,10 @@ const Profile: React.FC = () => {
                   <p className="p-2">Fullname: {user.fullname}</p>
                   <p className="p-2">Email Address: {user.email}</p>
                 </div>
-                <button className="absolute right-5 -bottom-[18px] btn bg-[#18DDB1]">
+                <button
+                  className="absolute right-5 -bottom-[18px] btn bg-[#18DDB1]"
+                  onClick={showModal}
+                >
                   Edit
                 </button>
               </>
@@ -120,7 +179,10 @@ const Profile: React.FC = () => {
                 <p className="p-2">
                   Lat, Long: {user.address?.latitude}, {user.address?.longitude}
                 </p>
-                <button className="absolute right-5 -bottom-[18px] btn bg-[#18DDB1]">
+                <button
+                  className="absolute right-5 -bottom-[18px] btn bg-[#18DDB1]"
+                  onClick={showModal}
+                >
                   Edit
                 </button>
               </>
@@ -173,7 +235,7 @@ const Profile: React.FC = () => {
                 <p className="text-[24px]">Last 3 months</p>
                 <div className="w-full flex justify-center">
                   <ReactEcharts
-                    option={option1}
+                    option={data1}
                     className="mt-4 w-[420px] !h-[250px]"
                   />
                 </div>
@@ -181,6 +243,167 @@ const Profile: React.FC = () => {
             </Card>
           </Col>
         </Row>
+        {open && (
+          <Modal
+            open={open}
+            title={`Update User Profile`}
+            onOk={onFinish}
+            onCancel={handleCancel}
+            footer={(_) => <></>}
+          >
+            <Form
+              name="add_validator"
+              className="login-form"
+              initialValues={init}
+              onFinish={onFinish}
+            >
+              <Form.Item
+                name="fullname"
+                rules={[
+                  { required: true, message: "Please input your Fulll Name!" },
+                ]}
+              >
+                <Input
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  placeholder="Full Name"
+                />
+              </Form.Item>
+              <Form.Item
+                name="username"
+                rules={[
+                  { required: true, message: "Please input your Username!" },
+                ]}
+              >
+                <Input
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  placeholder="Username"
+                />
+              </Form.Item>
+              <Form.Item
+                name="email"
+                rules={[
+                  {
+                    type: "email",
+                    message: "The input is not valid E-mail!",
+                  },
+                  { required: true, message: "Please input your E-mail!" },
+                ]}
+              >
+                <Input
+                  disabled
+                  prefix={<MailOutlined className="site-form-item-icon" />}
+                  placeholder="E-mail"
+                />
+              </Form.Item>
+              <Form.Item
+                name="password"
+                rules={[
+                  { required: true, message: "Please input your Password!" },
+                ]}
+              >
+                <Input
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  type="password"
+                  placeholder="Password"
+                />
+              </Form.Item>
+              <Form.Item
+                name="password2"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please confirm your password!",
+                  },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue("password") === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(
+                        new Error(
+                          "The new password that you entered do not match!"
+                        )
+                      );
+                    },
+                  }),
+                ]}
+              >
+                <Input
+                  prefix={<LockOutlined className="site-form-item-icon" />}
+                  type="password"
+                  placeholder="Confirm Password"
+                />
+              </Form.Item>
+              <Form.Item
+                name="line1"
+                rules={[
+                  { required: true, message: "Please input your Address!" },
+                ]}
+              >
+                <Input
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  placeholder="Address Line 1"
+                />
+              </Form.Item>
+              <Form.Item name="line2" rules={[{ required: false }]}>
+                <Input
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  placeholder="Address Line 2(optional)"
+                />
+              </Form.Item>
+              <Form.Item
+                name="city"
+                rules={[{ required: true, message: "Please input your City!" }]}
+              >
+                <Input
+                  prefix={<UserOutlined className="site-form-item-icon" />}
+                  placeholder="City"
+                />
+              </Form.Item>
+              <div className="flex gap-2 justify-between w-full">
+                <Form.Item
+                  name="latitude"
+                  rules={[
+                    { required: true, message: "Please input your Latitude!" },
+                  ]}
+                >
+                  <Input
+                    prefix={<UserOutlined className="site-form-item-icon" />}
+                    placeholder="Latitude"
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="longitude"
+                  rules={[
+                    { required: true, message: "Please input your Longitude!" },
+                  ]}
+                >
+                  <Input
+                    prefix={<UserOutlined className="site-form-item-icon" />}
+                    placeholder="Longitude"
+                  />
+                </Form.Item>
+              </div>
+              <Form.Item>
+                <div className="flex justify-between text-white">
+                  <button
+                    type="submit"
+                    className="h-[36px] border px-4 bg-[#18DDB1] rounded-md"
+                  >
+                    Submit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    className="h-[36px] border px-4 bg-[#dd1f18] rounded-md"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </Form.Item>
+            </Form>
+          </Modal>
+        )}
       </>
     </Layout>
   );

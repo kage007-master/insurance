@@ -59,7 +59,7 @@ export default {
       }
 
       let coverage = await Coverage.findOne({ _id: req.params.id });
-      interactor.TransferAsset(user._id as string, coverage?.premium);
+      await interactor.TransferAsset(user._id as string, coverage?.premium);
 
       let coverage_history = new CoverageHistory({
         coverageID: req.params.id,

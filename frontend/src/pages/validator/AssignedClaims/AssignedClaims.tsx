@@ -8,7 +8,11 @@ import {
 } from "@ant-design/icons";
 import GoogleMapReact from "google-map-react";
 import { FcViewDetails } from "react-icons/fc";
-import { assignedClaims, validateClaims } from "../../../store/claim";
+import {
+  assessedClaims,
+  assignedClaims,
+  validateClaims,
+} from "../../../store/claim";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { useEffect, useRef, useState } from "react";
@@ -18,6 +22,7 @@ import type { CalendarProps } from "antd";
 import type { Dayjs } from "dayjs";
 import type { ColumnsType } from "antd/es/table";
 import TextArea from "antd/es/input/TextArea";
+import { capitalizeFLetter } from "../../../utils/string";
 
 const distanceToMouse = (pt: any, mp: any) => {
   if (pt && mp) {
@@ -56,7 +61,6 @@ const AssignedClaims: React.FC = () => {
   };
 
   const onFinish = async (values: any) => {
-    console.log({ id, ...values });
     dispatch(validateClaims({ id, ...values }));
     handleCancel();
   };
@@ -79,6 +83,7 @@ const AssignedClaims: React.FC = () => {
       title: "Claim Type",
       dataIndex: "weather",
       key: "weather",
+      render: (text) => capitalizeFLetter(text),
     },
     {
       title: "Client Name",
@@ -108,6 +113,7 @@ const AssignedClaims: React.FC = () => {
 
   useEffect(() => {
     dispatch(assignedClaims());
+    dispatch(assessedClaims());
   }, []);
 
   const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>["mode"]) => {
@@ -182,36 +188,37 @@ const AssignedClaims: React.FC = () => {
               scroll={{ x: getWidth(tableRef) }}
             />
           </div>
-          <Modal
-            open={open}
-            title="Damage Assessement"
-            onOk={onFinish}
-            onCancel={handleCancel}
-            footer={(_) => <></>}
-          >
-            <Form
-              name="damage_assessement"
-              layout="vertical"
-              className="login-form"
-              initialValues={{ confirm: true }}
-              onFinish={onFinish}
+          {open && (
+            <Modal
+              open={open}
+              title="Damage Assessement"
+              onOk={onFinish}
+              onCancel={handleCancel}
+              footer={(_) => <></>}
             >
-              <Form.Item
-                name="confirm"
-                label="1. Do you confirm that the client received Damage?"
+              <Form
+                name="damage_assessement"
+                layout="vertical"
+                className="login-form"
+                initialValues={{ confirm: true }}
+                onFinish={onFinish}
               >
-                <Radio.Group>
-                  <Radio value={true}> Yes </Radio>
-                  <Radio value={false}> No </Radio>
-                </Radio.Group>
-              </Form.Item>
-              <Form.Item
-                name="detail"
-                label="2. Please fill out any relevant details below."
-              >
-                <TextArea rows={4} />
-              </Form.Item>
-              {/* <Form.Item
+                <Form.Item
+                  name="confirm"
+                  label="1. Do you confirm that the client received Damage?"
+                >
+                  <Radio.Group>
+                    <Radio value={true}> Yes </Radio>
+                    <Radio value={false}> No </Radio>
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item
+                  name="detail"
+                  label="2. Please fill out any relevant details below."
+                >
+                  <TextArea rows={4} />
+                </Form.Item>
+                {/* <Form.Item
                 name="file"
                 label="3. Please attach below any relevant document"
                 valuePropName="fileList"
@@ -221,25 +228,26 @@ const AssignedClaims: React.FC = () => {
                   <Button icon={<UploadOutlined />}>Click to upload</Button>
                 </Upload>
               </Form.Item> */}
-              <Form.Item>
-                <div className="flex justify-between text-white">
-                  <button
-                    type="submit"
-                    className="h-[36px] border px-4 bg-[#18DDB1] rounded-md"
-                  >
-                    Submit
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleCancel}
-                    className="h-[36px] border px-4 bg-[#dd1f18] rounded-md"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </Form.Item>
-            </Form>
-          </Modal>
+                <Form.Item>
+                  <div className="flex justify-between text-white">
+                    <button
+                      type="submit"
+                      className="h-[36px] border px-4 bg-[#18DDB1] rounded-md"
+                    >
+                      Submit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCancel}
+                      className="h-[36px] border px-4 bg-[#dd1f18] rounded-md"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </Form.Item>
+              </Form>
+            </Modal>
+          )}
         </div>
       </>
     </Layout>

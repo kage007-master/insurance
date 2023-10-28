@@ -31,6 +31,7 @@ const Coverages: React.FC = () => {
                 <img
                   src={`/images/${coverage.weather}.png`}
                   className="absolute -top-6 left-6 w-12 h-12 p-2 bg-[#1f9978] rounded-md"
+                  alt={coverage.weather}
                 />
                 <p className="text-[24px] text-right">
                   {coverage.name} protection
@@ -39,8 +40,8 @@ const Coverages: React.FC = () => {
                 <p className="p-2">Yearly Premium : {coverage.premium}$</p>
                 <p className="p-2">Reimbursement : {coverage.reimbursement}$</p>
                 <Popconfirm
-                  title="Confirm Damage"
-                  description="Are you sure to confirm this damage?"
+                  title="Subscribe Coverage"
+                  description="Are you sure to subscribe this coverage?"
                   okText="Yes"
                   cancelText="No"
                   onConfirm={() => onSubscribe(coverage._id)}

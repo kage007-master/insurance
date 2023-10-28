@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { activeClaims, feedbackClaims } from "../../../store/claim";
 import { loadUser } from "../../../store/auth";
+import { capitalizeFLetter } from "../../../utils/string";
 
 interface DataType {
   _id: string;
@@ -44,7 +45,7 @@ const ActiveCliams: React.FC = () => {
       title: "Active Claims in your Area",
       dataIndex: "weather",
       key: "weather",
-      render: (text) => <a>{text}</a>,
+      render: (text) => capitalizeFLetter(text),
     },
     {
       title: "Date Registered",

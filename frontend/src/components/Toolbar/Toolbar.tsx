@@ -1,13 +1,12 @@
 import { IoIosNotifications } from "react-icons/io";
 import { IoSettingsSharp } from "react-icons/io5";
 import { HiUser, HiHome } from "react-icons/hi";
-import { FiSearch } from "react-icons/fi";
 import { Breadcrumbs } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { SearchOutlined } from "@ant-design/icons";
-import { Badge, Input, notification } from "antd";
+import { Badge, Button, Input, notification } from "antd";
 import { useContext, useEffect } from "react";
 import { SocketContext } from "../../utils/socket";
 import { clearNotification, loadNotifications } from "../../store/auth";
@@ -37,7 +36,11 @@ const Toolbar: React.FC = () => {
 
   const { socket } = useContext(SocketContext);
   const [api, contextHolder] = notification.useNotification();
-
+  const btn = (
+    <Button type="default" danger size="small" onClick={() => api.destroy()}>
+      Close All
+    </Button>
+  );
   useEffect(() => {
     socket.on("notification", () => {
       dispatch(loadNotifications());
@@ -46,9 +49,16 @@ const Toolbar: React.FC = () => {
       socket.off("notification");
     };
   }, []);
+
   useEffect(() => {
     notifications?.map((msg: any) => {
-      api.open({ message: msg.title, description: msg.content, duration: 0 });
+      api.info({
+        message: msg.title,
+        description: msg.content,
+        duration: 0,
+        btn,
+      });
+      return null;
     });
     if (notifications?.length) dispatch(clearNotification());
   }, [notifications]);

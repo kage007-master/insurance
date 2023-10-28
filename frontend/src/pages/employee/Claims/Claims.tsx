@@ -9,6 +9,7 @@ import { FcViewDetails } from "react-icons/fc";
 import { getWeatherEvents } from "../../../store/weather";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { PiWarningOctagonBold } from "react-icons/pi";
+import { capitalizeFLetter } from "../../../utils/string";
 
 interface DataType {
   key: string;
@@ -30,6 +31,7 @@ const columns: ColumnsType<DataType> = [
     title: "Weather Event",
     dataIndex: "weather",
     key: "weather",
+    render: (text) => capitalizeFLetter(text),
   },
   {
     title: "Date Registered",
@@ -64,6 +66,7 @@ const weather_columns: ColumnsType<DataType> = [
     title: "Weather Event",
     dataIndex: "weather",
     key: "weather",
+    render: (text) => capitalizeFLetter(text),
   },
   {
     title: "Area",
@@ -113,15 +116,8 @@ const weather_columns: ColumnsType<DataType> = [
   },
   {
     title: "Validator",
+    dataIndex: "validator",
     key: "validator",
-    render: (_, record) => {
-      if (
-        record.raised_claims &&
-        (record.confirmed_damage * 100) / record.raised_claims < 1
-      )
-        return "Required";
-      else return "N/A";
-    },
   },
 ];
 

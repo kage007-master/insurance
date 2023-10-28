@@ -2,18 +2,19 @@ import { VscVmActive } from "react-icons/vsc";
 import { LuLogOut } from "react-icons/lu";
 import { AiOutlineHistory, AiOutlineCloseSquare } from "react-icons/ai";
 import { CiSquareChevRight } from "react-icons/ci";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { BiLogoInternetExplorer } from "react-icons/bi";
 import { TiWeatherCloudy } from "react-icons/ti";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { logOut } from "../../store/auth";
 import { useState } from "react";
+import { HiUsers } from "react-icons/hi";
+import { FaUserShield } from "react-icons/fa6";
 
 const Navbar: React.FC = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
   return (
     <>
@@ -61,15 +62,15 @@ const Navbar: React.FC = () => {
               Claims
             </NavLink>
             <NavLink to="/employee/clients" className="navbar-item">
-              <VscVmActive className="w-6 h-6 m-1" />
+              <HiUsers className="w-6 h-6 m-1" />
               Clients
             </NavLink>
             <NavLink to="/employee/coverages" className="navbar-item">
-              <VscVmActive className="w-6 h-6 m-1" />
+              <TiWeatherCloudy className="w-6 h-6 m-1" />
               Coverages
             </NavLink>
             <NavLink to="/employee/validators" className="navbar-item">
-              <VscVmActive className="w-6 h-6 m-1" />
+              <FaUserShield className="w-6 h-6 m-1" />
               Validators
             </NavLink>
           </>

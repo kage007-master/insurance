@@ -15,6 +15,7 @@ const UserSchema: Schema = new Schema({
   },
   city: { type: String },
   active: { type: Boolean, default: true },
+  signature: { type: String },
 });
 
 export default mongoose.model("user", UserSchema);

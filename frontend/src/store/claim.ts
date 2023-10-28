@@ -39,7 +39,7 @@ export const feedbackClaims = createAsyncThunk(
   "feedbackClaims",
   async (data: any) => {
     const res = await api.post<any>("/claim/feedback", data);
-    return data;
+    return res.data;
   }
 );
 
@@ -47,7 +47,7 @@ export const validateClaims = createAsyncThunk(
   "validateClaims",
   async (data: any) => {
     const res = await api.post<any>("/claim/validate", data);
-    return data;
+    return res.data;
   }
 );
 
@@ -60,7 +60,9 @@ export const claimSlice = createSlice({
     builder.addCase(
       allClaims.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.claims = action.payload;
+        state.claims = action.payload.map((claim: any) => {
+          return { ...claim, key: claim._id };
+        });
       }
     );
     builder.addCase(allClaims.rejected, (state, action) => {});
@@ -69,7 +71,9 @@ export const claimSlice = createSlice({
     builder.addCase(
       activeClaims.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.active = action.payload;
+        state.active = action.payload.map((claim: any) => {
+          return { ...claim, key: claim._id };
+        });
       }
     );
     builder.addCase(activeClaims.rejected, (state, action) => {});
@@ -78,7 +82,9 @@ export const claimSlice = createSlice({
     builder.addCase(
       pastClaims.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.past = action.payload;
+        state.past = action.payload.map((claim: any) => {
+          return { ...claim, key: claim._id };
+        });
       }
     );
     builder.addCase(pastClaims.rejected, (state, action) => {});
@@ -87,7 +93,9 @@ export const claimSlice = createSlice({
     builder.addCase(
       assessedClaims.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.assessed = action.payload;
+        state.assessed = action.payload.map((claim: any) => {
+          return { ...claim, key: claim._id };
+        });
       }
     );
     builder.addCase(assessedClaims.rejected, (state, action) => {});
@@ -96,7 +104,9 @@ export const claimSlice = createSlice({
     builder.addCase(
       assignedClaims.fulfilled,
       (state, action: PayloadAction<any>) => {
-        state.assigned = action.payload;
+        state.assigned = action.payload.map((claim: any) => {
+          return { ...claim, key: claim._id };
+        });
       }
     );
     builder.addCase(assignedClaims.rejected, (state, action) => {});
@@ -115,7 +125,11 @@ export const claimSlice = createSlice({
     builder.addCase(validateClaims.pending, (state, action) => {});
     builder.addCase(
       validateClaims.fulfilled,
-      (state, action: PayloadAction<any>) => {}
+      (state, action: PayloadAction<any>) => {
+        state.assigned = state.assigned.filter(
+          (claim: any) => claim._id !== action.payload.id
+        );
+      }
     );
     builder.addCase(validateClaims.rejected, (state, action) => {});
   },

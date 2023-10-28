@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { pastClaims } from "../../../store/claim";
 import { loadUser } from "../../../store/auth";
+import { capitalizeFLetter } from "../../../utils/string";
 
 interface DataType {
   key: string;
@@ -23,7 +24,7 @@ const columns: ColumnsType<DataType> = [
     title: "Past Claims",
     dataIndex: "weather",
     key: "weather",
-    render: (text) => <a>{text}</a>,
+    render: (text) => capitalizeFLetter(text),
   },
   {
     title: "Date Registered",

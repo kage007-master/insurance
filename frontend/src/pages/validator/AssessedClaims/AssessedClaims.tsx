@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Col, Row, Table } from "antd";
 import Layout from "../../../components/Layout";
 import Card from "../../../components/Card";
@@ -6,9 +6,11 @@ import { BarChartOutlined, PieChartOutlined } from "@ant-design/icons";
 import ReactEcharts from "echarts-for-react";
 import type { ColumnsType } from "antd/es/table";
 import { FcViewDetails } from "react-icons/fc";
-import { assessedClaims, assignedClaims } from "../../../store/claim";
+import { assessedClaims } from "../../../store/claim";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
+import moment from "moment";
+import { capitalizeFLetter } from "../../../utils/string";
 
 const option = {
   tooltip: {
@@ -75,6 +77,7 @@ const columns: ColumnsType<DataType> = [
     title: "Claim Type",
     dataIndex: "weather",
     key: "weather",
+    render: (text) => capitalizeFLetter(text),
   },
   {
     title: "Client Name",
@@ -107,6 +110,8 @@ const AssessedClaims: React.FC = () => {
     return ref?.current?.offsetWidth;
   };
 
+  const [data1, setData1] = useState({});
+
   useEffect(() => {
     dispatch(assessedClaims());
   }, []);
@@ -118,6 +123,31 @@ const AssessedClaims: React.FC = () => {
     option.series[0].data[1].value = assessed.filter(
       (claim: any) => claim.status === "Declined"
     ).length;
+    const start = moment().startOf("month").subtract(2, "months");
+    const data: any[][] = [["product", "Approved", "Declined"], [], [], []];
+    for (let i = 0; i < 3; i++) {
+      data[i + 1].push(start.format("MMM"));
+      const end = moment(start);
+      data[i + 1].push(
+        assessed.filter(
+          (claim: any) =>
+            claim.status === "Approved" &&
+            moment(claim.date).isSameOrAfter(start) &&
+            moment(claim.date).isSameOrBefore(end.endOf("month"))
+        ).length
+      );
+      data[i + 1].push(
+        assessed.filter(
+          (claim: any) =>
+            claim.status === "Declined" &&
+            moment(claim.date).isSameOrAfter(start) &&
+            moment(claim.date).isSameOrBefore(end.endOf("month"))
+        ).length
+      );
+      start.add(1, "months");
+    }
+    option1.dataset.source = data;
+    setData1({ ...option1 });
   }, [assessed]);
 
   return (
@@ -170,7 +200,7 @@ const AssessedClaims: React.FC = () => {
                 <p className="text-[24px]">Last 3 months</p>
                 <div className="w-full flex justify-center">
                   <ReactEcharts
-                    option={option1}
+                    option={data1}
                     className="mt-4 w-[420px] !h-[250px]"
                   />
                 </div>

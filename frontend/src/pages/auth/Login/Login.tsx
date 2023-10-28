@@ -1,5 +1,5 @@
 import React from "react";
-import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
+import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Form, Input } from "antd";
 import { useDispatch } from "react-redux";
 import { loadUser } from "../../../store/auth";

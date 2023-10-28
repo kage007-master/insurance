@@ -6,6 +6,7 @@ import interactor from "../services/interactor";
 import Notification from "../models/Notification";
 import socket from "../services/socket";
 import Coverage from "../models/Coverage";
+import TransactionHistory from "../models/TransactionHistory";
 
 export default {
   getAll: async (req: any, res: Response): Promise<void> => {
@@ -83,11 +84,19 @@ export default {
       claim.file = file;
       await claim.save();
       const coverage = await Coverage.findOne({ weather: claim.weather });
-      if (confirm)
+      if (confirm) {
         await interactor.TransferAsset(
           claim.clientID,
           -coverage?.reimbursement
         );
+        let transaction_history = new TransactionHistory({
+          clientID: claim.clientID,
+          amount: coverage?.reimbursement,
+          type: "Reimbursement Issued",
+          date: new Date(),
+        });
+        transaction_history.save();
+      }
       const notification = new Notification({
         clientID: claim._id,
         title: `Claim ${claim.status}`,
@@ -99,6 +108,6 @@ export default {
       notification.save();
       // socket.broadcast();
     }
-    res.json({ result: "success" });
+    res.json({ result: claim?.status, id });
   },
 };

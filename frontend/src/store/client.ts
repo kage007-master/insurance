@@ -4,7 +4,7 @@ import api from "../utils/api";
 
 const initialState: ClientState = {
   clients: [],
-  validators:[],
+  validators: [],
   client: {},
 };
 
@@ -38,7 +38,7 @@ export const clientSlice = createSlice({
       }
     );
     builder.addCase(loadClients.rejected, (state, action) => {});
-    
+
     builder.addCase(loadValidators.pending, (state, action) => {});
     builder.addCase(
       loadValidators.fulfilled,
@@ -49,7 +49,6 @@ export const clientSlice = createSlice({
       }
     );
     builder.addCase(loadValidators.rejected, (state, action) => {});
-
 
     builder.addCase(loadClient.pending, (state, action) => {});
     builder.addCase(

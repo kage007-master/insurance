@@ -2,7 +2,6 @@ import React from "react";
 import { LockOutlined, UserOutlined, MailOutlined } from "@ant-design/icons";
 import { Form, Input } from "antd";
 import { useDispatch } from "react-redux";
-import axios from "axios";
 import { Link } from "react-router-dom";
 import setAuthToken from "../../../utils/setAuthToken";
 import { loadUser } from "../../../store/auth";

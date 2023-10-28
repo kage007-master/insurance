@@ -7,6 +7,7 @@ import TransactionHistory from "../models/TransactionHistory";
 import Claim from "../models/Claim";
 import interactor from "../services/interactor";
 import Notification from "../models/Notification";
+import Coverage from "../models/Coverage";
 
 export default {
   getClients: async (req: any, res: Response): Promise<void> => {
@@ -57,7 +58,57 @@ export default {
     }
   },
 
-  getClient: async (req: any, res: Response): Promise<void> => {},
+  getClient: async (req: any, res: Response): Promise<void> => {
+    const active: any[] = [],
+      history: any[] = [];
+    const coverages = await CoverageHistory.find({
+      clientID: req.params.id,
+    });
+    for (let i = 0; i < coverages.length; i++) {
+      const coverage = await Coverage.findById(coverages[i].coverageID);
+      const raised_claims = await Claim.count({
+        $and: [
+          { clientID: req.params.id },
+          { weather: coverage?.weather },
+          { date: { $gt: coverages[i].subscription_date } },
+          { date: { $lt: coverages[i].expire_date } },
+        ],
+      });
+      const total =
+        (await Claim.count({
+          $and: [
+            { clientID: req.params.id },
+            { weather: coverage?.weather },
+            { date: { $gt: coverages[i].subscription_date } },
+            { date: { $lt: coverages[i].expire_date } },
+            { status: "Approved" },
+          ],
+        })) * coverage?.reimbursement;
+      const now = new Date();
+      if (
+        now > coverages[i].subscription_date &&
+        now < coverages[i].expire_date
+      )
+        active.push({
+          key: coverages[i]._id,
+          name: coverage?.weather,
+          sub_date: coverages[i].subscription_date,
+          exp_date: coverages[i].expire_date,
+          raised_claims,
+          total,
+        });
+      else
+        history.push({
+          key: coverages[i]._id,
+          name: coverage?.weather,
+          sub_date: coverages[i].subscription_date,
+          exp_date: coverages[i].expire_date,
+          raised_claims,
+          total,
+        });
+    }
+    res.send({ active, history });
+  },
 
   load: async (req: any, res: Response): Promise<void> => {
     try {
@@ -230,6 +281,70 @@ export default {
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
+
+      res.json({ result: "success" });
+    } catch (error) {
+      res.status(500).send("Server error");
+    }
+  },
+  updateProfile: async (req: Request, res: Response): Promise<void> => {
+    const {
+      fullname,
+      username,
+      email,
+      password,
+      line1,
+      line2,
+      city,
+      latitude,
+      longitude,
+    } = req.body;
+
+    try {
+      let user = await User.findOne({ email });
+      if (user) {
+        user.fullname = fullname;
+        user.username = username;
+        user.address = { line1, line2, city, latitude, longitude };
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+        await user.save();
+      }
+
+      res.json({ result: "success" });
+    } catch (error) {
+      res.status(500).send("Server error");
+    }
+  },
+  updateValidator: async (req: Request, res: Response): Promise<void> => {
+    const {
+      fullname,
+      username,
+      email,
+      password,
+      line1,
+      line2,
+      city,
+      latitude,
+      longitude,
+      operation,
+      active,
+      signature,
+    } = req.body;
+
+    try {
+      let user = await User.findOne({ email });
+      if (user) {
+        user.fullname = fullname;
+        user.username = username;
+        user.address = { line1, line2, city, latitude, longitude };
+        user.city = operation;
+        user.active = active;
+        user.signature = signature;
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+        await user.save();
+      }
 
       res.json({ result: "success" });
     } catch (error) {
