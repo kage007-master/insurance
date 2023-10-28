@@ -9,7 +9,7 @@ import { FcViewDetails } from "react-icons/fc";
 import { getWeatherEvents } from "../../../store/weather";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { PiWarningOctagonBold } from "react-icons/pi";
-import { capitalizeFLetter } from "../../../utils/string";
+import { Filter, capitalizeFLetter } from "../../../utils/string";
 
 interface DataType {
   key: string;
@@ -110,7 +110,7 @@ const weather_columns: ColumnsType<DataType> = [
     key: "confirmed_damage",
     render: (_, record) => {
       if (record.raised_claims)
-        return _ + "(" + (_ * 100) / record.raised_claims + "%)";
+        return _ + "(" + ((_ * 100) / record.raised_claims).toFixed(2) + "%)";
       else return _;
     },
   },
@@ -157,9 +157,7 @@ const Claims: React.FC = () => {
               className="mt-4"
               bordered
               columns={weather_columns}
-              dataSource={weathers.filter((weather: any) =>
-                weather.weather.includes(filter)
-              )}
+              dataSource={Filter(weathers, filter)}
               pagination={{ pageSize: 5 }}
               scroll={{ x: getWidth(tableRef) }}
             />
@@ -178,9 +176,7 @@ const Claims: React.FC = () => {
             className="mt-4"
             bordered
             columns={columns}
-            dataSource={claims.filter((claim: any) =>
-              claim.weather.includes(filter)
-            )}
+            dataSource={Filter(claims, filter)}
             pagination={{ pageSize: 5 }}
             scroll={{ x: getWidth(tableRef) }}
           />

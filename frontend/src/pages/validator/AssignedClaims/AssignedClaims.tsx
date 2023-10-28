@@ -26,17 +26,20 @@ import {
 } from "../../../store/claim";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FiEdit } from "react-icons/fi";
 import { Form, Modal, Radio, Table } from "antd";
 import type { CalendarProps } from "antd";
 import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import type { ColumnsType } from "antd/es/table";
 import TextArea from "antd/es/input/TextArea";
-import { capitalizeFLetter } from "../../../utils/string";
+import { Filter, capitalizeFLetter } from "../../../utils/string";
 import { loadClients } from "../../../store/client";
 import MyMarker from "./MyMaker";
 import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import moment from "moment";
+import classNames from "classnames";
 
 const distanceToMouse = (pt: any, mp: any) => {
   if (pt && mp) {
@@ -153,8 +156,48 @@ const AssignedClaims: React.FC = () => {
     dispatch(assessedClaims());
   }, []);
 
-  const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>["mode"]) => {
-    console.log(value.format("YYYY-MM-DD"), mode);
+  const [selectDate, setSelectDate] = React.useState<Dayjs>(dayjs());
+  const onDateChange: CalendarProps<Dayjs>["onSelect"] = (
+    value,
+    selectInfo
+  ) => {
+    if (selectInfo.source === "date") {
+      setSelectDate(value);
+    }
+  };
+  const cellRender: CalendarProps<Dayjs>["fullCellRender"] = (date, info) => {
+    if (info.type === "date") {
+      const cnt = assigned.filter(
+        (claim: any) =>
+          moment(claim.schedule).isSameOrAfter(
+            moment(date.startOf("day").toISOString())
+          ) &&
+          moment(claim.schedule).isSameOrBefore(
+            moment(date.endOf("day").toISOString())
+          )
+      ).length;
+      return React.cloneElement(info.originNode, {
+        ...info.originNode.props,
+        className: classNames("dateCell", {
+          current: selectDate.isSame(date, "date"),
+          today: date.isSame(dayjs(), "date"),
+          scheduled: cnt > 0,
+        }),
+        children: <div className="text">{date.get("date")}</div>,
+      });
+    }
+
+    if (info.type === "month") {
+      return (
+        <div
+          className={classNames("monthCell", {
+            monthCellCurrent: selectDate.isSame(date, "month"),
+          })}
+        >
+          {date.get("month") + 1}
+        </div>
+      );
+    }
   };
 
   return (
@@ -169,7 +212,11 @@ const AssignedClaims: React.FC = () => {
                   className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
                 />
                 <p className="text-[24px]">Calender</p>
-                <Calendar fullscreen={false} onPanelChange={onPanelChange} />
+                <Calendar
+                  fullCellRender={cellRender}
+                  fullscreen={false}
+                  onSelect={onDateChange}
+                />
               </>
             </Card>
           </Col>
@@ -222,9 +269,7 @@ const AssignedClaims: React.FC = () => {
               className="mt-4"
               bordered
               columns={columns}
-              dataSource={assigned.filter((claim: any) =>
-                claim.weather.includes(filter)
-              )}
+              dataSource={Filter(assigned, filter)}
               scroll={{ x: getWidth(tableRef) }}
             />
           </div>

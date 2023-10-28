@@ -9,7 +9,7 @@ import { Modal, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { AiOutlineHistory } from "react-icons/ai";
-import { capitalizeFLetter } from "../../../utils/string";
+import { Filter, capitalizeFLetter } from "../../../utils/string";
 
 interface DataType {
   key: string;
@@ -114,9 +114,7 @@ const Clients: React.FC = () => {
             className="mt-4"
             bordered
             columns={columns}
-            dataSource={clients.filter((client: any) =>
-              client.fullname.includes(filter)
-            )}
+            dataSource={Filter(clients, filter)}
             scroll={{ x: getWidth(tableRef) }}
             onRow={(record, rowIndex) => {
               return {

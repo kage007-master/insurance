@@ -10,7 +10,7 @@ import { assessedClaims } from "../../../store/claim";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import moment from "moment";
-import { capitalizeFLetter } from "../../../utils/string";
+import { Filter, capitalizeFLetter } from "../../../utils/string";
 
 const option = {
   tooltip: {
@@ -220,9 +220,7 @@ const AssessedClaims: React.FC = () => {
               className="mt-4"
               bordered
               columns={columns}
-              dataSource={assessed.filter((claim: any) =>
-                claim.weather.includes(filter)
-              )}
+              dataSource={Filter(assessed, filter)}
               scroll={{ x: getWidth(tableRef) }}
             />
           </div>

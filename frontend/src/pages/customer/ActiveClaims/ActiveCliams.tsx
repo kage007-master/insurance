@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { activeClaims, feedbackClaims } from "../../../store/claim";
 import { loadUser } from "../../../store/auth";
-import { capitalizeFLetter } from "../../../utils/string";
+import { Filter, capitalizeFLetter } from "../../../utils/string";
 
 interface DataType {
   _id: string;
@@ -162,9 +162,7 @@ const ActiveCliams: React.FC = () => {
             className="mt-20 px-2s lg:px-10"
             bordered
             columns={columns}
-            dataSource={active.filter((claim: any) =>
-              claim.weather.includes(filter)
-            )}
+            dataSource={Filter(active, filter)}
             scroll={{ x: getWidth(tableRef) }}
           />
         </div>

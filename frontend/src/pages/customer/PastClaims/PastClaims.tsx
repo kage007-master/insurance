@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { pastClaims } from "../../../store/claim";
 import { loadUser } from "../../../store/auth";
-import { capitalizeFLetter } from "../../../utils/string";
+import { Filter, capitalizeFLetter } from "../../../utils/string";
 
 interface DataType {
   key: string;
@@ -99,9 +99,7 @@ const PastClaims: React.FC = () => {
             className="mt-20 px-2 lg:px-10"
             bordered
             columns={columns}
-            dataSource={past.filter((claim: any) =>
-              claim.weather.includes(filter)
-            )}
+            dataSource={Filter(past, filter)}
             scroll={{ x: getWidth(tableRef) }}
           />
         </div>

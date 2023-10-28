@@ -9,6 +9,7 @@ import { FiEdit } from "react-icons/fi";
 import { FcViewDetails } from "react-icons/fc";
 import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
 import api from "../../../utils/api";
+import { Filter } from "../../../utils/string";
 
 const { Option } = Select;
 
@@ -132,9 +133,7 @@ const Validators: React.FC = () => {
             className="mt-4"
             bordered
             columns={columns}
-            dataSource={validators.filter((validator: any) =>
-              validator.fullname.includes(filter)
-            )}
+            dataSource={Filter(validators, filter)}
             scroll={{ x: getWidth(tableRef) }}
           />
         </div>
