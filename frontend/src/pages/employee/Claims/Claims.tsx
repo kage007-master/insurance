@@ -125,6 +125,7 @@ const Claims: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { claims } = useSelector((state: RootState) => state.claim);
   const { weathers } = useSelector((state: RootState) => state.weather);
+  const { filter } = useSelector((state: RootState) => state.auth);
   const tableRef = useRef(null);
 
   const getWidth = (ref: any) => {
@@ -156,7 +157,9 @@ const Claims: React.FC = () => {
               className="mt-4"
               bordered
               columns={weather_columns}
-              dataSource={weathers}
+              dataSource={weathers.filter((weather: any) =>
+                weather.weather.includes(filter)
+              )}
               pagination={{ pageSize: 5 }}
               scroll={{ x: getWidth(tableRef) }}
             />
@@ -175,7 +178,9 @@ const Claims: React.FC = () => {
             className="mt-4"
             bordered
             columns={columns}
-            dataSource={claims}
+            dataSource={claims.filter((claim: any) =>
+              claim.weather.includes(filter)
+            )}
             pagination={{ pageSize: 5 }}
             scroll={{ x: getWidth(tableRef) }}
           />

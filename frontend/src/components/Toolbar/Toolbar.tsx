@@ -7,9 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { SearchOutlined } from "@ant-design/icons";
 import { Badge, Button, Input, notification } from "antd";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../../utils/socket";
-import { clearNotification, loadNotifications } from "../../store/auth";
+import {
+  clearNotification,
+  loadNotifications,
+  setFilter,
+} from "../../store/auth";
 
 type Title = "active-claims" | "past-claims" | "profile" | "coverages" | "404";
 
@@ -33,6 +37,7 @@ const Toolbar: React.FC = () => {
   const searchFor = path.split("-").reverse().at(0);
   const { user } = useSelector((state: RootState) => state.auth);
   const { notifications } = useSelector((state: RootState) => state.auth);
+  const [search, setSearch] = useState("");
 
   const { socket } = useContext(SocketContext);
   const [api, contextHolder] = notification.useNotification();
@@ -45,6 +50,7 @@ const Toolbar: React.FC = () => {
     socket.on("notification", () => {
       dispatch(loadNotifications());
     });
+    dispatch(setFilter(""));
     return () => {
       socket.off("notification");
     };
@@ -77,6 +83,11 @@ const Toolbar: React.FC = () => {
               prefix={<SearchOutlined className="site-form-item-icon" />}
               className="rounded-full"
               placeholder={`Search for ${searchFor}`}
+              value={search}
+              onChange={(e: any) => setSearch(e.target.value)}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.code === "Enter") dispatch(setFilter(search));
+              }}
             />
           )}
           {user.role !== "employee" && (

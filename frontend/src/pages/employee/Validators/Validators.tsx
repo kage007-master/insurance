@@ -24,6 +24,7 @@ const Validators: React.FC = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const { validators } = useSelector((state: RootState) => state.client);
+  const { filter } = useSelector((state: RootState) => state.auth);
   const tableRef = useRef(null);
   const [init, setInit] = useState<any>({ active: true });
   const [isEdit, setIsEdit] = useState(false);
@@ -131,7 +132,9 @@ const Validators: React.FC = () => {
             className="mt-4"
             bordered
             columns={columns}
-            dataSource={validators}
+            dataSource={validators.filter((validator: any) =>
+              validator.fullname.includes(filter)
+            )}
             scroll={{ x: getWidth(tableRef) }}
           />
         </div>

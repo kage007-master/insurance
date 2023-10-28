@@ -24,7 +24,7 @@ interface DataType {
 
 const ActiveCliams: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, filter } = useSelector((state: RootState) => state.auth);
   const { active } = useSelector((state: RootState) => state.claim);
   const tableRef = useRef(null);
 
@@ -162,7 +162,9 @@ const ActiveCliams: React.FC = () => {
             className="mt-20 px-2s lg:px-10"
             bordered
             columns={columns}
-            dataSource={active}
+            dataSource={active.filter((claim: any) =>
+              claim.weather.includes(filter)
+            )}
             scroll={{ x: getWidth(tableRef) }}
           />
         </div>

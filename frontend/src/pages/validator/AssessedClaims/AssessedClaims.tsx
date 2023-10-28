@@ -104,6 +104,7 @@ const columns: ColumnsType<DataType> = [
 const AssessedClaims: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { assessed } = useSelector((state: RootState) => state.claim);
+  const { filter } = useSelector((state: RootState) => state.auth);
   const tableRef = useRef(null);
 
   const getWidth = (ref: any) => {
@@ -219,7 +220,9 @@ const AssessedClaims: React.FC = () => {
               className="mt-4"
               bordered
               columns={columns}
-              dataSource={assessed}
+              dataSource={assessed.filter((claim: any) =>
+                claim.weather.includes(filter)
+              )}
               scroll={{ x: getWidth(tableRef) }}
             />
           </div>

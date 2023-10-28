@@ -23,10 +23,12 @@ import type { Dayjs } from "dayjs";
 import type { ColumnsType } from "antd/es/table";
 import TextArea from "antd/es/input/TextArea";
 import { capitalizeFLetter } from "../../../utils/string";
+import { loadClients } from "../../../store/client";
+import MyMarker from "./MyMaker";
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 
 const distanceToMouse = (pt: any, mp: any) => {
   if (pt && mp) {
-    // return distance between the marker and mouse pointer
     return Math.sqrt(
       (pt.x - mp.x) * (pt.x - mp.x) + (pt.y - mp.y) * (pt.y - mp.y)
     );
@@ -46,8 +48,15 @@ const AssignedClaims: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [id, setID] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-  const { assigned } = useSelector((state: RootState) => state.claim);
   const tableRef = useRef(null);
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: "AIzaSyCnc0Rurk7QYOEbTcZspUjyzOpl5krNYxw",
+  });
+
+  const { assigned } = useSelector((state: RootState) => state.claim);
+  const { user } = useSelector((state: RootState) => state.auth);
+  const { filter } = useSelector((state: RootState) => state.auth);
+  let { clients } = useSelector((state: RootState) => state.client);
 
   const getWidth = (ref: any) => {
     return ref?.current?.offsetWidth;
@@ -112,6 +121,7 @@ const AssignedClaims: React.FC = () => {
   ];
 
   useEffect(() => {
+    dispatch(loadClients());
     dispatch(assignedClaims());
     dispatch(assessedClaims());
   }, []);
@@ -145,29 +155,30 @@ const AssignedClaims: React.FC = () => {
                 />
                 <p className="text-[24px]">Clients Location</p>
                 <div className="h-[90%]">
-                  {/* <GoogleMapReact
-                    bootstrapURLKeys={{
-                      // remove the key if you want to fork
-                      key: "AIzaSyDmL53LtJa6GSkqihNb_kJs7tthyIGEUYE",
-                      language: "en",
-                      region: "US",
-                    }}
-                    defaultCenter={{ lat: 51.506, lng: -0.169 }}
-                    defaultZoom={15}
-                    distanceToMouse={distanceToMouse}
-                  > */}
-                  {/* {points.map(({ lat, lng, id, title }) => {
-                    return (
-                      <MyMarker
-                        key={id}
-                        lat={lat}
-                        lng={lng}
-                        text={id}
-                        tooltip={title}
-                      />
-                    );
-                  })} */}
-                  {/* </GoogleMapReact> */}
+                  {clients.length > 0 && isLoaded && (
+                    <GoogleMap
+                      mapContainerClassName="w-full h-full"
+                      center={{
+                        lat: user.address?.latitude as number,
+                        lng: user.address?.longitude as number,
+                      }}
+                      zoom={14}
+                    >
+                      {clients.map((client: any, index: number) => {
+                        return (
+                          <Marker
+                            key={index}
+                            position={{
+                              lat: client.address.latitude,
+                              lng: client.address.longitude,
+                            }}
+                            // text={index + 1}
+                            // tooltip={client.fullname}
+                          />
+                        );
+                      })}
+                    </GoogleMap>
+                  )}
                 </div>
               </>
             </Card>
@@ -184,7 +195,9 @@ const AssignedClaims: React.FC = () => {
               className="mt-4"
               bordered
               columns={columns}
-              dataSource={assigned}
+              dataSource={assigned.filter((claim: any) =>
+                claim.weather.includes(filter)
+              )}
               scroll={{ x: getWidth(tableRef) }}
             />
           </div>

@@ -86,6 +86,7 @@ const columns1: ColumnsType<DataType> = [
 const Clients: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { clients, client } = useSelector((state: RootState) => state.client);
+  const { filter } = useSelector((state: RootState) => state.auth);
   const tableRef = useRef(null);
   const [open, setOpen] = useState(false);
 
@@ -113,7 +114,9 @@ const Clients: React.FC = () => {
             className="mt-4"
             bordered
             columns={columns}
-            dataSource={clients}
+            dataSource={clients.filter((client: any) =>
+              client.fullname.includes(filter)
+            )}
             scroll={{ x: getWidth(tableRef) }}
             onRow={(record, rowIndex) => {
               return {

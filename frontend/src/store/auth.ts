@@ -6,6 +6,7 @@ import setAuthToken from "../utils/setAuthToken";
 const initialState: AuthState = {
   token: "",
   notifications: [],
+  filter: "",
   user: {
     id: 0,
     username: "",
@@ -46,6 +47,9 @@ export const authSlice = createSlice({
     clearNotification: (state) => {
       state.notifications = [];
     },
+    setFilter: (state, action) => {
+      state.filter = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadUser.pending, (state, action) => {});
@@ -72,6 +76,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { logOut, clearNotification } = authSlice.actions;
+export const { logOut, clearNotification, setFilter } = authSlice.actions;
 
 export default authSlice.reducer;

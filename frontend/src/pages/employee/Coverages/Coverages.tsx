@@ -12,6 +12,7 @@ const Coverages: React.FC = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const { coverages } = useSelector((state: RootState) => state.coverage);
+  const { filter } = useSelector((state: RootState) => state.auth);
 
   const showModal = () => {
     setOpen(true);
@@ -38,30 +39,32 @@ const Coverages: React.FC = () => {
           >
             Add Coverage
           </button>
-          {coverages.map((coverage: any) => (
-            <Col span={24} lg={12} className="p-4" key={coverage.weather}>
-              <Card>
-                <>
-                  <img
-                    src={`/images/${coverage.weather}.png`}
-                    className="absolute -top-6 left-6 w-12 h-12 p-2 bg-[#1f9978] rounded-md"
-                    alt={coverage.weather}
-                  />
-                  <p className="text-[24px] text-right">
-                    {coverage.name} protection
-                  </p>
-                  <div className="border w-full my-2"></div>
-                  <p className="p-2">Yearly Premium : {coverage.premium}$</p>
-                  <p className="p-2">
-                    Reimbursement : {coverage.reimbursement}$
-                  </p>
-                  <p className="p-2">
-                    Validation Threshold : {coverage.threshold}%
-                  </p>
-                </>
-              </Card>
-            </Col>
-          ))}
+          {coverages
+            .filter((coverage: any) => coverage.weather.includes(filter))
+            .map((coverage: any) => (
+              <Col span={24} lg={12} className="p-4" key={coverage.weather}>
+                <Card>
+                  <>
+                    <img
+                      src={`/images/${coverage.weather}.png`}
+                      className="absolute -top-6 left-6 w-12 h-12 p-2 bg-[#1f9978] rounded-md"
+                      alt={coverage.weather}
+                    />
+                    <p className="text-[24px] text-right">
+                      {coverage.name} protection
+                    </p>
+                    <div className="border w-full my-2"></div>
+                    <p className="p-2">Yearly Premium : {coverage.premium}$</p>
+                    <p className="p-2">
+                      Reimbursement : {coverage.reimbursement}$
+                    </p>
+                    <p className="p-2">
+                      Validation Threshold : {coverage.threshold}%
+                    </p>
+                  </>
+                </Card>
+              </Col>
+            ))}
         </Row>
         {open && (
           <Modal
