@@ -10,6 +10,7 @@ const ClaimSchema: Schema = new Schema({
   detail: { type: String },
   file: { type: String, default: "" },
   confirmed: { type: Boolean, required: true, default: false },
+  schedule: { type: Date },
 });
 
 export default mongoose.model("claim", ClaimSchema);

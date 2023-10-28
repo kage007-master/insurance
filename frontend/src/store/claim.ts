@@ -43,6 +43,14 @@ export const feedbackClaims = createAsyncThunk(
   }
 );
 
+export const scheduleClaims = createAsyncThunk(
+  "scheduleClaims",
+  async (data: any) => {
+    const res = await api.post<any>("/claim/schedule", data);
+    return res.data;
+  }
+);
+
 export const validateClaims = createAsyncThunk(
   "validateClaims",
   async (data: any) => {
@@ -132,6 +140,13 @@ export const claimSlice = createSlice({
       }
     );
     builder.addCase(validateClaims.rejected, (state, action) => {});
+
+    builder.addCase(scheduleClaims.pending, (state, action) => {});
+    builder.addCase(
+      scheduleClaims.fulfilled,
+      (state, action: PayloadAction<any>) => {}
+    );
+    builder.addCase(scheduleClaims.rejected, (state, action) => {});
   },
 });
 

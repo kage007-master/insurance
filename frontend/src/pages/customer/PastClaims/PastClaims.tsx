@@ -2,7 +2,7 @@ import { MdAccountBalance } from "react-icons/md";
 import { BiNotepad } from "react-icons/bi";
 import Layout from "../../../components/Layout";
 import { Row, Col } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useDispatch, useSelector } from "react-redux";

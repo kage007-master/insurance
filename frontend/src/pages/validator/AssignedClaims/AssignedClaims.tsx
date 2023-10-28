@@ -1,4 +1,13 @@
-import { Button, Calendar, Col, Row, Upload } from "antd";
+import {
+  Button,
+  Calendar,
+  Col,
+  DatePicker,
+  Row,
+  Space,
+  TimePicker,
+  Upload,
+} from "antd";
 import Layout from "../../../components/Layout";
 import Card from "../../../components/Card";
 import {
@@ -8,10 +17,12 @@ import {
 } from "@ant-design/icons";
 import GoogleMapReact from "google-map-react";
 import { FcViewDetails } from "react-icons/fc";
+import { GrSchedule } from "react-icons/gr";
 import {
   assessedClaims,
   assignedClaims,
   validateClaims,
+  scheduleClaims,
 } from "../../../store/claim";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
@@ -46,6 +57,7 @@ interface DataType {
 
 const AssignedClaims: React.FC = () => {
   const [open, setOpen] = useState(false);
+  const [visit, setVisit] = useState(false);
   const [id, setID] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const tableRef = useRef(null);
@@ -72,6 +84,11 @@ const AssignedClaims: React.FC = () => {
   const onFinish = async (values: any) => {
     dispatch(validateClaims({ id, ...values }));
     handleCancel();
+  };
+
+  const onSchedule = async (values: any) => {
+    dispatch(scheduleClaims({ id, ...values }));
+    setVisit(false);
   };
 
   const normFile = (e: any) => {
@@ -108,14 +125,24 @@ const AssignedClaims: React.FC = () => {
       title: "Action",
       key: "action",
       render: (_, record: any) => (
-        <button
-          onClick={() => {
-            setID(record._id);
-            showModal();
-          }}
-        >
-          <FiEdit className="w-6 h-6" />
-        </button>
+        <Space>
+          <button
+            onClick={() => {
+              setID(record._id);
+              setVisit(true);
+            }}
+          >
+            <GrSchedule className="w-6 h-6" />
+          </button>
+          <button
+            onClick={() => {
+              setID(record._id);
+              showModal();
+            }}
+          >
+            <FiEdit className="text-[#0b0] w-6 h-6" />
+          </button>
+        </Space>
       ),
     },
   ];
@@ -252,6 +279,69 @@ const AssignedClaims: React.FC = () => {
                     <button
                       type="button"
                       onClick={handleCancel}
+                      className="h-[36px] border px-4 bg-[#dd1f18] rounded-md"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </Form.Item>
+              </Form>
+            </Modal>
+          )}
+          {visit && (
+            <Modal
+              open={visit}
+              title="Schedule an Appointement"
+              onOk={onSchedule}
+              onCancel={() => {
+                setVisit(false);
+              }}
+              footer={(_) => <></>}
+            >
+              <Form
+                name="damage_assessement"
+                className="login-form flex flex-col items-center"
+                initialValues={{ confirm: true }}
+                onFinish={onSchedule}
+              >
+                <Form.Item
+                  className="mt-5"
+                  name="date"
+                  label="Pick a date and time:"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select the date!",
+                    },
+                  ]}
+                >
+                  <DatePicker />
+                </Form.Item>
+                <Form.Item
+                  name="time"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please select the time!",
+                    },
+                  ]}
+                >
+                  <TimePicker format="HH:mm" />
+                </Form.Item>
+                The client will be notified about the picked date.
+                <Form.Item className="w-full mt-5">
+                  <div className="w-full flex justify-between text-white">
+                    <button
+                      type="submit"
+                      className="h-[36px] border px-4 bg-[#18DDB1] rounded-md"
+                    >
+                      Submit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setVisit(false);
+                      }}
                       className="h-[36px] border px-4 bg-[#dd1f18] rounded-md"
                     >
                       Cancel

@@ -98,7 +98,7 @@ export default {
         transaction_history.save();
       }
       const notification = new Notification({
-        clientID: claim._id,
+        clientID: claim.clientID,
         title: `Claim ${claim.status}`,
         content: `Claim is ${String(claim.status).toLowerCase()}. ClaimID: ${
           claim._id
@@ -107,6 +107,26 @@ export default {
       });
       notification.save();
       // socket.broadcast();
+    }
+    res.json({ result: claim?.status, id });
+  },
+  schedule: async (req: any, res: Response): Promise<void> => {
+    const { id, date, time } = req.body;
+    let claim = await Claim.findById(id);
+    if (claim) {
+      const schedule = new Date(date);
+      const _time = new Date(time);
+      schedule.setHours(_time.getHours());
+      schedule.setMinutes(_time.getMinutes());
+      claim.schedule = schedule;
+      await claim.save();
+      const notification = new Notification({
+        clientID: claim.clientID,
+        title: `Schedule an Appointement`,
+        content: `Validator scheduled to visit damage on ${schedule}. ClaimID: ${claim._id}`,
+        date: new Date(),
+      });
+      await notification.save();
     }
     res.json({ result: claim?.status, id });
   },
