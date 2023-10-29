@@ -105,13 +105,13 @@ const AssessedClaims: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { assessed } = useSelector((state: RootState) => state.claim);
   const { filter } = useSelector((state: RootState) => state.auth);
+  const [data, setData] = useState({});
+  const [data1, setData1] = useState({});
   const tableRef = useRef(null);
 
   const getWidth = (ref: any) => {
     return ref?.current?.offsetWidth;
   };
-
-  const [data1, setData1] = useState({});
 
   useEffect(() => {
     dispatch(assessedClaims());
@@ -148,6 +148,7 @@ const AssessedClaims: React.FC = () => {
       start.add(1, "months");
     }
     option1.dataset.source = data;
+    setData({ ...option });
     setData1({ ...option1 });
   }, [assessed]);
 
@@ -185,7 +186,7 @@ const AssessedClaims: React.FC = () => {
                   </p>
                 </div>
                 <ReactEcharts
-                  option={option}
+                  option={data}
                   className="!w-[240px] !h-[240px] !absolute right-0 bottom-0"
                 />
               </>

@@ -41,8 +41,8 @@ const option = {
         show: false,
       },
       data: [
-        { value: 1048, name: "Approved" },
-        { value: 735, name: "Declined" },
+        { value: 0, name: "Approved" },
+        { value: 0, name: "Declined" },
       ],
     },
   ],
@@ -70,12 +70,13 @@ const Profile: React.FC = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [init, setInit] = useState<any>({});
   const [open, setOpen] = useState(false);
-  const [state, setState] = useState(false);
+  const [data, setData] = useState({});
   const [data1, setData1] = useState({});
 
   useEffect(() => {
     dispatch(assessedClaims());
   }, []);
+
   const showModal = () => {
     setInit({
       fullname: user.fullname,
@@ -111,7 +112,6 @@ const Profile: React.FC = () => {
     option.series[0].data[1].value = assessed.filter(
       (claim: any) => claim.status === "Declined"
     ).length;
-    setState(!state);
     const start = moment().startOf("month").subtract(2, "months");
     const data: any[][] = [["product", "Approved", "Declined"], [], [], []];
     for (let i = 0; i < 3; i++) {
@@ -136,6 +136,7 @@ const Profile: React.FC = () => {
       start.add(1, "months");
     }
     option1.dataset.source = data;
+    setData({ ...option });
     setData1({ ...option1 });
   }, [assessed]);
 
@@ -219,7 +220,7 @@ const Profile: React.FC = () => {
                   </p>
                 </div>
                 <ReactEcharts
-                  option={option}
+                  option={data}
                   className="!w-[240px] !h-[240px] !absolute right-0 bottom-0"
                 />
               </>

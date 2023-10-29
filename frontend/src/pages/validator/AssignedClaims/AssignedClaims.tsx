@@ -18,7 +18,6 @@ import {
 import { FcViewDetails } from "react-icons/fc";
 import { GrSchedule } from "react-icons/gr";
 import {
-  assessedClaims,
   assignedClaims,
   validateClaims,
   scheduleClaims,
@@ -143,7 +142,6 @@ const AssignedClaims: React.FC = () => {
   useEffect(() => {
     dispatch(loadClients());
     dispatch(assignedClaims());
-    dispatch(assessedClaims());
   }, []);
 
   const [selectDate, setSelectDate] = React.useState<Dayjs>(dayjs());
