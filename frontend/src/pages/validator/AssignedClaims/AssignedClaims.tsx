@@ -15,7 +15,6 @@ import {
   CalendarOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import GoogleMapReact from "google-map-react";
 import { FcViewDetails } from "react-icons/fc";
 import { GrSchedule } from "react-icons/gr";
 import {
@@ -36,19 +35,9 @@ import type { ColumnsType } from "antd/es/table";
 import TextArea from "antd/es/input/TextArea";
 import { Filter, capitalizeFLetter } from "../../../utils/string";
 import { loadClients } from "../../../store/client";
-import MyMarker from "./MyMaker";
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import moment from "moment";
 import classNames from "classnames";
-
-const distanceToMouse = (pt: any, mp: any) => {
-  if (pt && mp) {
-    return Math.sqrt(
-      (pt.x - mp.x) * (pt.x - mp.x) + (pt.y - mp.y) * (pt.y - mp.y)
-    );
-  }
-  return 0;
-};
 
 interface DataType {
   key: string;
@@ -64,7 +53,8 @@ const AssignedClaims: React.FC = () => {
   const [id, setID] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const tableRef = useRef(null);
-  const { isLoaded } = useLoadScript({
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
     googleMapsApiKey: "AIzaSyCnc0Rurk7QYOEbTcZspUjyzOpl5krNYxw",
   });
 
@@ -246,8 +236,7 @@ const AssignedClaims: React.FC = () => {
                               lat: client.address.latitude,
                               lng: client.address.longitude,
                             }}
-                            // text={index + 1}
-                            // tooltip={client.fullname}
+                            title={client.fullname}
                           />
                         );
                       })}
