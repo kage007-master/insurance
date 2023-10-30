@@ -1,6 +1,6 @@
 import React from "react";
 import { LockOutlined, UserOutlined, MailOutlined } from "@ant-design/icons";
-import { Form, Input } from "antd";
+import { Button, Form, Input } from "antd";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import setAuthToken from "../../../utils/setAuthToken";
@@ -147,12 +147,9 @@ const Signup: React.FC = () => {
         </div>
 
         <Form.Item>
-          <button
-            type="submit"
-            className="bg-[#575DFB] text-white  login-form-button border rounded-md py-2"
-          >
+          <Button type="primary" htmlType="submit" className="w-full">
             Register
-          </button>
+          </Button>
           <div className="flex mt-2 justify-center gap-1">
             Already have an account?
             <Link to="/login" className="text-[#00f]">

@@ -1,12 +1,11 @@
 import { IoIosNotifications } from "react-icons/io";
 import { IoSettingsSharp } from "react-icons/io5";
-import { HiUser, HiHome } from "react-icons/hi";
-import { Breadcrumbs } from "@mui/material";
+import { HiUser } from "react-icons/hi";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
-import { SearchOutlined } from "@ant-design/icons";
-import { Badge, Button, Input, notification } from "antd";
+import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
+import { Badge, Breadcrumb, Button, Input, notification } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../../utils/socket";
 import {
@@ -73,10 +72,20 @@ const Toolbar: React.FC = () => {
     <div className="absolute w-navbar p-4 text-black bg-white z-10">
       {contextHolder}
       <div className="border flex justify-between p-4 rounded-2xl items-center">
-        <Breadcrumbs aria-label="breadcrumb">
+        <Breadcrumb
+          items={[
+            {
+              title: <HomeOutlined />,
+            },
+            {
+              title: <p>{titles[path]}</p>,
+            },
+          ]}
+        />
+        {/* <Breadcrumbs aria-label="breadcrumb">
           <HiHome />
           <p>{titles[path]}</p>
-        </Breadcrumbs>
+        </Breadcrumbs> */}
         <div className="flex gap-2 items-center">
           {searchFor !== "profile" && (
             <Input

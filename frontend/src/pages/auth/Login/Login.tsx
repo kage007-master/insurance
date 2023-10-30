@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { Form, Input } from "antd";
+import { Alert, Button, Form, Input } from "antd";
 import { useDispatch } from "react-redux";
 import { loadUser } from "../../../store/auth";
 import { Link } from "react-router-dom";
@@ -10,6 +10,7 @@ import api from "../../../utils/api";
 
 const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const [error, setError] = useState(false);
 
   const onFinish = async (values: any) => {
     try {
@@ -17,7 +18,7 @@ const Login: React.FC = () => {
       setAuthToken(res.data.token);
       dispatch(loadUser());
     } catch (err) {
-      console.log(err);
+      setError(true);
     }
   };
 
@@ -30,6 +31,14 @@ const Login: React.FC = () => {
         onFinish={onFinish}
       >
         <p className="text-xl my-4">Login</p>
+        {error && (
+          <Alert
+            className="my-2"
+            message="Invalid Credentials"
+            type="error"
+            showIcon
+          />
+        )}
         <Form.Item
           name="email"
           rules={[{ required: true, message: "Please input your E-mail!" }]}
@@ -50,12 +59,9 @@ const Login: React.FC = () => {
           />
         </Form.Item>
         <Form.Item>
-          <button
-            type="submit"
-            className="bg-[#575DFB] login-form-button border rounded-md py-2"
-          >
+          <Button type="primary" htmlType="submit" className="w-full">
             Login
-          </button>
+          </Button>
           <div className="flex mt-2 justify-center gap-1">
             Don't have an account?
             <Link to="/signup" className="text-[#00f]">
