@@ -179,7 +179,8 @@ export const warningScrap = async (socket: any) => {
       } else {
         const validator: any = await User.findOne({
           role: "validator",
-          city: active_weathers[i].city,
+          "address.city": active_weathers[i].city,
+          active: true,
         });
         for (let j = 0; j < confirmed_claims.length; j++) {
           const notification = new Notification({

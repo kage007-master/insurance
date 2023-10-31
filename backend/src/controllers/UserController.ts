@@ -279,7 +279,6 @@ export default {
       city,
       latitude,
       longitude,
-      operation,
       active,
       signature,
     } = req.body;
@@ -298,7 +297,6 @@ export default {
         email,
         password,
         address: { line1, line2, city, latitude, longitude },
-        city: operation,
         active,
         signature,
         role: "validator",
@@ -355,7 +353,6 @@ export default {
       city,
       latitude,
       longitude,
-      operation,
       active,
       signature,
     } = req.body;
@@ -366,7 +363,6 @@ export default {
         user.fullname = fullname;
         user.username = username;
         user.address = { line1, line2, city, latitude, longitude };
-        user.city = operation;
         user.active = active;
         user.signature = signature;
         const salt = await bcrypt.genSalt(10);

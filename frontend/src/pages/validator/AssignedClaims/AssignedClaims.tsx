@@ -216,7 +216,7 @@ const AssignedClaims: React.FC = () => {
                   className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
                 />
                 <p className="text-[24px]">Clients Location</p>
-                <div className="h-[90%]">
+                <div className="h-[90%] min-h-[320px]">
                   {clients.length > 0 && isLoaded && (
                     <GoogleMap
                       mapContainerClassName="w-full h-full"
@@ -347,7 +347,14 @@ const AssignedClaims: React.FC = () => {
                     },
                   ]}
                 >
-                  <DatePicker />
+                  <DatePicker
+                    disabledDate={(current) => {
+                      let customDate = moment().format("YYYY-MM-DD");
+                      return (
+                        current && current < moment(customDate, "YYYY-MM-DD")
+                      );
+                    }}
+                  />
                 </Form.Item>
                 <Form.Item
                   name="time"
@@ -358,7 +365,17 @@ const AssignedClaims: React.FC = () => {
                     },
                   ]}
                 >
-                  <TimePicker format="HH:mm" />
+                  <TimePicker
+                    format="HH:mm"
+                    disabledTime={(now: Dayjs) => {
+                      return {
+                        disabledHours: () => [
+                          0, 1, 2, 3, 4, 5, 6, 7, 8, 18, 19, 20, 21, 22, 23,
+                        ],
+                      };
+                    }}
+                    minuteStep={15}
+                  />
                 </Form.Item>
                 The client will be notified about the picked date.
                 <Form.Item className="w-full mt-5">

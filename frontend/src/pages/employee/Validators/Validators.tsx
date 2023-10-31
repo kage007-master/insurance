@@ -101,7 +101,6 @@ const Validators: React.FC = () => {
               city: record.address.city,
               latitude: record.address.latitude,
               longitude: record.address.longitude,
-              operation: record.city,
               active: record.active,
               signature: record.signature,
             });
@@ -252,10 +251,11 @@ const Validators: React.FC = () => {
                 name="city"
                 rules={[{ required: true, message: "Please input your City!" }]}
               >
-                <Input
-                  prefix={<UserOutlined className="site-form-item-icon" />}
-                  placeholder="City"
-                />
+                <Select placeholder="City" allowClear>
+                  <Option value="Laval">Laval</Option>
+                  <Option value="Montreal">Montreal</Option>
+                  <Option value="Longueuil">Longueuil</Option>
+                </Select>
               </Form.Item>
               <div className="flex gap-2 justify-between w-full">
                 <Form.Item
@@ -281,23 +281,6 @@ const Validators: React.FC = () => {
                   />
                 </Form.Item>
               </div>
-              <Form.Item
-                name="operation"
-                required
-                rules={[
-                  {
-                    required: true,
-                    message: "City of operation is required!",
-                  },
-                ]}
-              >
-                <Select placeholder="City of Operation" allowClear>
-                  <Option value="Laval">Laval</Option>
-                  <Option value="Montreal">Montreal</Option>
-                  <Option value="Longueuil">Longueuil</Option>
-                </Select>
-              </Form.Item>
-
               <Form.Item
                 name="active"
                 label="2. Toggle Active State"

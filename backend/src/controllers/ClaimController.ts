@@ -20,7 +20,13 @@ export default {
     const result: any[] = [];
     for (var i = 0; i < claims.length; i++) {
       const customer: any = await User.findById(claims[i].clientID);
-      result.push({ ...claims[i]._doc, customer_name: customer.fullname });
+      const validator: any = await User.findById(claims[i].validatorID);
+      result.push({
+        ...claims[i]._doc,
+        customer_name: customer.fullname,
+        validator_name: validator?.fullname,
+        validator_email: validator?.email,
+      });
     }
     res.json(result);
   },

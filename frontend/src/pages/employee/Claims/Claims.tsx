@@ -3,14 +3,18 @@ import Layout from "../../../components/Layout";
 import { AppDispatch, RootState } from "../../../store";
 import { allClaims } from "../../../store/claim";
 import React, { useEffect, useRef } from "react";
-import { Table } from "antd";
+import { Button, Popover, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { FcViewDetails } from "react-icons/fc";
 import { getWeatherEvents } from "../../../store/weather";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { PiWarningOctagonBold } from "react-icons/pi";
 import { Filter, capitalizeFLetter } from "../../../utils/string";
-import { PENDING } from "../../../config/const";
+import {
+  APPROVED_BY_VALIDATOR,
+  DECLINED_BY_VALIDATOR,
+  PENDING,
+} from "../../../config/const";
 
 interface DataType {
   key: string;
@@ -59,6 +63,27 @@ const columns: ColumnsType<DataType> = [
     title: "Status",
     dataIndex: "status",
     key: "status",
+    render: (status: string, record: any) => {
+      if (status === APPROVED_BY_VALIDATOR || status === DECLINED_BY_VALIDATOR)
+        return (
+          <Popover
+            placement="left"
+            title={record.validator_name}
+            content={
+              <>
+                <p>{record.validator_email}</p>
+                <p>{record.detail}</p>
+              </>
+            }
+            trigger="click"
+          >
+            <Button type="text" className="p-0">
+              {status}
+            </Button>
+          </Popover>
+        );
+      return status;
+    },
   },
 ];
 
