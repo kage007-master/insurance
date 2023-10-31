@@ -25,6 +25,8 @@ interface AuthState {
 
 interface CoverageState {
   coverages: any[];
+  error: string;
+  error_cnt: 0;
 }
 
 interface WeatherState {

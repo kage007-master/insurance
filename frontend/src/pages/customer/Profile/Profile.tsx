@@ -1,6 +1,6 @@
 import Card from "../../../components/Card";
 import Layout from "../../../components/Layout";
-import { Row, Col, Modal, Form, Input, Select } from "antd";
+import { Row, Col, Modal, Form, Input, Select, Collapse } from "antd";
 import {
   UserOutlined,
   PieChartOutlined,
@@ -8,6 +8,8 @@ import {
   EnvironmentOutlined,
   MailOutlined,
   LockOutlined,
+  MinusOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
@@ -110,7 +112,7 @@ const Profile: React.FC = () => {
               </>
             </Card>
           </Col>
-          <Col span={24} lg={12} className="p-4">
+          <Col span={24} lg={12} className="p-4 text-white">
             <Card>
               <>
                 <PieChartOutlined
@@ -118,44 +120,67 @@ const Profile: React.FC = () => {
                   className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
                 />
                 <p className="text-[24px]">Active Coverages</p>
-
-                {user.coverages.length > 0 && (
-                  <div className="m-4 border rounded-md p-2">
-                    <p className="flex p-2 gap-2 justify-center">
-                      <img
-                        src={`/images/${
-                          findCoverage(user.coverages[0].coverageID)?.weather
-                        }.png`}
-                        className="w-6 h-6"
-                        alt="active coverage"
-                      />
-                      {findCoverage(user.coverages[0].coverageID)?.name}{" "}
-                      protection
-                    </p>
-                    <p className="p-2">
-                      Subscription Date:{" "}
-                      {user.coverages[0].subscription_date.slice(
-                        0,
-                        user.coverages[0].subscription_date.indexOf("T")
+                <Collapse
+                  className="m-2"
+                  defaultActiveKey={0}
+                  expandIconPosition="end"
+                  expandIcon={({ isActive }) => (
+                    <div className="text-white">
+                      {isActive ? (
+                        <MinusOutlined className="text-white" />
+                      ) : (
+                        <PlusOutlined className="text-white" />
                       )}
-                    </p>
-                    <p className="p-2">
-                      End of Coverage Date:{" "}
-                      <span className="text-red-700">
-                        {user.coverages[0].expire_date.slice(
-                          0,
-                          user.coverages[0].expire_date.indexOf("T")
-                        )}
-                      </span>
-                    </p>
-                    <p className="p-2">
-                      Premium Paid:{" "}
-                      <span className="text-red-700">
-                        {user.coverages[0].paid_amount}$
-                      </span>
-                    </p>
-                  </div>
-                )}
+                    </div>
+                  )}
+                  items={user.coverages.map((coverage: any, index: number) => {
+                    return {
+                      key: index,
+                      label: (
+                        <>
+                          <p className="flex gap-2 text-white">
+                            <img
+                              src={`/images/${
+                                findCoverage(coverage.coverageID)?.weather
+                              }.png`}
+                              className="w-6 h-6"
+                              alt="active coverage"
+                            />
+                            {findCoverage(coverage.coverageID)?.name} protection
+                          </p>
+                        </>
+                      ),
+                      children: (
+                        <div className="-m-4 bg-[#bacc66] p-2">
+                          <p className="p-2">
+                            End of Coverage Date:{" "}
+                            <span className="text-red-700">
+                              {coverage.expire_date.slice(
+                                0,
+                                coverage.expire_date.indexOf("T")
+                              )}
+                            </span>
+                          </p>
+                          <p className="p-2">
+                            Premium Paid:{" "}
+                            <span className="text-red-700">
+                              {coverage.paid_amount}$
+                            </span>
+                          </p>
+                        </div>
+                      ),
+                      extra: (
+                        <p className="text-white bg-[#23b] px-2 py-1 rounded-md">
+                          Subscription Date:{" "}
+                          {user.coverages[0].subscription_date.slice(
+                            0,
+                            user.coverages[0].subscription_date.indexOf("T")
+                          )}
+                        </p>
+                      ),
+                    };
+                  })}
+                />
                 <button
                   className="absolute right-5 -bottom-[18px] btn bg-[#18DDB1]"
                   onClick={() => navigate("/customer/coverages")}
@@ -173,22 +198,25 @@ const Profile: React.FC = () => {
                   className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
                 />
                 <p className="text-[24px]">Transactions</p>
-
                 <div className="flex justify-center flex-col mt-4">
                   {user.transactions.map((transaction: any, index: number) => (
                     <>
                       {index !== 0 && <div className="border w-full my-2" />}
                       <div className="flex justify-between p-2">
-                        <p>{transaction.type}</p>
+                        <p>
+                          {transaction.amount > 0
+                            ? "Premium Paid"
+                            : "Reimbursement Issued"}
+                        </p>
                         <p
                           className={
-                            transaction.type === "Premium Paid"
+                            transaction.amount > 0
                               ? "text-[#f00]"
                               : "text-[#0f0]"
                           }
                         >
-                          {transaction.type === "Premium Paid" ? "-" : "+"} $
-                          {transaction.amount}
+                          {transaction.amount > 0 ? "-" : "+"} $
+                          {Math.abs(transaction.amount)}
                         </p>
                       </div>
                       <p className="p-2">{transaction.date}</p>

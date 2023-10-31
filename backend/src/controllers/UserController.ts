@@ -3,11 +3,15 @@ import { Response, Request } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import CoverageHistory from "../models/CoverageHistory";
-import TransactionHistory from "../models/TransactionHistory";
 import Claim from "../models/Claim";
 import interactor from "../services/interactor";
 import Notification from "../models/Notification";
 import Coverage from "../models/Coverage";
+import {
+  APPROVED_BY_TRHESHOLD,
+  APPROVED_BY_VALIDATOR,
+  DECLINED_BY_VALIDATOR,
+} from "../config/const";
 
 export default {
   getClients: async (req: any, res: Response): Promise<void> => {
@@ -48,7 +52,7 @@ export default {
       for (var i = 0; i < validators.length; i++) {
         let claims = await Claim.count({
           validatorID: validators[i]._id,
-          status: { $in: ["Approved", "Declined"] },
+          status: { $in: [APPROVED_BY_VALIDATOR, DECLINED_BY_VALIDATOR] },
         });
         result.push({ ...validators[i]._doc, claims });
       }
@@ -81,7 +85,7 @@ export default {
             { weather: coverage?.weather },
             { date: { $gt: coverages[i].subscription_date } },
             { date: { $lt: coverages[i].expire_date } },
-            { status: "Approved" },
+            { status: { $in: [APPROVED_BY_VALIDATOR, APPROVED_BY_TRHESHOLD] } },
           ],
         })) * coverage?.reimbursement;
       const now = new Date();
@@ -118,6 +122,32 @@ export default {
         read: false,
       });
       if (user?.role === "customer") {
+        const expired_coverages = await CoverageHistory.find({
+          clientID: req.user.id,
+          expire_date: { $lt: new Date() },
+          expired: false,
+        });
+        for (let i = 0; i < expired_coverages.length; i++) {
+          const coverage = await Coverage.findById(
+            expired_coverages[i].coverageID
+          );
+          const notification = new Notification({
+            clientID: expired_coverages[i].clientID,
+            title: "Coverage Expired",
+            content: `${coverage?.name} coverage is expired.`,
+            date: new Date(),
+          });
+          await notification.save();
+        }
+        if (expired_coverages.length)
+          await CoverageHistory.updateMany(
+            {
+              clientID: req.user.id,
+              expire_date: { $lt: new Date() },
+              expired: false,
+            },
+            { expired: true }
+          );
         const active_coverages = await CoverageHistory.find({
           clientID: req.user.id,
           subscription_date: { $lt: new Date() },
@@ -126,11 +156,9 @@ export default {
         const claims = await Claim.count({
           clientID: req.user.id,
         });
-        const transaction_histories = await TransactionHistory.find({
-          clientID: req.user.id,
-        })
-          .sort({ date: -1 })
-          .limit(2);
+        const transaction_histories = await interactor.GetTransactions(
+          req.user.id
+        );
         const account = await interactor.ReadAsset(req.user.id);
 
         res.json({

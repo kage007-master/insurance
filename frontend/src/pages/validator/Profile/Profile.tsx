@@ -18,6 +18,10 @@ import { assessedClaims } from "../../../store/claim";
 import moment from "moment";
 import api from "../../../utils/api";
 import { loadUser } from "../../../store/auth";
+import {
+  APPROVED_BY_VALIDATOR,
+  DECLINED_BY_VALIDATOR,
+} from "../../../config/const";
 
 const option = {
   tooltip: {
@@ -107,10 +111,10 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     option.series[0].data[0].value = assessed.filter(
-      (claim: any) => claim.status === "Approved"
+      (claim: any) => claim.status === APPROVED_BY_VALIDATOR
     ).length;
     option.series[0].data[1].value = assessed.filter(
-      (claim: any) => claim.status === "Declined"
+      (claim: any) => claim.status === DECLINED_BY_VALIDATOR
     ).length;
     const start = moment().startOf("month").subtract(2, "months");
     const data: any[][] = [["product", "Approved", "Declined"], [], [], []];
@@ -120,7 +124,7 @@ const Profile: React.FC = () => {
       data[i + 1].push(
         assessed.filter(
           (claim: any) =>
-            claim.status === "Approved" &&
+            claim.status === APPROVED_BY_VALIDATOR &&
             moment(claim.date).isSameOrAfter(start) &&
             moment(claim.date).isSameOrBefore(end.endOf("month"))
         ).length
@@ -128,7 +132,7 @@ const Profile: React.FC = () => {
       data[i + 1].push(
         assessed.filter(
           (claim: any) =>
-            claim.status === "Declined" &&
+            claim.status === DECLINED_BY_VALIDATOR &&
             moment(claim.date).isSameOrAfter(start) &&
             moment(claim.date).isSameOrBefore(end.endOf("month"))
         ).length
@@ -206,7 +210,7 @@ const Profile: React.FC = () => {
                     Approved claims :{" "}
                     {
                       assessed.filter(
-                        (claim: any) => claim.status === "Approved"
+                        (claim: any) => claim.status === APPROVED_BY_VALIDATOR
                       ).length
                     }
                   </p>
@@ -214,7 +218,7 @@ const Profile: React.FC = () => {
                     Denied claims :{" "}
                     {
                       assessed.filter(
-                        (claim: any) => claim.status === "Declined"
+                        (claim: any) => claim.status === DECLINED_BY_VALIDATOR
                       ).length
                     }
                   </p>

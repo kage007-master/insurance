@@ -5,7 +5,13 @@ import Coverage from "../models/Coverage";
 import CoverageHistory from "../models/CoverageHistory";
 import interactor from "./interactor";
 import Notification from "../models/Notification";
-import TransactionHistory from "../models/TransactionHistory";
+import {
+  APPROVED_BY_CUSTOMER,
+  APPROVED_BY_TRHESHOLD,
+  AUTO_DECLINED,
+  AWAITING_VALIDATOR,
+  PENDING,
+} from "../config/const";
 
 const puppeteer = require("puppeteer");
 const fs = require("fs").promises;
@@ -124,58 +130,51 @@ export const warningScrap = async (socket: any) => {
       role: "customer",
     });
     const unconfirmed_claims = await Claim.find({
-      status: "Pending",
-      confirmed: false,
+      status: PENDING,
     });
     for (let i = 0; i < unconfirmed_claims.length; i++) {
       const notification = new Notification({
         clientID: unconfirmed_claims[i].clientID,
         title: "Claim Declined",
-        content: `Claim is declined. ClaimID: ${unconfirmed_claims[i]._id}`,
+        content: `Claim is auto declined. ClaimID: ${unconfirmed_claims[i]._id}`,
         date: new Date(),
       });
       await notification.save();
     }
-    await Claim.updateMany(
-      { status: "Pending", confirmed: false },
-      { status: "Declined" }
-    );
-    const active_weathers = await Weather.find({ status: "Active" });
+    await Claim.updateMany({ status: PENDING }, { status: AUTO_DECLINED });
+    const active_weathers = await interactor.GetAllEvents("true");
     for (let i = 0; i < active_weathers.length; i++) {
       const coverage = await Coverage.findOne({
         weather: active_weathers[i].weather,
       });
-      const event = await interactor.ReadAsset(
-        active_weathers[i]._id as string
-      );
       const confirmed_claims = await Claim.find({
-        status: "Pending",
-        weatherEventID: active_weathers[i]._id,
+        status: APPROVED_BY_CUSTOMER,
+        weatherEventID: active_weathers[i].ID,
       });
-      if ((event.confirmed * 100) / event.raised >= coverage?.threshold) {
+      if (
+        (active_weathers[i].confirmed * 100) / active_weathers[i].raised >=
+        coverage?.threshold
+      ) {
         for (let j = 0; j < confirmed_claims.length; j++) {
           await interactor.TransferAsset(
             confirmed_claims[j].clientID as string,
-            -coverage?.reimbursement
+            -coverage?.reimbursement,
+            new Date().toISOString()
           );
           const notification = new Notification({
             clientID: confirmed_claims[j].clientID,
             title: "Claim Approved",
-            content: `Claim is approved. ClaimID: ${confirmed_claims[j]._id}`,
+            content: `Claim is approved by threshold. ClaimID: ${confirmed_claims[j]._id}`,
             date: new Date(),
           });
           await notification.save();
-          let transaction_history = new TransactionHistory({
-            clientID: confirmed_claims[j].clientID,
-            amount: coverage?.reimbursement,
-            type: "Reimbursement Issued",
-            date: new Date(),
-          });
-          transaction_history.save();
         }
         await Claim.updateMany(
-          { status: "Pending", weatherEventID: active_weathers[i]._id },
-          { status: "Approved" }
+          {
+            status: APPROVED_BY_CUSTOMER,
+            weatherEventID: active_weathers[i].ID,
+          },
+          { status: APPROVED_BY_TRHESHOLD }
         );
       } else {
         const validator: any = await User.findOne({
@@ -199,28 +198,25 @@ export const warningScrap = async (socket: any) => {
           await notification1.save();
         }
         await Claim.updateMany(
-          { status: "Pending", weatherEventID: active_weathers[i]._id },
-          { status: "Awaiting Validator", validatorID: validator._id }
+          {
+            status: APPROVED_BY_CUSTOMER,
+            weatherEventID: active_weathers[i].ID,
+          },
+          { status: AWAITING_VALIDATOR, validatorID: validator._id }
         );
       }
       const notification = new Notification({
         clientID: employee._id,
         title: "Weather Event Ended",
-        content: `Weather event is ended. EventID: ${active_weathers[i]._id}`,
+        content: `Weather event is ended. EventID: ${active_weathers[i].ID}`,
         date: new Date(),
       });
       await notification.save();
     }
-    await Weather.updateMany({ status: "Active" }, { status: "Ended" });
+    await interactor.EndEvents();
     const coverage = await Coverage.findOne({ weather });
     let raised_claims = 0;
-    const weatherEvent = new Weather({
-      weather,
-      city,
-      url: urls[rand1],
-      raised_claims,
-      date: new Date(),
-    });
+    const weatherEvent = new Weather({ url: urls[rand1] });
     await weatherEvent.save();
     const notification = new Notification({
       clientID: employee._id,
@@ -244,6 +240,13 @@ export const warningScrap = async (socket: any) => {
           date: new Date(),
         });
         await claim.save();
+        await interactor.CreateClaim(
+          claim._id as string,
+          weather,
+          weatherEvent._id as string,
+          customers[i]._id as string,
+          new Date().toISOString()
+        );
         const notification = new Notification({
           clientID: customers[i]._id,
           title: "New Claim Raised",
@@ -254,7 +257,13 @@ export const warningScrap = async (socket: any) => {
         raised_claims++;
       }
     }
-    await interactor.CreateEvent(weatherEvent._id as string, raised_claims);
+    await interactor.CreateEvent(
+      weatherEvent._id as string,
+      weather,
+      city,
+      new Date().toISOString(),
+      raised_claims
+    );
     socket.broadcast();
   }, 10 * 60 * 1000);
   socket.broadcast();

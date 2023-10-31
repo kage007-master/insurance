@@ -33,11 +33,31 @@ export default {
     const res = await execShellCommand(cmd);
     console.log(res);
   },
-  CreateEvent: async (id: string, raised: number) => {
+  CreateClaim: async (
+    id: string,
+    weather: string,
+    weatherEventID: string,
+    clientID: string,
+    date: string
+  ) => {
     let cmd =
       init +
       invoke +
-      `\'{"function":"CreateEvent","Args":["${id}","${raised}"]}\'`;
+      `\'{"function":"CreateClaim","Args":["${id}","${weather}","${weatherEventID}","${clientID}","${date}"]}\'`;
+    const res = await execShellCommand(cmd);
+    console.log(res);
+  },
+  CreateEvent: async (
+    id: string,
+    weather: string,
+    city: string,
+    date: string,
+    raised: number
+  ) => {
+    let cmd =
+      init +
+      invoke +
+      `\'{"function":"CreateEvent","Args":["${id}","${weather}","${city}","${date}","${raised}"]}\'`;
     const res = await execShellCommand(cmd);
     console.log(res);
   },
@@ -46,8 +66,13 @@ export default {
     const res: any = await execShellCommand(cmd);
     return JSON.parse(res);
   },
-  GetAllEvents: async () => {
-    let cmd = init + query + '\'{"Args":["GetAllEvents"]}\'';
+  GetAllEvents: async (active = "false") => {
+    let cmd = init + query + `\'{"Args":["GetAllEvents", "${active}"]}\'`;
+    const res: any = await execShellCommand(cmd);
+    return JSON.parse(res);
+  },
+  GetTransactions: async (id = "") => {
+    let cmd = init + query + `\'{"Args":["GetTransactions", "${id}"]}\'`;
     const res: any = await execShellCommand(cmd);
     return JSON.parse(res);
   },
@@ -62,11 +87,16 @@ export default {
     const res = await execShellCommand(cmd);
     console.log(res);
   },
-  TransferAsset: async (id: string, amount: number) => {
+  EndEvents: async () => {
+    let cmd = init + invoke + `\'{"function":"EndEvents","Args":[]}\'`;
+    const res = await execShellCommand(cmd);
+    console.log(res);
+  },
+  TransferAsset: async (id: string, amount: number, date: string) => {
     let cmd =
       init +
       invoke +
-      `\'{"function":"TransferAsset","Args":["${id}","${amount}"]}\'`;
+      `\'{"function":"TransferAsset","Args":["${id}","${amount}", "${date}"]}\'`;
     const res = await execShellCommand(cmd);
     console.log(res);
   },

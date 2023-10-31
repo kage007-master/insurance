@@ -59,7 +59,8 @@ export const authSlice = createSlice({
         state.user.coverages = action.payload.active_coverages;
         state.user.claims = action.payload.claims;
         state.user.balance = action.payload.balance;
-        state.user.transactions = action.payload.transaction_histories;
+        state.user.transactions =
+          action.payload.transaction_histories.reverse();
       }
       state.user.notifications = action.payload.notifications;
     });

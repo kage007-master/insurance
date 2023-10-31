@@ -4,6 +4,8 @@ import api from "../utils/api";
 
 const initialState: CoverageState = {
   coverages: [],
+  error: "",
+  error_cnt: 0,
 };
 
 export const loadCoverages = createAsyncThunk("loadCoverage", async () => {
@@ -51,9 +53,7 @@ export const coverageSlice = createSlice({
     builder.addCase(subscribeCoverage.pending, (state, action) => {});
     builder.addCase(
       subscribeCoverage.fulfilled,
-      (state, action: PayloadAction<any>) => {
-        
-      }
+      (state, action: PayloadAction<any>) => {}
     );
     builder.addCase(subscribeCoverage.rejected, (state, action) => {});
   },

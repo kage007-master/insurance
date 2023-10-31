@@ -2,7 +2,6 @@ import Coverage from "../models/Coverage";
 import CoverageHistory from "../models/CoverageHistory";
 import { Response, Request } from "express";
 import User from "../models/User";
-import TransactionHistory from "../models/TransactionHistory";
 import interactor from "../services/interactor";
 
 export default {
@@ -57,10 +56,17 @@ export default {
         res.status(400).json({ errors: { msg: "Already subscribed!" } });
         return;
       }
-
       let coverage = await Coverage.findOne({ _id: req.params.id });
-      await interactor.TransferAsset(user._id as string, coverage?.premium);
-
+      const account = await interactor.ReadAsset(req.user.id);
+      if (account.balance < coverage?.premium) {
+        res.status(400).json({ errors: { msg: "Insufficient Balance" } });
+        return;
+      }
+      await interactor.TransferAsset(
+        user._id as string,
+        coverage?.premium,
+        new Date().toISOString()
+      );
       let coverage_history = new CoverageHistory({
         coverageID: req.params.id,
         clientID: req.user.id,
@@ -71,13 +77,6 @@ export default {
         paid_amount: coverage?.premium,
       });
       coverage_history.save();
-
-      let transaction_history = new TransactionHistory({
-        clientID: req.user.id,
-        amount: coverage?.premium,
-        date: new Date(),
-      });
-      transaction_history.save();
     } catch (error) {
       res.status(500).send("Server error");
     }

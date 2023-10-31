@@ -1,12 +1,18 @@
 import Claim from "../models/Claim";
-import { Response, Request } from "express";
+import { Response } from "express";
 import User from "../models/User";
-import Weather from "../models/Weather";
 import interactor from "../services/interactor";
 import Notification from "../models/Notification";
 import socket from "../services/socket";
 import Coverage from "../models/Coverage";
-import TransactionHistory from "../models/TransactionHistory";
+import {
+  APPROVED_BY_CUSTOMER,
+  APPROVED_BY_VALIDATOR,
+  AWAITING_VALIDATOR,
+  DECLINED_BY_CUSTOMER,
+  DECLINED_BY_VALIDATOR,
+  PENDING,
+} from "../config/const";
 
 export default {
   getAll: async (req: any, res: Response): Promise<void> => {
@@ -21,22 +27,21 @@ export default {
   getActive: async (req: any, res: Response): Promise<void> => {
     let claims = await Claim.find({
       clientID: req.user.id,
-      status: "Pending",
-      confirmed: false,
+      status: PENDING,
     }).sort({ date: -1 });
     res.json(claims);
   },
   getPast: async (req: any, res: Response): Promise<void> => {
     let claims = await Claim.find({
       clientID: req.user.id,
-      status: { $in: ["Approved", "Declined"] },
+      status: { $nin: [PENDING] },
     }).sort({ date: -1 });
     res.json(claims);
   },
   getAssigned: async (req: any, res: Response): Promise<void> => {
     let claims = await Claim.find({
       validatorID: req.user.id,
-      status: { $in: ["Awaiting Validator"] },
+      status: { $in: [AWAITING_VALIDATOR] },
     }).sort({ date: -1 });
     const result: any[] = [];
     for (var i = 0; i < claims.length; i++) {
@@ -52,7 +57,7 @@ export default {
   getAssessed: async (req: any, res: Response): Promise<void> => {
     let claims = await Claim.find({
       validatorID: req.user.id,
-      status: { $in: ["Approved", "Declined"] },
+      status: { $in: [APPROVED_BY_VALIDATOR, DECLINED_BY_VALIDATOR] },
     }).sort({ date: -1 });
     const result: any[] = [];
     for (var i = 0; i < claims.length; i++) {
@@ -69,9 +74,8 @@ export default {
   feedback: async (req: any, res: Response): Promise<void> => {
     const { id, feedback } = req.body;
     let claim: any = await Claim.findById(id);
-    if (!feedback) claim.status = "Declined";
-    else await interactor.ConfirmDamage(claim.weatherEventID);
-    claim.confirmed = true;
+    claim.status = feedback ? APPROVED_BY_CUSTOMER : DECLINED_BY_CUSTOMER;
+    if (feedback) await interactor.ConfirmDamage(claim.weatherEventID);
     claim.save();
     res.json({ result: claim.status, id });
   },
@@ -79,7 +83,7 @@ export default {
     const { id, confirm, detail, file } = req.body;
     let claim = await Claim.findById(id);
     if (claim) {
-      claim.status = confirm ? "Approved" : "Declined";
+      claim.status = confirm ? APPROVED_BY_VALIDATOR : DECLINED_BY_VALIDATOR;
       claim.detail = detail;
       claim.file = file;
       await claim.save();
@@ -87,22 +91,16 @@ export default {
       if (confirm) {
         await interactor.TransferAsset(
           claim.clientID,
-          -coverage?.reimbursement
+          -coverage?.reimbursement,
+          new Date().toISOString()
         );
-        let transaction_history = new TransactionHistory({
-          clientID: claim.clientID,
-          amount: coverage?.reimbursement,
-          type: "Reimbursement Issued",
-          date: new Date(),
-        });
-        transaction_history.save();
       }
       const notification = new Notification({
         clientID: claim.clientID,
         title: `Claim ${claim.status}`,
-        content: `Claim is ${String(claim.status).toLowerCase()}. ClaimID: ${
-          claim._id
-        }`,
+        content: `Claim is ${String(
+          claim.status
+        ).toLowerCase()} by validator. ClaimID: ${claim._id}`,
         date: new Date(),
       });
       notification.save();

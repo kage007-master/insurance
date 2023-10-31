@@ -5,18 +5,19 @@ import Coverage from "../models/Coverage";
 
 export default {
   getAll: async (req: any, res: Response): Promise<void> => {
-    let weathers = await Weather.find({}).sort({ date: -1 });
+    let weathers = await interactor.GetAllEvents();
     const result: any[] = [];
     for (var i = 0; i < weathers.length; i++) {
-      const event = await interactor.ReadAsset(weathers[i]._id as string);
+      const event = await Weather.findById(weathers[i].ID);
       const coverage = await Coverage.findOne({ weather: weathers[i].weather });
       result.push({
-        ...weathers[i]._doc,
-        raised_claims: event.raised,
-        confirmed_damage: event.confirmed,
+        ...weathers[i],
+        key: weathers[i].ID,
+        url: event?.url,
         validator:
-          event.raised &&
-          (event.confirmed * 100) / event.raised < coverage?.threshold
+          weathers[i].raised &&
+          (weathers[i].confirmed * 100) / weathers[i].raised <
+            coverage?.threshold
             ? "Required"
             : "N/A",
       });

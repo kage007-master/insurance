@@ -10,6 +10,7 @@ import { getWeatherEvents } from "../../../store/weather";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { PiWarningOctagonBold } from "react-icons/pi";
 import { Filter, capitalizeFLetter } from "../../../utils/string";
+import { PENDING } from "../../../config/const";
 
 interface DataType {
   key: string;
@@ -17,8 +18,8 @@ interface DataType {
   date: string;
   status: string;
   time: string;
-  raised_claims: number;
-  confirmed_damage: number;
+  raised: number;
+  confirmed: number;
 }
 
 const columns: ColumnsType<DataType> = [
@@ -59,8 +60,8 @@ const columns: ColumnsType<DataType> = [
 const weather_columns: ColumnsType<DataType> = [
   {
     title: "Event ID",
-    dataIndex: "_id",
-    key: "_id",
+    dataIndex: "ID",
+    key: "ID",
   },
   {
     title: "Weather Event",
@@ -101,16 +102,16 @@ const weather_columns: ColumnsType<DataType> = [
   },
   {
     title: "Claims Raised",
-    dataIndex: "raised_claims",
-    key: "raised_claims",
+    dataIndex: "raised",
+    key: "raised",
   },
   {
     title: "Confirmed Damage",
-    dataIndex: "confirmed_damage",
-    key: "confirmed_damage",
+    dataIndex: "confirmed",
+    key: "confirmed",
     render: (_, record) => {
-      if (record.raised_claims)
-        return _ + "(" + ((_ * 100) / record.raised_claims).toFixed(2) + "%)";
+      if (record.raised)
+        return _ + "(" + ((_ * 100) / record.raised).toFixed(2) + "%)";
       else return _;
     },
   },
@@ -166,7 +167,7 @@ const Claims: React.FC = () => {
         <div className="relative mt-5">
           <p className="absolute flex gap-2 items-center top-0 right-0 float-right border px-4 py-1.5 bg-[#831616] rounded-md">
             <PiWarningOctagonBold className="w-6 h-6" /> Pending claims :{" "}
-            {claims.filter((claim: any) => claim.status === "Pending").length}
+            {claims.filter((claim: any) => claim.status === PENDING).length}
           </p>
           <div className="flex items-center text-black gap-2">
             <FcViewDetails className="w-8 h-8" />
