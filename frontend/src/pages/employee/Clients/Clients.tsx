@@ -37,6 +37,12 @@ const columns: ColumnsType<DataType> = [
     render: (address) => address?.line1,
   },
   {
+    title: "Client Area",
+    dataIndex: "address",
+    key: "address",
+    render: (address) => address?.city,
+  },
+  {
     title: "Balance",
     dataIndex: "balance",
     key: "balance",
