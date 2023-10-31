@@ -30,6 +30,11 @@ const columns: ColumnsType<DataType> = [
   },
   {
     title: "Weather Event",
+    dataIndex: "weatherEventID",
+    key: "weatherEventID",
+  },
+  {
+    title: "Weather Event",
     dataIndex: "weather",
     key: "weather",
     render: (text) => capitalizeFLetter(text),
