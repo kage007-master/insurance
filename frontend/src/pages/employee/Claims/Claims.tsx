@@ -131,6 +131,11 @@ const weather_columns: ColumnsType<DataType> = [
     key: "status",
   },
   {
+    title: "Fake",
+    dataIndex: "fake",
+    key: "fake",
+  },
+  {
     title: "Claims Raised",
     dataIndex: "raised",
     key: "raised",

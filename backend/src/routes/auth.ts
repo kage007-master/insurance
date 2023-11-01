@@ -11,5 +11,7 @@ router.put("/validator", UserController.updateValidator);
 router.put("/profile", UserController.updateProfile);
 router.get("/", authMiddleware, UserController.load);
 router.get("/notifications", authMiddleware, UserController.loadNotification);
+router.get("/settings", authMiddleware, UserController.loadSettings);
+router.post("/settings", authMiddleware, UserController.saveSettings);
 
 export default router;

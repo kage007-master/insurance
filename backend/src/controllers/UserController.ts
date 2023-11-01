@@ -12,6 +12,7 @@ import {
   APPROVED_BY_VALIDATOR,
   DECLINED_BY_VALIDATOR,
 } from "../config/const";
+import Setting from "../models/Setting";
 
 export default {
   getClients: async (req: any, res: Response): Promise<void> => {
@@ -385,5 +386,20 @@ export default {
       { read: true }
     );
     res.json(notifications);
+  },
+  loadSettings: async (req: any, res: Response) => {
+    const settings = await Setting.find({});
+    res.json(settings.length ? settings[0] : { duration: 10, unit: "m" });
+  },
+  saveSettings: async (req: any, res: Response) => {
+    const { duration, unit } = req.body;
+    const settings = await Setting.find({});
+    if (settings.length) {
+      await Setting.updateMany({}, { duration, unit });
+    } else {
+      const setting = new Setting({ duration, unit });
+      await setting.save();
+    }
+    res.json(settings.length ? settings[0] : { duration: 10, unit: "m" });
   },
 };

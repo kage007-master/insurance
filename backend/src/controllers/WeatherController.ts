@@ -14,6 +14,7 @@ export default {
         ...weathers[i],
         key: weathers[i].ID,
         url: event?.url,
+        fake: event?.fake,
         validator:
           weathers[i].raised &&
           (weathers[i].confirmed * 100) / weathers[i].raised <

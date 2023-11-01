@@ -5,7 +5,17 @@ import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { HomeOutlined, SearchOutlined } from "@ant-design/icons";
-import { Badge, Breadcrumb, Button, Input, notification } from "antd";
+import axios from "../../utils/api";
+import {
+  Badge,
+  Breadcrumb,
+  Button,
+  Input,
+  InputNumber,
+  Modal,
+  Select,
+  notification,
+} from "antd";
 import { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../../utils/socket";
 import {
@@ -13,6 +23,8 @@ import {
   loadNotifications,
   setFilter,
 } from "../../store/auth";
+
+const { Option } = Select;
 
 type Title = "active-claims" | "past-claims" | "profile" | "coverages" | "404";
 
@@ -37,6 +49,9 @@ const Toolbar: React.FC = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const { notifications } = useSelector((state: RootState) => state.auth);
   const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
+  const [duration, setDuration] = useState(10);
+  const [unit, setUnit] = useState("m");
 
   const { socket } = useContext(SocketContext);
   const [api, contextHolder] = notification.useNotification();
@@ -45,6 +60,40 @@ const Toolbar: React.FC = () => {
       Close All
     </Button>
   );
+
+  const onSetting = async () => {
+    if (user.role !== "employee") return;
+    const { data: res } = await axios.get("/auth/settings");
+    setDuration(res.duration);
+    setUnit(res.unit);
+    setOpen(true);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  const onFinish = async () => {
+    try {
+      await axios.post("/auth/settings", { duration, unit });
+      handleCancel();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const selectAfter = (
+    <Select
+      value={unit}
+      onChange={(value) => setUnit(value)}
+      style={{ width: 100 }}
+    >
+      <Option value="d">days</Option>
+      <Option value="h">hours</Option>
+      <Option value="m">mintues</Option>
+    </Select>
+  );
+
   useEffect(() => {
     socket.on("notification", () => {
       dispatch(loadNotifications());
@@ -104,7 +153,10 @@ const Toolbar: React.FC = () => {
               <HiUser className="w-6 h-6" />
             </Link>
           )}
-          <IoSettingsSharp className="w-6 h-6" />
+          <IoSettingsSharp
+            className="w-6 h-6 cursor-pointer"
+            onClick={onSetting}
+          />
           <Badge count={user.notifications}>
             <IoIosNotifications
               className="w-6 h-6"
@@ -113,6 +165,19 @@ const Toolbar: React.FC = () => {
           </Badge>
         </div>
       </div>
+      <Modal
+        open={open}
+        title={"Settings"}
+        onOk={onFinish}
+        onCancel={handleCancel}
+      >
+        <InputNumber
+          onChange={(value) => setDuration(value as number)}
+          value={duration}
+          addonBefore={<>Event Duration:</>}
+          addonAfter={selectAfter}
+        />
+      </Modal>
     </div>
   );
 };
