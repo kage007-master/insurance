@@ -11,6 +11,7 @@ const isContains = (obj: any, filter: string) => {
   if (obj.weatherEventID?.toLowerCase().includes(filter.toLowerCase()))
     return true;
   if (obj.ID?.toLowerCase().includes(filter.toLowerCase())) return true;
+  if (obj.fake?.toLowerCase().includes(filter.toLowerCase())) return true;
   if (obj._id?.toLowerCase().includes(filter.toLowerCase())) return true;
   if (obj.customer_name?.toLowerCase().includes(filter.toLowerCase()))
     return true;

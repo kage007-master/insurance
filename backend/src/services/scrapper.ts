@@ -288,7 +288,7 @@ export const warningScrap = async (socket: any) => {
     weathers[rand],
     cities[rand1],
     urls[rand1],
-    "Fake",
+    "Test Event",
     new Date().toString()
   );
   const results = await Promise.all(urls.map((url) => scrapeData(url)));
@@ -298,7 +298,7 @@ export const warningScrap = async (socket: any) => {
       validResults[i]?.Type,
       validResults[i]?.Zones,
       validResults[i]?.Url as string,
-      "Real",
+      "Real Event",
       validResults[i]?.datetime
     );
   socket.broadcast();
