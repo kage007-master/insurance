@@ -46,7 +46,6 @@ const option = {
 };
 
 const option1 = {
-  legend: {},
   tooltip: {},
   dataset: {
     source: [
@@ -61,6 +60,13 @@ const option1 = {
   // Declare several bar series, each will be mapped
   // to a column of dataset.source by default.
   series: [{ type: "bar" }, { type: "bar" }],
+  legend: [
+    {
+      textStyle: {
+        color: "#fff",
+      },
+    },
+  ],
 };
 
 interface DataType {

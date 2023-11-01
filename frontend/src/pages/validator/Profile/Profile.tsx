@@ -53,7 +53,13 @@ const option = {
 };
 
 const option1 = {
-  legend: {},
+  legend: [
+    {
+      textStyle: {
+        color: "#fff",
+      },
+    },
+  ],
   tooltip: {},
   dataset: {
     source: [
