@@ -6,3 +6,4 @@ export const APPROVED_BY_TRHESHOLD = "Approved by Threshold";
 export const DECLINED_BY_CUSTOMER = "Declined by Customer";
 export const DECLINED_BY_VALIDATOR = "Declined by Validator";
 export const AUTO_DECLINED = "Auto-Declined: No Response";
+export const DURATION = 10 * 60 * 1000;

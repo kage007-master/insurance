@@ -10,6 +10,7 @@ import {
   APPROVED_BY_TRHESHOLD,
   AUTO_DECLINED,
   AWAITING_VALIDATOR,
+  DURATION,
   PENDING,
 } from "../config/const";
 
@@ -266,7 +267,7 @@ export const warningScrap = async (socket: any) => {
       raised_claims
     );
     socket.broadcast();
-  }, 10 * 60 * 1000);
+  }, DURATION);
   socket.broadcast();
   // const results = await Promise.all(urls.map((url) => scrapeData(url)));
   // const validResults = results.filter((result) => result !== null); // Remove any null results
