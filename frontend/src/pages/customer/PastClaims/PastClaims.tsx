@@ -96,7 +96,7 @@ const PastClaims: React.FC = () => {
         </Row>
         <div ref={tableRef}>
           <Table
-            className="mt-20 px-2 lg:px-10"
+            className="mt-20"
             bordered
             columns={columns}
             dataSource={Filter(past, filter)}

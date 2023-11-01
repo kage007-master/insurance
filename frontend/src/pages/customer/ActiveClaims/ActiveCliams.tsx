@@ -159,7 +159,7 @@ const ActiveCliams: React.FC = () => {
         </Row>
         <div ref={tableRef}>
           <Table
-            className="mt-20 px-2s lg:px-10"
+            className="mt-20"
             bordered
             columns={columns}
             dataSource={Filter(active, filter)}

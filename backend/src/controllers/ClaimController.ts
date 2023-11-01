@@ -91,6 +91,7 @@ export default {
     if (claim) {
       claim.status = confirm ? APPROVED_BY_VALIDATOR : DECLINED_BY_VALIDATOR;
       claim.detail = detail;
+      claim.validateTime = new Date();
       claim.file = file;
       await claim.save();
       const coverage = await Coverage.findOne({ weather: claim.weather });

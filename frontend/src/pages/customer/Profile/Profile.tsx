@@ -18,6 +18,7 @@ import { loadCoverages } from "../../../store/coverage";
 import { useNavigate } from "react-router-dom";
 import api from "../../../utils/api";
 import { loadUser } from "../../../store/auth";
+import moment from "moment";
 
 const Profile: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -198,7 +199,7 @@ const Profile: React.FC = () => {
                   className="absolute -top-6 right-6 p-2 bg-[#1f9978] rounded-md"
                 />
                 <p className="text-[24px]">Transactions</p>
-                <div className="flex justify-center flex-col mt-4">
+                <div className="mt-4 h-[250px] overflow-auto">
                   {user.transactions.map((transaction: any, index: number) => (
                     <>
                       {index !== 0 && <div className="border w-full my-2" />}
@@ -219,7 +220,9 @@ const Profile: React.FC = () => {
                           {Math.abs(transaction.amount)}
                         </p>
                       </div>
-                      <p className="p-2">{transaction.date}</p>
+                      <p className="p-2">
+                        {moment(transaction.date).format("llll")}
+                      </p>
                     </>
                   ))}
                 </div>

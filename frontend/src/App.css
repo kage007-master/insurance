@@ -80,3 +80,28 @@
     width: calc(100% - 250px);
   }
 }
+
+::-webkit-scrollbar {
+  cursor: pointer;
+  width: 2px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  cursor: pointer;
+  background: #3b415c;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  cursor: pointer;
+  background: #4b308b;
+  border-radius: 2px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #613ce5;
+}

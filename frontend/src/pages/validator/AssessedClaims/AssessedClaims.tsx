@@ -103,6 +103,7 @@ const columns: ColumnsType<DataType> = [
     title: "Date of Change",
     dataIndex: "date",
     key: "date",
+    render: (date) => moment(date).format("l"),
   },
   {
     title: "Status",
