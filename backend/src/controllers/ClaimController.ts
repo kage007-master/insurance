@@ -3,8 +3,8 @@ import { Response } from "express";
 import User from "../models/User";
 import interactor from "../services/interactor";
 import Notification from "../models/Notification";
-import socket from "../services/socket";
 import Coverage from "../models/Coverage";
+import moment from "moment";
 import {
   APPROVED_BY_CUSTOMER,
   APPROVED_BY_VALIDATOR,
@@ -129,7 +129,9 @@ export default {
       const notification = new Notification({
         clientID: claim.clientID,
         title: `Schedule an Appointement`,
-        content: `Validator scheduled to visit damage on ${schedule}. ClaimID: ${claim._id}`,
+        content: `Validator scheduled to visit damage on ${moment(
+          schedule
+        ).format("llll")}. ClaimID: ${claim._id}`,
         date: new Date(),
       });
       await notification.save();

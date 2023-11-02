@@ -34,9 +34,15 @@ import type { ColumnsType } from "antd/es/table";
 import TextArea from "antd/es/input/TextArea";
 import { Filter, capitalizeFLetter } from "../../../utils/string";
 import { loadClients } from "../../../store/client";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  Marker,
+  InfoWindow,
+  useJsApiLoader,
+} from "@react-google-maps/api";
 import moment from "moment";
 import classNames from "classnames";
+import MyMaker from "./MyMarker";
 
 interface DataType {
   key: string;
@@ -229,20 +235,13 @@ const AssignedClaims: React.FC = () => {
                       {clients.map((client: any, index: number) => {
                         if (
                           assigned.filter(
-                            (claim: any) => claim.city === client.address.city
+                            (claim: any) =>
+                              claim.city === client.address.city &&
+                              claim.client_address === client.address.line1
                           ).length === 0
                         )
                           return null;
-                        return (
-                          <Marker
-                            key={index}
-                            position={{
-                              lat: client.address.latitude,
-                              lng: client.address.longitude,
-                            }}
-                            title={client.fullname}
-                          />
-                        );
+                        return <MyMaker key={index} client={client} />;
                       })}
                     </GoogleMap>
                   )}
@@ -373,6 +372,7 @@ const AssignedClaims: React.FC = () => {
                 >
                   <TimePicker
                     format="HH:mm"
+                    showNow={false}
                     disabledTime={(now: Dayjs) => {
                       return {
                         disabledHours: () => [
