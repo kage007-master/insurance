@@ -227,7 +227,11 @@ const AssignedClaims: React.FC = () => {
                       zoom={14}
                     >
                       {clients.map((client: any, index: number) => {
-                        if (client.address.city !== user.address?.city)
+                        if (
+                          assigned.filter(
+                            (claim: any) => claim.city === client.address.city
+                          ).length === 0
+                        )
                           return null;
                         return (
                           <Marker

@@ -56,6 +56,7 @@ export default {
         ...claims[i]._doc,
         client_name: customer.fullname,
         client_address: customer.address.line1,
+        city: customer.address.city,
       });
     }
     res.json(result);

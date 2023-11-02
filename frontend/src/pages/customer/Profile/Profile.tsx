@@ -20,6 +20,8 @@ import api from "../../../utils/api";
 import { loadUser } from "../../../store/auth";
 import moment from "moment";
 
+const { Option } = Select;
+
 const Profile: React.FC = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -342,10 +344,11 @@ const Profile: React.FC = () => {
                 name="city"
                 rules={[{ required: true, message: "Please input your City!" }]}
               >
-                <Input
-                  prefix={<UserOutlined className="site-form-item-icon" />}
-                  placeholder="City"
-                />
+                <Select placeholder="City" allowClear>
+                  <Option value="Laval">Laval</Option>
+                  <Option value="Montreal">Montreal</Option>
+                  <Option value="Longueuil">Longueuil</Option>
+                </Select>
               </Form.Item>
               <div className="flex gap-2 justify-between w-full">
                 <Form.Item

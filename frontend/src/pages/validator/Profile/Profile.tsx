@@ -1,6 +1,6 @@
 import Card from "../../../components/Card";
 import Layout from "../../../components/Layout";
-import { Row, Col, Form, Modal, Input } from "antd";
+import { Row, Col, Form, Modal, Input, Select } from "antd";
 import {
   UserOutlined,
   PieChartOutlined,
@@ -22,6 +22,8 @@ import {
   APPROVED_BY_VALIDATOR,
   DECLINED_BY_VALIDATOR,
 } from "../../../config/const";
+
+const { Option } = Select;
 
 const option = {
   tooltip: {
@@ -366,10 +368,11 @@ const Profile: React.FC = () => {
                 name="city"
                 rules={[{ required: true, message: "Please input your City!" }]}
               >
-                <Input
-                  prefix={<UserOutlined className="site-form-item-icon" />}
-                  placeholder="City"
-                />
+                <Select placeholder="City" allowClear>
+                  <Option value="Laval">Laval</Option>
+                  <Option value="Montreal">Montreal</Option>
+                  <Option value="Longueuil">Longueuil</Option>
+                </Select>
               </Form.Item>
               <div className="flex gap-2 justify-between w-full">
                 <Form.Item
