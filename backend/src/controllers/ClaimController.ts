@@ -132,6 +132,7 @@ export default {
         content: `Validator scheduled to visit damage on ${moment(
           schedule
         ).format("llll")}. ClaimID: ${claim._id}`,
+        extra: schedule,
         date: new Date(),
       });
       await notification.save();

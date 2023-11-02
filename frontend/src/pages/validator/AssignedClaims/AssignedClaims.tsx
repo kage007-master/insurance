@@ -21,6 +21,7 @@ import {
   assignedClaims,
   validateClaims,
   scheduleClaims,
+  assessedClaims,
 } from "../../../store/claim";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
@@ -148,6 +149,7 @@ const AssignedClaims: React.FC = () => {
   useEffect(() => {
     dispatch(loadClients());
     dispatch(assignedClaims());
+    dispatch(assessedClaims());
   }, []);
 
   const [selectDate, setSelectDate] = React.useState<Dayjs>(dayjs());
