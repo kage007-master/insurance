@@ -81,6 +81,16 @@ const Validators: React.FC = () => {
       key: "claims",
     },
     {
+      title: "Approved Claims",
+      dataIndex: "approved",
+      key: "approved",
+    },
+    {
+      title: "Declined Claims",
+      dataIndex: "declined",
+      key: "declined",
+    },
+    {
       title: "Active",
       dataIndex: "active",
       key: "active",

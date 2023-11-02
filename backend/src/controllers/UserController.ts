@@ -55,7 +55,16 @@ export default {
           validatorID: validators[i]._id,
           status: { $in: [APPROVED_BY_VALIDATOR, DECLINED_BY_VALIDATOR] },
         });
-        result.push({ ...validators[i]._doc, claims });
+        let approved = await Claim.count({
+          validatorID: validators[i]._id,
+          status: { $in: [APPROVED_BY_VALIDATOR] },
+        });
+        result.push({
+          ...validators[i]._doc,
+          claims,
+          approved,
+          declined: claims - approved,
+        });
       }
       res.json(result);
     } catch (err) {

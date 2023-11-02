@@ -26,7 +26,7 @@ const MyMaker: React.FC<Props> = ({ client }) => {
             <a
               className="view-link text-[#69b1ff]"
               target="_blank"
-              href={`https://maps.google.com/maps?ll=${client.address.latitude},${client.address.longitude}&z=14&t=m`}
+              href={`https://maps.google.com/maps/search/${client.address.line1}/@ll=${client.address.latitude},${client.address.longitude},17z?entry=ttu`}
             >
               View on Google Maps
             </a>
