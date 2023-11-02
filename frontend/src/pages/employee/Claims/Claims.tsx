@@ -195,7 +195,7 @@ const Claims: React.FC = () => {
               bordered
               columns={weather_columns}
               dataSource={Filter(weathers, filter)}
-              pagination={{ pageSize: 5 }}
+              pagination={{ defaultPageSize: 5 }}
               scroll={{ x: getWidth(tableRef) }}
             />
           </div>
@@ -214,7 +214,7 @@ const Claims: React.FC = () => {
             bordered
             columns={columns}
             dataSource={Filter(claims, filter)}
-            pagination={{ pageSize: 5 }}
+            pagination={{ defaultPageSize: 5 }}
             scroll={{ x: getWidth(tableRef) }}
           />
         </div>
