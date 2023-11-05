@@ -1,6 +1,6 @@
 import { exec } from "child_process";
 
-let init = "cd ~/go/src/github.com/raika/fabric-samples/test-network";
+let init = "cd ~/go/src/github.com/kage/fabric-samples/test-network";
 init += " && export PATH=${PWD}/../bin:$PATH";
 init += " && export FABRIC_CFG_PATH=$PWD/../config/";
 init += " && export CORE_PEER_TLS_ENABLED=true";

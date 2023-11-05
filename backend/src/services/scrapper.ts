@@ -304,3 +304,7 @@ export const warningScrap = async (socket: any) => {
   socket.broadcast();
   setTimeout(() => warningScrap(socket), duration);
 };
+
+// export const Init = async () => {
+//   await User.updateOne({email:"employee@gmail.com"}, {role: "employee"});
+// }

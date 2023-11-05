@@ -34,6 +34,7 @@ const titles = {
   "assessed-claims": "Assessed Claims",
   "assigned-claims": "Assigned Claims",
   profile: "Profile",
+  statistics: "Statistics",
   coverages: "Coverages",
   claims: "Claims",
   clients: "Clients",
@@ -131,10 +132,6 @@ const Toolbar: React.FC = () => {
             },
           ]}
         />
-        {/* <Breadcrumbs aria-label="breadcrumb">
-          <HiHome />
-          <p>{titles[path]}</p>
-        </Breadcrumbs> */}
         <div className="flex gap-2 items-center">
           {searchFor !== "profile" && (
             <Input

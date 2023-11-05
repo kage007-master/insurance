@@ -26,13 +26,14 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center w-full items-center">
+    <div className="flex justify-center w-full items-center text-white login-back">
+      <img src="/images/logo.png" alt="logo" className="w-32 h-32 absolute left-2 top-2" />
       <Form
         name="normal_login"
-        className="login-form p-4 border rounded-md"
+        className="login-form p-4 lg:mx-16"
         onFinish={onFinish}
       >
-        <p className="text-xl my-4">Register</p>
+        <p className="text-xl my-4 text-white">Register</p>
         <Form.Item
           name="fullname"
           rules={[{ required: true, message: "Please input your Fulll Name!" }]}
@@ -154,14 +155,15 @@ const Signup: React.FC = () => {
           <Button type="primary" htmlType="submit" className="w-full">
             Register
           </Button>
-          <div className="flex mt-2 justify-center gap-1">
+          <div className="flex mt-2 justify-center gap-1 text-white">
             Already have an account?
-            <Link to="/login" className="text-[#00f]">
+            <Link to="/login" className="text-[#bbb] underline">
               Login
             </Link>
           </div>
         </Form.Item>
       </Form>
+      <img className="login-img" src={"https://media.canva.com/1/image-resize/1/800_535_92_JPG_F/czM6Ly9tZWRpYS1wcml2YXRlLmNhbnZhLmNvbS9hRnh2US9NQUZ6RkRhRnh2US8xL3AuanBn?osig=AAAAAAAAAAAAAAAAAAAAAHdOGLtRnMRRA0EiOjvOjLXs-1JMSwuXgP2HyVC0Nab6&exp=1699220929&x-canva-quality=screen&csig=AAAAAAAAAAAAAAAAAAAAAH99RDALoJdNZf8kKa7U0pV8owvuLXx5okzI2PgjHopr"} />
     </div>
   );
 };

@@ -17,6 +17,7 @@ import EmployeeCoverages from "./pages/employee/Coverages";
 import Claims from "./pages/employee/Claims";
 import Clients from "./pages/employee/Clients";
 import Validators from "./pages/employee/Validators";
+import Statistics from "./pages/employee/Statistics";
 import AssignedClaims from "./pages/validator/AssignedClaims";
 import AssessedClaims from "./pages/validator/AssessedClaims";
 import ValidatorProfile from "./pages/validator/Profile";
@@ -65,6 +66,7 @@ function App() {
                 <Route path="/employee/claims" element={<Claims />} />
                 <Route path="/employee/clients" element={<Clients />} />
                 <Route path="/employee/validators" element={<Validators />} />
+                  <Route path="/employee/statistics" element={<Statistics />} />
                 <Route path="*" element={<Navigate to="/employee/claims" />} />
               </>
             ) : user.role === "validator" ? (

@@ -4,7 +4,7 @@ import { logOut } from "../store/auth";
 
 // Create an instance of axios
 const api = axios.create({
-  baseURL: "http://195.201.163.171:9000/api",
+  baseURL: "https://weatherchain.ca/api",
   headers: {
     "Content-Type": "application/json",
   },

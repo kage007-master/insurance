@@ -117,3 +117,7 @@ code {
   background: #1677ff;
   opacity: 0.8;
 }
+
+.login-back {
+  background: linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(53, 51, 205) 100%);
+}

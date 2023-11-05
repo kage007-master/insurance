@@ -11,6 +11,7 @@ import { logOut } from "../../store/auth";
 import { useState } from "react";
 import { HiUsers } from "react-icons/hi";
 import { FaUserShield } from "react-icons/fa6";
+import { IoIosStats } from "react-icons/io"
 
 const Navbar: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -27,9 +28,8 @@ const Navbar: React.FC = () => {
         </button>
       </div>
       <div
-        className={`${
-          open ? "flex absolute h-full" : "hidden"
-        } z-20 md:flex min-w-[250px] max-w-[250px] p-4  flex-col gap-4 border bg-[#031C30] text-white`}
+        className={`${open ? "flex absolute h-full" : "hidden"
+          } z-20 md:flex min-w-[250px] max-w-[250px] p-4  flex-col gap-4 border bg-[#031C30] text-white`}
       >
         <div className="flex justify-center flex-col items-center gap-2 mt-4 mb-8 relative">
           <img src="/images/logo.png" alt="logo" className="w-32 h-32" />
@@ -73,6 +73,10 @@ const Navbar: React.FC = () => {
             <NavLink to="/employee/validators" className="navbar-item">
               <FaUserShield className="w-6 h-6 m-1" />
               Validators
+            </NavLink>
+            <NavLink to="/employee/statistics" className="navbar-item">
+              <IoIosStats className="w-6 h-6 m-1" />
+              Statistics
             </NavLink>
           </>
         ) : (
