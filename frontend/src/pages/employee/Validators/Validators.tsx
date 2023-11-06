@@ -127,16 +127,18 @@ const Validators: React.FC = () => {
   return (
     <Layout>
       <div className="relative">
-        <div className="flex items-center text-black gap-2">
-          <FcViewDetails className="w-8 h-8" />
-          Validators Details
+        <div className="flex justify-between flex-row-reverse flex-wrap-reverse">
+          <button
+            onClick={showModal}
+            className="px-4 py-1.5 border bg-[#18DDB1] rounded-md"
+          >
+            Add Validator
+          </button>
+          <div className="flex items-center text-black gap-2 mr-auto">
+            <FcViewDetails className="w-8 h-8" />
+            Validators Details
+          </div>
         </div>
-        <button
-          onClick={showModal}
-          className="absolute top-0 right-0 float-right h-[36px] border px-4 bg-[#18DDB1] rounded-md"
-        >
-          Add Validator
-        </button>
         <div ref={tableRef}>
           <Table
             className="mt-4"

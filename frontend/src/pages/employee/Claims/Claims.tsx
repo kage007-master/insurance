@@ -178,16 +178,18 @@ const Claims: React.FC = () => {
     <Layout>
       <>
         <div className="relative">
-          <p className="absolute flex gap-2 items-center top-0 right-0 float-right border px-4 py-1.5 bg-[#53c4e0] rounded-md">
-            <TiWeatherPartlySunny className="w-6 h-6" /> Active Weather Events :{" "}
-            {
-              weathers.filter((weather: any) => weather.status === "Active")
-                .length
-            }
-          </p>
-          <div className="flex items-center text-black gap-2">
-            <FcViewDetails className="w-8 h-8" />
-            Weather Events
+          <div className="flex flex-row-reverse justify-between flex-wrap-reverse">
+            <p className="flex gap-2 items-center border px-4 py-1.5 bg-[#53c4e0] rounded-md">
+              <TiWeatherPartlySunny className="w-6 h-6" /> Active Weather Events :{" "}
+              {
+                weathers.filter((weather: any) => weather.status === "Active")
+                  .length
+              }
+            </p>
+            <div className="flex items-center text-black gap-2 mr-auto">
+              <FcViewDetails className="w-8 h-8" />
+              Weather Events
+            </div>
           </div>
           <div ref={tableRef}>
             <Table
@@ -201,13 +203,15 @@ const Claims: React.FC = () => {
           </div>
         </div>
         <div className="relative mt-5">
-          <p className="absolute flex gap-2 items-center top-0 right-0 float-right border px-4 py-1.5 bg-[#831616] rounded-md">
-            <PiWarningOctagonBold className="w-6 h-6" /> Pending claims :{" "}
-            {claims.filter((claim: any) => claim.status === PENDING).length}
-          </p>
-          <div className="flex items-center text-black gap-2">
-            <FcViewDetails className="w-8 h-8" />
-            Claim Details
+          <div className="flex flex-row-reverse justify-between flex-wrap-reverse">
+            <p className="flex gap-2 items-center border px-4 py-1.5 bg-[#831616] rounded-md">
+              <PiWarningOctagonBold className="w-6 h-6" /> Pending claims :{" "}
+              {claims.filter((claim: any) => claim.status === PENDING).length}
+            </p>
+            <div className="flex items-center text-black gap-2 mr-auto">
+              <FcViewDetails className="w-8 h-8" />
+              Claim Details
+            </div>
           </div>
           <Table
             className="mt-4"
