@@ -4,6 +4,7 @@ import coverageReducer from "./coverage";
 import clientReducer from "./client";
 import claimReducer from "./claim";
 import weatherReducer from "./weather";
+import statisticReducer from "./statistic";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     coverage: coverageReducer,
     claim: claimReducer,
     weather: weatherReducer,
+    statistic: statisticReducer,
   },
 });
 

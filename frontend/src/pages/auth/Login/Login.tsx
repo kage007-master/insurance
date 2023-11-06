@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import setAuthToken from "../../../utils/setAuthToken";
 import { AppDispatch } from "../../../store";
 import api from "../../../utils/api";
+import Logo from "../../../components/Logo"
 
 const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -25,10 +26,10 @@ const Login: React.FC = () => {
 
   return (
     <div className="flex justify-center w-full items-center text-white login-back" ref={ref}>
-      <img src="/images/logo.png" alt="logo" className="w-32 h-32 absolute left-2 top-2" />
+      <Logo className={" absolute left-4 top-4"} />
       <Form
         name="normal_login"
-        className="login-form p-4 lg:mx-16"
+        className="login-form p-4 md:mx-16"
         initialValues={{ remember: true }}
         onFinish={onFinish}
       >

@@ -10,9 +10,14 @@ import Coverage from "../models/Coverage";
 import {
   APPROVED_BY_TRHESHOLD,
   APPROVED_BY_VALIDATOR,
+  AUTO_DECLINED,
+  DECLINED_BY_CUSTOMER,
   DECLINED_BY_VALIDATOR,
 } from "../config/const";
 import Setting from "../models/Setting";
+import Weather from "../models/Weather";
+
+type TCity = "Laval" | "Montreal" | "Longueuil";
 
 export default {
   getClients: async (req: any, res: Response): Promise<void> => {
@@ -411,4 +416,33 @@ export default {
     }
     res.json(settings.length ? settings[0] : { duration: 10, unit: "m" });
   },
+  getStatistics: async (req: any, res: Response) => {
+    const total_claims = await Claim.count({});
+    const coverages = await Coverage.find({});
+    const customers = await User.find({ role: "customer" });
+    const converage_histories = await CoverageHistory.find({});
+    const weathers = await interactor.GetAllEvents();
+    const claims = await Claim.find({ status: { $in: [APPROVED_BY_TRHESHOLD, APPROVED_BY_VALIDATOR] } });
+    const declined = await Claim.count({ status: { $in: [DECLINED_BY_VALIDATOR, DECLINED_BY_CUSTOMER, AUTO_DECLINED] } });
+    const coverage_data = coverages.map((coverage: any) => {
+      const subscriptions = converage_histories.filter((coverage_history: any) => coverage_history.coverageID === String(coverage._id)).length;
+      const expenditure = claims.filter((claim: any) => claim.weather === coverage.weather).length * coverage.reimbursement;
+      const revenue = subscriptions * coverage.premium - expenditure;
+      return { subscriptions, expenditure, revenue }
+    })
+    let city_data = { Laval: { revenue: 0, expenditure: 0, subscriptions: 0 }, Montreal: { revenue: 0, expenditure: 0, subscriptions: 0 }, Longueuil: { revenue: 0, expenditure: 0, subscriptions: 0 } };
+    claims.map((claim: any) => {
+      const coverage = coverages.find((coverage: any) => coverage.weather === claim.weather);
+      city_data[weathers.find((weather: any) => weather.ID === claim.weatherEventID).city as TCity].expenditure += coverage?.reimbursement;
+      city_data[weathers.find((weather: any) => weather.ID === claim.weatherEventID).city as TCity].revenue -= coverage?.reimbursement;
+      return 0;
+    });
+    converage_histories.map((coverage_h: any) => {
+      const coverage = coverages.find((coverage: any) => String(coverage._id) === coverage_h.coverageID);
+      city_data[customers.find((customer: any) => String(customer._id) === coverage_h.clientID)?.address?.city as TCity].revenue += coverage?.premium;
+      city_data[customers.find((customer: any) => String(customer._id) === coverage_h.clientID)?.address?.city as TCity].subscriptions++;
+      return 0;
+    });
+    res.json({ claim: { total: total_claims, approved: claims.length, declined }, coverage: coverage_data, city: city_data });
+  }
 };

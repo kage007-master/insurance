@@ -13,5 +13,6 @@ router.get("/", authMiddleware, UserController.load);
 router.get("/notifications", authMiddleware, UserController.loadNotification);
 router.get("/settings", authMiddleware, UserController.loadSettings);
 router.post("/settings", authMiddleware, UserController.saveSettings);
+router.get("/statistics", UserController.getStatistics);
 
 export default router;

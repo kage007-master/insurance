@@ -33,6 +33,10 @@ interface WeatherState {
   weathers: any[];
 }
 
+interface StatisticState {
+  data: any;
+}
+
 interface ClientState {
   clients: any[];
   client: any;

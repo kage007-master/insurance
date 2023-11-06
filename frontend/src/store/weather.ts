@@ -14,20 +14,20 @@ export const getWeatherEvents = createAsyncThunk(
   }
 );
 
-export const claimSlice = createSlice({
+export const weatherSlice = createSlice({
   name: "weather",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getWeatherEvents.pending, (state, action) => {});
+    builder.addCase(getWeatherEvents.pending, (state, action) => { });
     builder.addCase(
       getWeatherEvents.fulfilled,
       (state, action: PayloadAction<any>) => {
         state.weathers = action.payload.reverse();
       }
     );
-    builder.addCase(getWeatherEvents.rejected, (state, action) => {});
+    builder.addCase(getWeatherEvents.rejected, (state, action) => { });
   },
 });
 
-export default claimSlice.reducer;
+export default weatherSlice.reducer;
