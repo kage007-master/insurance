@@ -163,7 +163,7 @@ const Signup: React.FC = () => {
           </div>
         </Form.Item>
       </Form>
-      <img className="login-img" src={"https://media.canva.com/1/image-resize/1/800_535_92_JPG_F/czM6Ly9tZWRpYS1wcml2YXRlLmNhbnZhLmNvbS9hRnh2US9NQUZ6RkRhRnh2US8xL3AuanBn?osig=AAAAAAAAAAAAAAAAAAAAAHdOGLtRnMRRA0EiOjvOjLXs-1JMSwuXgP2HyVC0Nab6&exp=1699220929&x-canva-quality=screen&csig=AAAAAAAAAAAAAAAAAAAAAH99RDALoJdNZf8kKa7U0pV8owvuLXx5okzI2PgjHopr"} />
+      <img className="login-img" src={"/images/back.png"} />
     </div>
   );
 };
