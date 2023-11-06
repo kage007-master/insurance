@@ -33,7 +33,7 @@ const Navbar: React.FC = () => {
       >
         <div className="flex justify-center flex-col items-center gap-2 mt-4 mb-8 relative">
           <img src="/images/logo.png" alt="logo" className="w-32 h-32" />
-          <h2 className="text-xl">{user.address?.city}</h2>
+          {user.role !== "employee" && <h2 className="text-xl">{user.address?.city}</h2>}
           <button
             className="md:hidden absolute top-0 right-0 bg-[#031C30] text-white"
             onClick={() => setOpen(false)}
