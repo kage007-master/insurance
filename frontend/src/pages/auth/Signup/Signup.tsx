@@ -28,33 +28,33 @@ const Signup: React.FC = () => {
 
   return (
     <div className="flex justify-center w-full items-center text-white login-back">
-      <Logo className={" absolute left-4 top-4"} />
       <Form
         name="normal_login"
-        className="login-form p-4 md:mx-16"
+        className="login-form p-4 md:mx-16 h-full overflow-auto mt-4"
         onFinish={onFinish}
       >
+        <Logo className={""} />
         <p className="text-xl my-4 text-white">Register</p>
         <Form.Item
-          name="fullname"
+          name="fullname" className="w-full"
           rules={[{ required: true, message: "Please input your Fulll Name!" }]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Full Name"
+            placeholder="Full Name" size="large"
           />
         </Form.Item>
         <Form.Item
-          name="username"
+          name="username" className="w-full"
           rules={[{ required: true, message: "Please input your Username!" }]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
+            placeholder="Username" size="large"
           />
         </Form.Item>
         <Form.Item
-          name="email"
+          name="email" className="w-full"
           rules={[
             {
               type: "email",
@@ -65,21 +65,21 @@ const Signup: React.FC = () => {
         >
           <Input
             prefix={<MailOutlined className="site-form-item-icon" />}
-            placeholder="E-mail"
+            placeholder="E-mail" size="large"
           />
         </Form.Item>
         <Form.Item
-          name="password"
+          name="password" className="w-full"
           rules={[{ required: true, message: "Please input your Password!" }]}
         >
           <Input
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
-            placeholder="Password"
+            placeholder="Password" size="large"
           />
         </Form.Item>
         <Form.Item
-          name="password2"
+          name="password2" className="w-full"
           rules={[
             {
               required: true,
@@ -100,30 +100,31 @@ const Signup: React.FC = () => {
           <Input
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
-            placeholder="Confirm Password"
+            placeholder="Confirm Password" size="large"
           />
         </Form.Item>
         <Form.Item
           name="line1"
+          className="w-full"
           rules={[{ required: true, message: "Please input your Address!" }]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Address Line 1"
+            placeholder="Address Line 1" size="large"
           />
         </Form.Item>
-        <Form.Item name="line2" rules={[{ required: false }]}>
+        <Form.Item name="line2" className="w-full" rules={[{ required: false }]}>
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Address Line 2(optional)"
+            placeholder="Address Line 2(optional)" size="large"
           />
         </Form.Item>
         <Form.Item
           name="city"
-          className="text-left"
+          className="text-left w-full"
           rules={[{ required: true, message: "Please input your City!" }]}
         >
-          <Select placeholder="City" allowClear>
+          <Select placeholder="City" allowClear size="large">
             <Option value="Laval">Laval</Option>
             <Option value="Montreal">Montreal</Option>
             <Option value="Longueuil">Longueuil</Option>
@@ -136,7 +137,7 @@ const Signup: React.FC = () => {
           >
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Latitude"
+              placeholder="Latitude" size="large"
             />
           </Form.Item>
           <Form.Item
@@ -147,13 +148,13 @@ const Signup: React.FC = () => {
           >
             <Input
               prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Longitude"
+              placeholder="Longitude" size="large"
             />
           </Form.Item>
         </div>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit" className="w-full">
+        <Form.Item className="w-full">
+          <Button htmlType="submit" className="w-full !bg-[#5e17eb] text-white h-[40px]">
             Register
           </Button>
           <div className="flex mt-2 justify-center gap-1 text-white">

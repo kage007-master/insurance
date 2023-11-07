@@ -26,13 +26,13 @@ const Login: React.FC = () => {
 
   return (
     <div className="flex justify-center w-full items-center text-white login-back" ref={ref}>
-      <Logo className={" absolute left-4 top-4"} />
       <Form
         name="normal_login"
         className="login-form p-4 md:mx-16"
         initialValues={{ remember: true }}
         onFinish={onFinish}
       >
+        <Logo className={""} />
         <p className="text-xl mt-4 text-white">Login</p>
         <p className="my-2 text-white">Sign in to continue</p>
         {error && (
@@ -45,25 +45,27 @@ const Login: React.FC = () => {
         )}
         <Form.Item
           name="email"
+          className="w-full"
           rules={[{ required: true, message: "Please input your E-mail!" }]}
         >
           <Input
             prefix={<MailOutlined className="site-form-item-icon" />}
-            placeholder="E-mail"
+            placeholder="E-mail" size="large"
           />
         </Form.Item>
         <Form.Item
           name="password"
+          className="w-full"
           rules={[{ required: true, message: "Please input your Password!" }]}
         >
           <Input
             prefix={<LockOutlined className="site-form-item-icon" />}
             type="password"
-            placeholder="Password"
+            placeholder="Password" size="large"
           />
         </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" className="w-full">
+        <Form.Item className="w-full">
+          <Button htmlType="submit" className="w-full !bg-[#5e17eb] text-white h-[40px]">
             Login
           </Button>
           <div className="flex mt-2 justify-center gap-1 text-white">
