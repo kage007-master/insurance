@@ -30,7 +30,7 @@ const Signup: React.FC = () => {
     <div className="flex justify-center w-full items-center text-white login-back">
       <Form
         name="normal_login"
-        className="login-form p-4 md:mx-16 h-full overflow-auto mt-4"
+        className="login-form pt-16 p-4 md:mx-16 h-full overflow-auto"
         onFinish={onFinish}
       >
         <Logo className={""} />
