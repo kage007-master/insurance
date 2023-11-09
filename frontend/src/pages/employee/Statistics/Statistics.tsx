@@ -75,18 +75,72 @@ const Statistics: React.FC = () => {
     }
   }, [claims]);
 
+  console.log(claims_overview);
+
   return (
     <Layout>
       <>
-        <div id="report" className="absolute">
+        <div id="report" className="absolute w-[500px]">
           <p>Total Claims: {claim?.total}</p>
           <p>Approved Claims: {claim?.approved}</p>
           <p>Declined Claims: {claim?.declined}</p>
-          {claims_overview !== null &&
-            Object.keys(claims_overview.data[0]).map((index: string) => { return index !== "key" && (<p>{index}:{claims_overview.data[0][index]}</p>) })
-          }
-          {coverage && coverage.map((item: any) => (<><p>{item.name}</p><p>Subscriptions: {item.subscriptions}</p><p>Revenue: {item.revenue}</p><p>Expenditure: {item.expenditure}</p></>))}
-          {city && Object.keys(city).map((area: string) => (<><p>{area}</p><p>Subscriptions: {city[area].subscriptions}</p><p>Revenue: {city[area].revenue}</p><p>Expenditure: {city[area].expenditure}</p></>))}
+          <br />
+          <h3 style={{ fontSize: "25px", textAlign: "center" }}>
+            Claims Overview
+          </h3>
+          <table className="w-full" style={{ width: "100%" }}>
+            <thead>
+              <tr>
+                {claims_overview &&
+                  claims_overview.columns.map((item: any, index: number) => (
+                    <th key={index}>{item.title}</th>
+                  ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {claims_overview &&
+                  claims_overview.columns.map((item: any, index: string) => {
+                    return <td>{claims_overview.data[0][item.dataIndex]}</td>;
+                  })}
+              </tr>
+            </tbody>
+          </table>
+          <br />
+          <table style={{ width: "100%" }}>
+            <tr>
+              <td>
+                <h4 style={{ fontSize: "20px" }}>Subscriptions per Coverage</h4>
+                <br></br>
+                {coverage &&
+                  coverage.map((item: any) => (
+                    <>
+                      <p>{item.name}</p>
+                      <br />
+                      <p>Subscriptions: {item.subscriptions}</p>
+                      <p>Revenue: {item.revenue}</p>
+                      <p>Expenditure: {item.expenditure}</p>
+                      <br />
+                    </>
+                  ))}
+              </td>
+              <td>
+                <h4 style={{ fontSize: "20px" }}>Subscriptions per City</h4>
+                <br></br>
+                {city &&
+                  Object.keys(city).map((area: string) => (
+                    <>
+                      <p>{area}</p>
+                      <br />
+                      <p>Subscriptions: {city[area].subscriptions}</p>
+                      <p>Revenue: {city[area].revenue}</p>
+                      <p>Expenditure: {city[area].expenditure}</p>
+                      <br />
+                    </>
+                  ))}
+              </td>
+            </tr>
+          </table>
         </div>
         <div className="relative -mt-6">
           <div className="absolute top-0 right-0 float-right flex gap-2">
