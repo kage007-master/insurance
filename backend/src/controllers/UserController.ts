@@ -390,6 +390,7 @@ export default {
       res.status(500).send("Server error");
     }
   },
+
   loadNotification: async (req: any, res: Response) => {
     const notifications = await Notification.find({
       clientID: req.user.id,
@@ -401,6 +402,7 @@ export default {
     );
     res.json(notifications);
   },
+
   loadSettings: async (req: any, res: Response) => {
     const settings = await Setting.find({});
     res.json(settings.length ? settings[0] : { duration: 10, unit: "m" });
@@ -416,6 +418,7 @@ export default {
     }
     res.json(settings.length ? settings[0] : { duration: 10, unit: "m" });
   },
+
   getStatistics: async (req: any, res: Response) => {
     const total_claims = await Claim.count({});
     const coverages = await Coverage.find({});
@@ -428,7 +431,7 @@ export default {
       const subscriptions = converage_histories.filter((coverage_history: any) => coverage_history.coverageID === String(coverage._id)).length;
       const expenditure = claims.filter((claim: any) => claim.weather === coverage.weather).length * coverage.reimbursement;
       const revenue = subscriptions * coverage.premium - expenditure;
-      return { subscriptions, expenditure, revenue }
+      return { subscriptions, expenditure, revenue, name: coverage.name }
     })
     let city_data = { Laval: { revenue: 0, expenditure: 0, subscriptions: 0 }, Montreal: { revenue: 0, expenditure: 0, subscriptions: 0 }, Longueuil: { revenue: 0, expenditure: 0, subscriptions: 0 } };
     claims.map((claim: any) => {
@@ -443,6 +446,7 @@ export default {
       city_data[customers.find((customer: any) => String(customer._id) === coverage_h.clientID)?.address?.city as TCity].subscriptions++;
       return 0;
     });
-    res.json({ claim: { total: total_claims, approved: claims.length, declined }, coverage: coverage_data, city: city_data });
+    let allclaims = await Claim.find({}).select("-_id -weather -weatherEventID -clientID -status -validatorID -validateTime -detail -file -schedule").sort({ date: -1 });
+    res.json({ claim: { total: total_claims, approved: claims.length, declined }, coverage: coverage_data, city: city_data, claims: allclaims });
   }
 };

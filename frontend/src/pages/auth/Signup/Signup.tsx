@@ -37,7 +37,7 @@ const Signup: React.FC = () => {
         <p className="text-xl my-4 text-white">Register</p>
         <Form.Item
           name="fullname" className="w-full"
-          rules={[{ required: true, message: "Please input your Fulll Name!" }]}
+          rules={[{ required: true, message: "Please input your Full Name!" }]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}

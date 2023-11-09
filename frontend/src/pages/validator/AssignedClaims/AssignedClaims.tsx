@@ -37,8 +37,6 @@ import { Filter, capitalizeFLetter } from "../../../utils/string";
 import { loadClients } from "../../../store/client";
 import {
   GoogleMap,
-  Marker,
-  InfoWindow,
   useJsApiLoader,
 } from "@react-google-maps/api";
 import moment from "moment";

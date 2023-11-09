@@ -127,7 +127,7 @@ const ActiveCliams: React.FC = () => {
       <>
         <Row justify="space-around" gutter={[16, 16]}>
           <Col span={12} md={8}>
-            <div className="flex justify-center">
+            <div className="flex justify-center h-full">
               <div className="flex flex-col rounded-xl items-center border p-4 w-[180px] bg-[#031C30]">
                 <MdAccountBalance className="w-12 h-12" />
                 <p className="p-2">Balance</p>
@@ -137,7 +137,7 @@ const ActiveCliams: React.FC = () => {
             </div>
           </Col>
           <Col span={12} md={8}>
-            <div className="flex justify-center">
+            <div className="flex justify-center h-full">
               <div className="flex flex-col rounded-xl items-center border p-4 w-[180px] bg-[#031C30]">
                 <BiNotepad className="w-12 h-12" />
                 <p className="p-2">Total claims</p>
@@ -147,7 +147,7 @@ const ActiveCliams: React.FC = () => {
             </div>
           </Col>
           <Col span={12} md={8}>
-            <div className="flex justify-center">
+            <div className="flex justify-center h-full">
               <div className="flex flex-col rounded-xl items-center  border p-4 w-[180px] bg-[#031C30]">
                 <MdAccountBalance className="w-12 h-12" />
                 <p className="p-2">Coverages</p>
