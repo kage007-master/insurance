@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import Layout from "../../../components/Layout";
 import { Row, Col, Table } from "antd";
-import { MdAccountBalance } from "react-icons/md";
-import { BiNotepad } from "react-icons/bi";
-import { PiPrinter, PiFilePdf } from "react-icons/pi";
+import { FaFileCircleXmark, FaClipboardList } from "react-icons/fa6";
+import { TbChecklist } from "react-icons/tb";
+import { PiFilePdf } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../store";
 import { getStatistics } from "../../../store/statistic";
@@ -31,6 +31,7 @@ const Statistics: React.FC = () => {
   };
   const generatePDF = () => {
     const report = new JsPDF("portrait", "pt", "a4");
+    report.setFont("Droid Sans");
     report
       .html(document.querySelector("#report") as HTMLElement, {
         margin: [30, 20, 30, 20],
@@ -75,81 +76,289 @@ const Statistics: React.FC = () => {
     }
   }, [claims]);
 
-  console.log(claims_overview);
+  const currentDate = new Date();
+
+  // Get the individual components of the date
+  const year = currentDate.getFullYear();
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+  const day = currentDate.getDate().toString().padStart(2, "0");
 
   return (
     <Layout>
       <>
-        <div id="report" className="absolute w-[500px]">
-          <p>Total Claims: {claim?.total}</p>
-          <p>Approved Claims: {claim?.approved}</p>
-          <p>Declined Claims: {claim?.declined}</p>
-          <br />
-          <h3 style={{ fontSize: "25px", textAlign: "center" }}>
-            Claims Overview
-          </h3>
-          <table className="w-full" style={{ width: "100%" }}>
-            <thead>
+        <div style={{ opacity: 0 }}>
+          <div
+            id="report"
+            className="absolute w-[500px]"
+            style={{ fontFamily: "Droid Sans" }}
+          >
+            <img
+              src="/images/logo.png"
+              alt="logo"
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: 50,
+                height: 50,
+              }}
+            />
+            <p
+              style={
+                {
+                  fontSize: "27px",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  width: "100%",
+                  textWrap: "nowarp",
+                  marginLeft: 40,
+                } as any
+              }
+            >
+              Claims & Subscriptions Report
+            </p>
+            <div style={{ position: "absolute", left: 0, top: 50 }}>
+              <p>Total Claims: {claim?.total}</p>
+              <p>Approved Claims: {claim?.approved}</p>
+              <p>Declined Claims: {claim?.declined}</p>
+            </div>
+            <h3
+              style={{
+                fontSize: "22px",
+                textAlign: "center",
+                marginTop: 85,
+                fontWeight: "bold",
+              }}
+            >
+              Claims Overview {"(" + new Date().getFullYear() + ")"}
+            </h3>
+            <table className="w-full" style={{ width: "100%" }}>
+              <thead>
+                <tr>
+                  {claims_overview &&
+                    claims_overview.columns.map((item: any, index: number) => (
+                      <th key={index}>{item.title}</th>
+                    ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {claims_overview &&
+                    claims_overview.columns.map((item: any, index: string) => {
+                      return <td>{claims_overview.data[0][item.dataIndex]}</td>;
+                    })}
+                </tr>
+              </tbody>
+            </table>
+            <br />
+            <table style={{ width: "100%" }}>
               <tr>
-                {claims_overview &&
-                  claims_overview.columns.map((item: any, index: number) => (
-                    <th key={index}>{item.title}</th>
-                  ))}
+                <td>
+                  <h4
+                    style={
+                      {
+                        fontSize: "20px",
+                        textWrap: "nowrap",
+                        fontWeight: "bold",
+                      } as any
+                    }
+                  >
+                    Subscriptions per Coverage
+                  </h4>
+                  <br></br>
+                  {coverage &&
+                    coverage.map((item: any) => (
+                      <>
+                        <table>
+                          <tr aria-colspan={2}>
+                            <td
+                              style={{
+                                padding: "0 5px 7px 5px",
+                                textAlign: "left",
+                              }}
+                            >
+                              {item.name}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "0 5px 7px 5px",
+                                textAlign: "left",
+                              }}
+                            >
+                              Subscriptions
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "0 5px 7px 5px",
+                                textAlign: "left",
+                              }}
+                            >
+                              {item.subscriptions}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "0 5px 7px 5px",
+                                textAlign: "left",
+                              }}
+                            >
+                              Revenue
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "0 5px 7px 5px",
+                                textAlign: "left",
+                              }}
+                            >
+                              {item.revenue}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "0 5px 7px 5px",
+                                textAlign: "left",
+                              }}
+                            >
+                              Expenditure
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "0 5px 7px 5px",
+                                textAlign: "left",
+                              }}
+                            >
+                              {item.expenditure}
+                            </td>
+                          </tr>
+                        </table>
+                        <br />
+                      </>
+                    ))}
+                </td>
+                <td style={{ width: "2px", backgroundColor: "black" }}></td>
+                <td style={{ paddingLeft: "10px" }}>
+                  <h4
+                    style={
+                      {
+                        fontSize: "20px",
+                        textWrap: "nowrap",
+                        fontWeight: "bold",
+                      } as any
+                    }
+                  >
+                    Subscriptions per City
+                  </h4>
+                  <br></br>
+                  {city &&
+                    Object.keys(city).map((area: string) => (
+                      <>
+                        <table
+                          style={{ borderCollapse: "collapse", width: "100%" }}
+                        >
+                          <tr>
+                            <td
+                              style={{
+                                padding: "0 5px 7px 5px",
+                                verticalAlign: "middle",
+                                textAlign: "left",
+                              }}
+                            >
+                              {area}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "0 5px 7px 5px",
+                                verticalAlign: "middle",
+                                textAlign: "left",
+                              }}
+                            >
+                              Subscriptions
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "0 5px 7px 5px",
+                                verticalAlign: "middle",
+                                textAlign: "left",
+                              }}
+                            >
+                              {city[area].subscriptions}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "0 5px 7px 5px",
+                                verticalAlign: "middle",
+                                textAlign: "left",
+                              }}
+                            >
+                              Revenue
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "0 5px 7px 5px",
+                                verticalAlign: "middle",
+                                textAlign: "left",
+                              }}
+                            >
+                              {city[area].revenue}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "0 5px 7px 5px",
+                                verticalAlign: "middle",
+                                textAlign: "left",
+                              }}
+                            >
+                              Expenditure
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                padding: "0 5px 7px 5px",
+                                verticalAlign: "middle",
+                                textAlign: "left",
+                              }}
+                            >
+                              {city[area].expenditure}
+                            </td>
+                          </tr>
+                        </table>
+                        <br />
+                      </>
+                    ))}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              <tr>
-                {claims_overview &&
-                  claims_overview.columns.map((item: any, index: string) => {
-                    return <td>{claims_overview.data[0][item.dataIndex]}</td>;
-                  })}
-              </tr>
-            </tbody>
-          </table>
-          <br />
-          <table style={{ width: "100%" }}>
-            <tr>
-              <td>
-                <h4 style={{ fontSize: "20px" }}>Subscriptions per Coverage</h4>
-                <br></br>
-                {coverage &&
-                  coverage.map((item: any) => (
-                    <>
-                      <p>{item.name}</p>
-                      <br />
-                      <p>Subscriptions: {item.subscriptions}</p>
-                      <p>Revenue: {item.revenue}</p>
-                      <p>Expenditure: {item.expenditure}</p>
-                      <br />
-                    </>
-                  ))}
-              </td>
-              <td>
-                <h4 style={{ fontSize: "20px" }}>Subscriptions per City</h4>
-                <br></br>
-                {city &&
-                  Object.keys(city).map((area: string) => (
-                    <>
-                      <p>{area}</p>
-                      <br />
-                      <p>Subscriptions: {city[area].subscriptions}</p>
-                      <p>Revenue: {city[area].revenue}</p>
-                      <p>Expenditure: {city[area].expenditure}</p>
-                      <br />
-                    </>
-                  ))}
-              </td>
-            </tr>
-          </table>
+            </table>
+            <div
+              style={{ fontSize: "10px", color: "gray", textAlign: "right" }}
+            >
+              <p>{`${year} /${month} /${day}`}</p>
+              <p>{`WeatherChain 2023`}</p>
+            </div>
+          </div>
         </div>
         <div className="relative -mt-6">
           <div className="absolute top-0 right-0 float-right flex gap-2">
-            <button
-              onClick={handlePrint}
-              className="h-[36px] border px-4 bg-[#18DDB1] rounded-md"
-            >
-              <PiPrinter className="w-6 h-6" />
-            </button>
             <button
               onClick={generatePDF}
               className="h-[36px] border px-4 bg-[#18DDB1] rounded-md flex items-center gap-1"
@@ -163,7 +372,7 @@ const Statistics: React.FC = () => {
             <Col span={12} md={8}>
               <div className="flex justify-center h-full">
                 <div className="flex flex-col rounded-xl items-center border p-4 w-[180px] bg-[#031C30]">
-                  <MdAccountBalance className="w-12 h-12" />
+                  <FaClipboardList className="w-12 h-12" />
                   <p className="p-2">Total Claims</p>
                   <div className="border w-full"></div>
                   <p className="p-2">{claim?.total}</p>
@@ -173,7 +382,7 @@ const Statistics: React.FC = () => {
             <Col span={12} md={8}>
               <div className="flex justify-center h-full">
                 <div className="flex flex-col rounded-xl items-center border p-4 w-[180px] bg-[#031C30]">
-                  <BiNotepad className="w-12 h-12" />
+                  <TbChecklist className="w-12 h-12" />
                   <p className="p-2">Approved Claims</p>
                   <div className="border w-full"></div>
                   <p className="p-2">{claim?.approved}</p>
@@ -183,7 +392,7 @@ const Statistics: React.FC = () => {
             <Col span={12} md={8}>
               <div className="flex justify-center h-full">
                 <div className="flex flex-col rounded-xl items-center  border p-4 w-[180px] bg-[#031C30]">
-                  <MdAccountBalance className="w-12 h-12" />
+                  <FaFileCircleXmark className="w-12 h-12" />
                   <p className="p-2">Declined Claims</p>
                   <div className="border w-full"></div>
                   <p className="p-2">{claim?.declined}</p>
